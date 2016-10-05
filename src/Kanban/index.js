@@ -16,7 +16,7 @@ class Kanban extends Component {
     super(props);
 
     this.state = {
-      lists: generateLists(6, 200),
+      lists: generateLists(6, 3),
     };
 
     this.moveRow = this.moveRow.bind(this);
@@ -34,7 +34,7 @@ class Kanban extends Component {
       <div className="Wrapper">
         {lists.map((rows, i) => {
           return (
-            <div key={i} className="ListWrapper">
+            <div key={i} className="ListContainer">
               <List height={height} listIndex={i} rows={rows} moveRow={this.moveRow} />
             </div>
           );

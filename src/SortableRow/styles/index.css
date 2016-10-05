@@ -1,0 +1,12 @@
+.RowWrapper {
+  height: 100%;
+  background-color: green;
+}
+
+.RowWrapperDragging {
+  background-color: yellow;
+}
+
+.RowWrapperDragging .Row {
+  visibility: hidden;
+}

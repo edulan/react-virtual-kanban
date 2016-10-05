@@ -1,15 +1,38 @@
 import React, { Component } from 'react';
 import { VirtualScroll } from 'react-virtualized';
+import { DropTarget } from 'react-dnd';
 
 import SortableRow from '../SortableRow';
 
+import { LIST_TYPE, ROW_TYPE } from '../types';
+
 import './styles/index.css';
+
+const listTarget = {
+  hover(props, monitor) {
+    if (!monitor.canDrop()) return;
+
+    const { index: dragIndex, listIndex: dragListIndex } = monitor.getItem();
+    const hoverIndex = 0;
+    const hoverListIndex = props.listIndex;
+
+    props.moveRow({dragIndex, dragListIndex}, {hoverIndex, hoverListIndex});
+
+    monitor.getItem().index = hoverIndex;
+    monitor.getItem().listIndex = hoverListIndex;
+  },
+
+  canDrop(props) {
+    return props.rows.length === 0;
+  }
+};
 
 class List extends Component {
   constructor(props) {
     super(props);
 
     this.renderRow = this.renderRow.bind(this);
+    this.renderList = this.renderList.bind(this);
   }
 
   componentDidUpdate({ rows }) {
@@ -29,7 +52,7 @@ class List extends Component {
     );
   }
 
-  render() {
+  renderList() {
     const { width, height, rowHeight } = this.props;
 
     return (
@@ -45,6 +68,16 @@ class List extends Component {
        />
     );
   }
+
+  render() {
+    const { connectDropTarget } = this.props;
+
+    return connectDropTarget(
+      <div className='ListWrapper'>
+        {this.renderList()}
+      </div>
+    );
+  }
 }
 
 List.defaultProps = {
@@ -53,4 +86,8 @@ List.defaultProps = {
   rowHeight: 50,
 };
 
-export default List;
+const connectDrop = DropTarget([LIST_TYPE, ROW_TYPE], listTarget, connect => ({
+  connectDropTarget: connect.dropTarget(),
+}))
+
+export default connectDrop(List);

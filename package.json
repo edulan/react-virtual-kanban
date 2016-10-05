@@ -6,6 +6,7 @@
     "react-scripts": "0.2.3"
   },
   "dependencies": {
+    "classnames": "^2.2.5",
     "react": "15.3.1",
     "react-addons-shallow-compare": "15.3.1",
     "react-addons-update": "^15.3.1",

@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import { DragSource, DropTarget } from 'react-dnd';
+import classnames from 'classnames';
 
 import Row from '../Row';
 
-const ROW_TYPE = 'row';
+import { ROW_TYPE } from '../types';
+
+import './styles/index.css';
 
 const rowSource = {
   beginDrag(props) {
@@ -65,10 +68,14 @@ const rowTarget = {
 class SortableRow extends Component {
   render() {
     const { isDragging, connectDragSource, connectDropTarget, ...rowProps } = this.props;
-    const opacity = isDragging ? 0 : 1;
+
+    const classes = classnames({
+      RowWrapper: true,
+      RowWrapperDragging: isDragging,
+    });
 
     return connectDragSource(connectDropTarget(
-      <div style={{height: '100%', opacity}}>
+      <div className={classes}>
         <Row {...rowProps} />
       </div>
     ));
