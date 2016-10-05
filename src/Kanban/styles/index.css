@@ -1,0 +1,9 @@
+.Wrapper {
+  width: 1200px;
+}
+
+.ListWrapper {
+  float: left;
+  margin-left: 10px;
+  margin-right: 10px;
+}
