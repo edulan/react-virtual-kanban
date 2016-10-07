@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { AutoSizer } from 'react-virtualized';
@@ -16,11 +17,15 @@ class Kanban extends Component {
     super(props);
 
     this.state = {
-      lists: generateLists(6, 3),
+      lists: generateLists(10, 200),
     };
 
     this.moveRow = this.moveRow.bind(this);
     this.renderLists = this.renderLists.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
   }
 
   moveRow(from, to) {

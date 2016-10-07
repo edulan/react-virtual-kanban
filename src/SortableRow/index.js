@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
+import shallowCompare from 'react-addons-shallow-compare';
 import { DragSource, DropTarget } from 'react-dnd';
 import classnames from 'classnames';
 
@@ -48,6 +49,16 @@ const rowTarget = {
     // Get pixels to the top
     const hoverClientY = clientOffset.y - hoverBoundingRect.top;
 
+    // Dragging horizontaly between lists
+    if (hoverBoundingRect.left < clientOffset.x &&
+        clientOffset.x < hoverBoundingRect.right &&
+        dragListIndex !== hoverListIndex) {
+      props.moveRow({dragIndex, dragListIndex}, {hoverIndex, hoverListIndex});
+      monitor.getItem().index = hoverIndex;
+      monitor.getItem().listIndex = hoverListIndex;
+      return;
+    }
+
     // Dragging downwards
     if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
       return;
@@ -66,6 +77,10 @@ const rowTarget = {
 };
 
 class SortableRow extends Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
+  }
+
   render() {
     const { isDragging, connectDragSource, connectDropTarget, ...rowProps } = this.props;
 

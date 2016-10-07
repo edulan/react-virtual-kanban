@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import { VirtualScroll } from 'react-virtualized';
 import { DropTarget } from 'react-dnd';
 
@@ -37,6 +38,10 @@ class List extends Component {
 
   componentDidUpdate({ rows }) {
     this._list.forceUpdateGrid();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
   }
 
   renderRow({ index }) {
