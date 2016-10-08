@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import shallowCompare from 'react-addons-shallow-compare';
 import { DragSource, DropTarget } from 'react-dnd';
+import { getEmptyImage } from 'react-dnd-html5-backend';
 import classnames from 'classnames';
 
 import Row from '../Row';
@@ -81,6 +82,12 @@ class SortableRow extends Component {
     return shallowCompare(this, nextProps, nextState);
   }
 
+  componentDidMount() {
+    this.props.connectDragPreview(getEmptyImage(), {
+      captureDraggingState: true
+    });
+  }
+
   render() {
     const { isDragging, connectDragSource, connectDropTarget, ...rowProps } = this.props;
 
@@ -104,6 +111,7 @@ const connectDrop = DropTarget(ROW_TYPE, rowTarget, connect => ({
 
 const connectDrag = DragSource(ROW_TYPE, rowSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
+  connectDragPreview: connect.dragPreview(),
   isDragging: monitor.isDragging(),
 }))
 

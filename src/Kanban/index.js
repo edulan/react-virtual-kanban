@@ -4,6 +4,8 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { AutoSizer } from 'react-virtualized';
 
+import KanbanDragLayer from './DragLayer';
+
 import { updateLists } from './services/update_lists';
 import { generateLists } from './services/generate_lists';
 
@@ -36,14 +38,17 @@ class Kanban extends Component {
     const { lists } = this.state;
 
     return (
-      <div className="Wrapper">
-        {lists.map((rows, i) => {
-          return (
-            <div key={i} className="ListContainer">
-              <List height={height} listIndex={i} rows={rows} moveRow={this.moveRow} />
-            </div>
-          );
-        })}
+      <div>
+        <div className="Wrapper">
+          {lists.map((rows, i) => {
+            return (
+              <div key={i} className="ListContainer">
+                <List height={height} listIndex={i} rows={rows} moveRow={this.moveRow} />
+              </div>
+            );
+          })}
+        </div>
+        <KanbanDragLayer />
       </div>
     );
   }
