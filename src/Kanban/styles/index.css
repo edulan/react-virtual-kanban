@@ -1,11 +1,7 @@
 .Wrapper {
-  width: 2000px;
-}
-
-.ListContainer {
-  float: left;
-  margin-left: 10px;
-  margin-right: 10px;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 .DragLayer {

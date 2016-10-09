@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import { AutoSizer } from 'react-virtualized';
+import { Grid } from 'react-virtualized';
 
 import KanbanDragLayer from './DragLayer';
 
@@ -19,10 +19,11 @@ class Kanban extends Component {
     super(props);
 
     this.state = {
-      lists: generateLists(10, 200),
+      lists: generateLists(20, 500),
     };
 
     this.moveRow = this.moveRow.bind(this);
+    this.renderList = this.renderList.bind(this);
     this.renderLists = this.renderLists.bind(this);
   }
 
@@ -34,30 +35,44 @@ class Kanban extends Component {
     this.setState({lists: updateLists(this.state.lists, {from, to})});
   }
 
-  renderLists({ height }) {
+  renderList({ columnIndex, width, height }) {
+    const rows = this.state.lists[columnIndex];
+
+    return (
+      <List
+        width={160}
+        height={height}
+        listIndex={columnIndex}
+        rows={rows}
+        moveRow={this.moveRow}
+      />
+    );
+
+  }
+
+  renderLists() {
+    const { width, height } = this.props;
     const { lists } = this.state;
 
     return (
-      <div>
-        <div className="Wrapper">
-          {lists.map((rows, i) => {
-            return (
-              <div key={i} className="ListContainer">
-                <List height={height} listIndex={i} rows={rows} moveRow={this.moveRow} />
-              </div>
-            );
-          })}
-        </div>
-        <KanbanDragLayer />
-      </div>
+      <Grid
+        width={width}
+        height={height}
+        columnWidth={160}
+        rowHeight={height}
+        columnCount={lists.length}
+        rowCount={1}
+        cellRenderer={({ columnIndex }) => this.renderList({columnIndex, width, height})}
+      />
     );
   }
 
-  render(){
+  render() {
     return (
-      <AutoSizer>
-        {({ height }) => this.renderLists({height})}
-      </AutoSizer>
+      <div>
+        {this.renderLists()}
+        <KanbanDragLayer />
+      </div>
     );
   }
 }

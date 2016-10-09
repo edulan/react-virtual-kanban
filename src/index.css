@@ -4,6 +4,8 @@ body {
   font-family: sans-serif;
 }
 
-.kanbanWrapper {
+.KanbanWrapper {
+  width: 1000px;
   height: 600px;
+  margin: 20px;
 }
