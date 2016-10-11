@@ -56,6 +56,7 @@ class Kanban extends Component {
 
     return (
       <Grid
+        style={{overflowY: 'hidden'}}
         width={width}
         height={height}
         columnWidth={200}

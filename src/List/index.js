@@ -57,8 +57,8 @@ class List extends Component {
     );
   }
 
-  renderList() {
-    const { width, height, rowHeight } = this.props;
+  renderList({ width, height }) {
+    const { rowHeight } = this.props;
 
     return (
       <VirtualScroll
@@ -77,9 +77,16 @@ class List extends Component {
   render() {
     const { connectDropTarget } = this.props;
 
+    const HEADER_HEIGHT = 30;
+    const WRAPPER_PADDING = 5;
+
+    const width = this.props.width - (WRAPPER_PADDING * 2);
+    const height = this.props.height - HEADER_HEIGHT - 20;
+
     return connectDropTarget(
-      <div className='ListWrapper'>
-        {this.renderList()}
+      <div className='ListWrapper' style={{paddingLeft: WRAPPER_PADDING, paddingRight: WRAPPER_PADDING}}>
+        <div className='ListHeader' style={{height: HEADER_HEIGHT}}>L{this.props.listIndex}</div>
+        {this.renderList({width, height})}
       </div>
     );
   }

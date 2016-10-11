@@ -8,6 +8,7 @@ A Kanban component in React.
 * Drag and drop support for rows
 
 ### TODO
+* Smooth scrolling
 * Dynamic heights
 * Performance (render)
 * Customization
