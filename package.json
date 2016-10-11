@@ -2,6 +2,7 @@
   "name": "react_kanban",
   "version": "0.0.1",
   "private": true,
+  "homepage": "https://edulan.github.io/react-virtual-kanban",
   "devDependencies": {
     "babel-eslint": "^6.1.2",
     "eslint": "^3.5.0",
