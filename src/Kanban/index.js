@@ -40,7 +40,7 @@ class Kanban extends Component {
 
     return (
       <List
-        width={160}
+        width={200}
         height={height}
         listIndex={columnIndex}
         rows={rows}
@@ -58,7 +58,7 @@ class Kanban extends Component {
       <Grid
         width={width}
         height={height}
-        columnWidth={160}
+        columnWidth={200}
         rowHeight={height}
         columnCount={lists.length}
         rowCount={1}

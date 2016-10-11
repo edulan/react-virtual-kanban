@@ -27,7 +27,7 @@ class KanbanDragLayer extends Component {
     case ItemTypes.ROW_TYPE:
       return (
         // TODO: Move me toa RowPreview component
-        <div style={{width: 160, backgroundColor: 'green', transform: 'rotate(-7deg)'}}>
+        <div style={{width: 200, height: 62, transform: 'rotate(4deg)'}}>
           <Row row={item.row} />
         </div>
       );

@@ -13,7 +13,11 @@ class Row extends Component {
     const { name } = row;
 
     return (
-      <div className='Row'>{name}</div>
+      <div className='Row'>
+        <div className='RowContent'>
+          {name}
+        </div>
+      </div>
     );
   }
 }

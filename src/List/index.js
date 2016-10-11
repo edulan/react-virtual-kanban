@@ -86,9 +86,9 @@ class List extends Component {
 }
 
 List.defaultProps = {
-  width: 160,
+  width: 200,
   height: 280,
-  rowHeight: 50,
+  rowHeight: 62,
 };
 
 const connectDrop = DropTarget([LIST_TYPE, ROW_TYPE], listTarget, connect => ({
