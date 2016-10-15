@@ -15,6 +15,7 @@
     "react-scripts": "0.2.3"
   },
   "dependencies": {
+    "chance": "1.0.4",
     "classnames": "2.2.5",
     "react": "15.3.1",
     "react-addons-shallow-compare": "15.3.1",
@@ -22,7 +23,7 @@
     "react-dnd": "2.1.4",
     "react-dnd-html5-backend": "2.1.2",
     "react-dom": "15.3.1",
-    "react-virtualized": "7.20.0"
+    "react-virtualized": "7.24.3"
   },
   "scripts": {
     "start": "react-scripts start",

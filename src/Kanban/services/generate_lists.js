@@ -1,14 +1,26 @@
-function generateRows(count) {
+import Chance from 'chance';
+
+function generateRandom(count) {
+  const chance = new Chance();
+
   return Array.from({length: count}, (_, i) => {
+    const name = chance.sentence({words: Math.ceil(Math.random() * 8)});
+
     return {
-      id: i + 1,
-      name: `R${i + 1}`,
+      id: String(i + 1),
+      name,
     };
   });
 }
 
 export function generateLists(count, rowsPerList) {
-  return generateRows(count * rowsPerList).reduce((memo, row, i) => {
+  let rows;
+
+  console.time('rows generation');
+  rows = generateRandom(count * rowsPerList);
+  console.timeEnd('rows generation');
+
+  return rows.reduce((memo, row, i) => {
     const group = memo[i % count];
 
     if (!group) {

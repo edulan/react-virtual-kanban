@@ -15,7 +15,7 @@ class Row extends Component {
     return (
       <div className='Row'>
         <div className='RowContent'>
-          {name}
+          <p>{name}</p>
         </div>
       </div>
     );

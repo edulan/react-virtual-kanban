@@ -6,6 +6,7 @@ import Kanban from './Kanban';
 
 import Perf from 'react-addons-perf';
 
+import 'react-virtualized/styles.css';
 import './index.css';
 
 window.Perf = Perf;

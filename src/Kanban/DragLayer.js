@@ -22,12 +22,18 @@ function getStyles({ currentOffset }) {
 }
 
 class KanbanDragLayer extends Component {
+  constructor(props) {
+    super(props);
+
+    this.renderRow = this.renderRow.bind(this);
+  }
+
   renderRow(type, item) {
     switch (type) {
     case ItemTypes.ROW_TYPE:
       return (
         // TODO: Move me toa RowPreview component
-        <div style={{width: 200, height: 62, transform: 'rotate(4deg)'}}>
+        <div style={{width: this.props.columnWidth - 14, transform: 'rotate(4deg)'}}>
           <Row row={item.row} />
         </div>
       );

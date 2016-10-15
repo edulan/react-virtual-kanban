@@ -19,12 +19,13 @@ class Kanban extends Component {
     super(props);
 
     this.state = {
-      lists: generateLists(20, 500),
+      lists: generateLists(5, 500),
     };
 
     this.moveRow = this.moveRow.bind(this);
     this.renderList = this.renderList.bind(this);
     this.renderLists = this.renderLists.bind(this);
+    this.renderDragLayer = this.renderDragLayer.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -32,7 +33,7 @@ class Kanban extends Component {
   }
 
   moveRow(from, to) {
-    this.setState({lists: updateLists(this.state.lists, {from, to})});
+    this.setState({lists: updateLists(this.state.lists, {from, to}), from, to});
   }
 
   renderList({ columnIndex, width, height }) {
@@ -51,7 +52,7 @@ class Kanban extends Component {
   }
 
   renderLists() {
-    const { width, height } = this.props;
+    const { width, height, columnWidth } = this.props;
     const { lists } = this.state;
 
     return (
@@ -59,7 +60,7 @@ class Kanban extends Component {
         style={{overflowY: 'hidden'}}
         width={width}
         height={height}
-        columnWidth={200}
+        columnWidth={columnWidth}
         rowHeight={height}
         columnCount={lists.length}
         rowCount={1}
@@ -68,14 +69,27 @@ class Kanban extends Component {
     );
   }
 
+  renderDragLayer() {
+    const { columnWidth } = this.props;
+
+    return (
+      <KanbanDragLayer columnWidth={columnWidth} />
+    );
+  }
+
   render() {
     return (
       <div>
         {this.renderLists()}
-        <KanbanDragLayer />
+        {this.renderDragLayer()}
       </div>
     );
   }
 }
+
+Kanban.defaultProps = {
+  columnWidth: 200,
+};
+
 
 export default DragDropContext(HTML5Backend)(Kanban);

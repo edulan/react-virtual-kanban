@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import { VirtualScroll } from 'react-virtualized';
+import { VirtualScroll, CellMeasurer } from 'react-virtualized';
 import { DropTarget } from 'react-dnd';
 
+import RowSizeCache from '../utils/RowSizeCache';
 import SortableRow from '../SortableRow';
+import Row from '../Row';
 
 import { LIST_TYPE, ROW_TYPE } from '../types';
 
@@ -29,19 +31,42 @@ const listTarget = {
 };
 
 class List extends Component {
+  static propTypes = {
+    width: PropTypes.number,
+    height: PropTypes.number,
+    listIndex: PropTypes.number,
+    rows: PropTypes.array,
+    moveRow: PropTypes.func,
+  };
+
+  static defaultProps = {
+    width: 200,
+    height: 280,
+    rowHeight: 62,
+  };
+
   constructor(props) {
     super(props);
 
     this.renderRow = this.renderRow.bind(this);
+    this.renderRowForMeasure = this.renderRowForMeasure.bind(this);
     this.renderList = this.renderList.bind(this);
   }
 
-  componentDidUpdate({ rows }) {
-    this._list.forceUpdateGrid();
+  componentWillMount() {
+    this._cachedRows = new Map();
+  }
+
+  componentDidUpdate() {
+    this._list.recomputeRowHeights();
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return shallowCompare(this, nextProps, nextState);
+  }
+
+  componentWillUnmount() {
+    this._cachedRows = null;
   }
 
   renderRow({ index }) {
@@ -57,20 +82,42 @@ class List extends Component {
     );
   }
 
-  renderList({ width, height }) {
-    const { rowHeight } = this.props;
+  renderRowForMeasure({ rowIndex: index }) {
+    const row = this.props.rows[index];
 
     return (
-      <VirtualScroll
-        ref={(c) => (this._list = c)}
-        className='List'
+      <div style={{width: this.props.width, overflowY: 'scroll'}}>
+        <div className='RowWrapper'>
+          <Row row={row} />
+        </div>
+      </div>
+    );
+  }
+
+  renderList({ width, height }) {
+    return (
+      <CellMeasurer
         width={width}
-        height={height}
-        rowHeight={rowHeight}
+        columnCount={1}
         rowCount={this.props.rows.length}
-        rowRenderer={this.renderRow}
-        overscanRowCount={2}
-       />
+        cellRenderer={this.renderRowForMeasure}
+        cellSizeCache={new RowSizeCache(this.props.rows, this._cachedRows)}
+      >
+        {({ getRowHeight }) => {
+          return (
+            <VirtualScroll
+              ref={(c) => (this._list = c)}
+              className='List'
+              width={width}
+              height={height}
+              rowHeight={getRowHeight}
+              rowCount={this.props.rows.length}
+              rowRenderer={this.renderRow}
+              overscanRowCount={2}
+             />
+          );
+         }}
+       </CellMeasurer>
     );
   }
 
@@ -78,7 +125,8 @@ class List extends Component {
     const { connectDropTarget } = this.props;
 
     const HEADER_HEIGHT = 30;
-    const WRAPPER_PADDING = 5;
+    // TODO: Review! This creates invalid dimensions when measuring
+    const WRAPPER_PADDING = 0;
 
     const width = this.props.width - (WRAPPER_PADDING * 2);
     const height = this.props.height - HEADER_HEIGHT - 20;
@@ -91,12 +139,6 @@ class List extends Component {
     );
   }
 }
-
-List.defaultProps = {
-  width: 200,
-  height: 280,
-  rowHeight: 62,
-};
 
 const connectDrop = DropTarget([LIST_TYPE, ROW_TYPE], listTarget, connect => ({
   connectDropTarget: connect.dropTarget(),

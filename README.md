@@ -4,12 +4,16 @@ React Kanban
 A Kanban component in React.
 
 ### Features
-* Virtualized lists
+* Virtualized lists and rows
 * Drag and drop support for rows
+
+### In progress
+* Dynamic heights
+  - Fix shadow render dimensions
+  - Invalidate CellMeasurer cacher when swapping rows
 
 ### TODO
 * Smooth scrolling
-* Dynamic heights
 * Performance (render)
 * Customization
 * Doc and examples
