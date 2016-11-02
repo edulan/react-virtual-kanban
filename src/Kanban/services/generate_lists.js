@@ -1,8 +1,8 @@
 import Chance from 'chance';
 
-function generateRandom(count) {
-  const chance = new Chance();
+const chance = new Chance();
 
+function generateRandom(count) {
   return Array.from({length: count}, (_, i) => {
     const name = chance.sentence({words: Math.ceil(Math.random() * 8)});
 
@@ -31,4 +31,8 @@ export function generateLists(count, rowsPerList) {
 
     return memo;
   }, []);
+}
+
+export function generateRandomWord() {
+  return chance.word();
 }

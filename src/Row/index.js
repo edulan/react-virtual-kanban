@@ -3,9 +3,19 @@ import shallowCompare from 'react-addons-shallow-compare';
 
 import './styles/index.css';
 
+function shouldInvalidateRow(props, nextProps) {
+  return props.row.name !== nextProps.row.name;
+}
+
 class Row extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return shallowCompare(this, nextProps, nextState);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (shouldInvalidateRow(this.props, nextProps)) {
+      this.props.invalidateRow(nextProps.index);
+    }
   }
 
   render() {
