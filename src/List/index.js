@@ -7,7 +7,7 @@ import RowSizeCache from '../utils/RowSizeCache';
 import SortableRow from '../SortableRow';
 import Row from '../Row';
 
-import { LIST_TYPE, ROW_TYPE } from '../types';
+import { ROW_TYPE } from '../types';
 
 import './styles/index.css';
 
@@ -48,6 +48,7 @@ class List extends Component {
   constructor(props) {
     super(props);
 
+    this.onScroll = this.onScroll.bind(this);
     this.renderRow = this.renderRow.bind(this);
     this.renderRowForMeasure = this.renderRowForMeasure.bind(this);
     this.renderList = this.renderList.bind(this);
@@ -69,6 +70,10 @@ class List extends Component {
     this._cachedRows = null;
   }
 
+  onScroll({ scrollTop }) {
+    // console.log(`scrolling...`, scrollTop);
+  }
+
   renderRow({ index }) {
     const row = this.props.rows[index];
 
@@ -78,6 +83,7 @@ class List extends Component {
         listIndex={this.props.listIndex}
         row={row}
         moveRow={this.props.moveRow}
+        stopScrolling={this.props.stopScrolling}
       />
     );
   }
@@ -114,6 +120,7 @@ class List extends Component {
               rowCount={this.props.rows.length}
               rowRenderer={this.renderRow}
               overscanRowCount={2}
+              onScroll={this.onScroll}
              />
           );
          }}
@@ -129,7 +136,7 @@ class List extends Component {
     const WRAPPER_PADDING = 0;
 
     const width = this.props.width - (WRAPPER_PADDING * 2);
-    const height = this.props.height - HEADER_HEIGHT - 20;
+    const height = this.props.height - HEADER_HEIGHT - 10;
 
     return connectDropTarget(
       <div className='ListWrapper' style={{paddingLeft: WRAPPER_PADDING, paddingRight: WRAPPER_PADDING}}>
@@ -140,7 +147,7 @@ class List extends Component {
   }
 }
 
-const connectDrop = DropTarget([LIST_TYPE, ROW_TYPE], listTarget, connect => ({
+const connectDrop = DropTarget(ROW_TYPE, listTarget, connect => ({
   connectDropTarget: connect.dropTarget(),
 }))
 

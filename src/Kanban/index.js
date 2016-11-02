@@ -2,30 +2,43 @@ import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import { Grid } from 'react-virtualized';
 
-import KanbanDragLayer from './DragLayer';
+import ListsContainer from './ListsContainer';
 
 import { updateLists } from './services/update_lists';
 import { generateLists } from './services/generate_lists';
 
-import 'react-virtualized/styles.css';
-import './styles/index.css';
+// TODO: Calculate in hover callback
+function calculateInc(delta, width) {
+  const threshold = width - delta;
 
-import List from '../List';
+  if (threshold < width * 0.25) return 50;
+  if (threshold < width * 0.5) return 20;
+  if (threshold < width) return 10;
+
+  return 0;
+}
 
 class Kanban extends Component {
+  static defaultProps = {
+    columnWidth: 200,
+  };
+
   constructor(props) {
     super(props);
 
     this.state = {
-      lists: generateLists(5, 500),
+      scrollLeft: 0,
+      isScrolling: false,
+      lists: generateLists(25, 50),
     };
 
     this.moveRow = this.moveRow.bind(this);
-    this.renderList = this.renderList.bind(this);
-    this.renderLists = this.renderLists.bind(this);
-    this.renderDragLayer = this.renderDragLayer.bind(this);
+    this.scrollToLeft = this.scrollToLeft.bind(this);
+    this.scrollToRight = this.scrollToRight.bind(this);
+    this.scrollToTop = this.scrollToTop.bind(this);
+    this.scrollToBottom = this.scrollToBottom.bind(this);
+    this.stopScrolling = this.stopScrolling.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -36,60 +49,72 @@ class Kanban extends Component {
     this.setState({lists: updateLists(this.state.lists, {from, to}), from, to});
   }
 
-  renderList({ columnIndex, width, height }) {
-    const rows = this.state.lists[columnIndex];
+  scrollToLeft(delta) {
+    const inc = calculateInc(delta, this.props.columnWidth);
+    // console.log(`scrollToLeft`);
 
-    return (
-      <List
-        width={200}
-        height={height}
-        listIndex={columnIndex}
-        rows={rows}
-        moveRow={this.moveRow}
-      />
-    );
-
+    this.setState({isScrolling: true}, () => {
+      this._scrollInterval = setInterval(() => this.updateScroll(-inc), 100);
+    });
   }
 
-  renderLists() {
-    const { width, height, columnWidth } = this.props;
-    const { lists } = this.state;
+  scrollToRight(delta) {
+    const inc = calculateInc(delta, this.props.columnWidth);
+    // console.log(`scrollToRight`);
 
-    return (
-      <Grid
-        style={{overflowY: 'hidden'}}
-        width={width}
-        height={height}
-        columnWidth={columnWidth}
-        rowHeight={height}
-        columnCount={lists.length}
-        rowCount={1}
-        cellRenderer={({ columnIndex }) => this.renderList({columnIndex, width, height})}
-      />
-    );
+    this.setState({isScrolling: true}, () => {
+      this._scrollInterval = setInterval(() => this.updateScroll(inc), 10);
+    });
   }
 
-  renderDragLayer() {
-    const { columnWidth } = this.props;
+  scrollToTop() {
+    // console.log(`scrollToTop`);
+    this.setState({isScrolling: true});
+  }
 
-    return (
-      <KanbanDragLayer columnWidth={columnWidth} />
-    );
+  scrollToBottom() {
+    // console.log(`scrollToBottom`);
+    this.setState({isScrolling: true});
+  }
+
+  updateScroll(inc) {
+    // console.log(`updating scroll...`, inc);
+    this.setState((state) => ({scrollLeft: state.scrollLeft + inc}));
+  }
+
+  stopScrolling() {
+    if (!this.state.isScrolling) return;
+
+    // console.log(`stop scrolling...`);
+    this.setState({isScrolling: false}, () => {
+      if (!this._scrollInterval) return;
+
+      clearInterval(this._scrollInterval);
+      this._scrollInterval = null;
+    });
   }
 
   render() {
+    const { width, height, columnWidth } = this.props;
+    const { scrollLeft, isScrolling, lists } = this.state;
+
     return (
-      <div>
-        {this.renderLists()}
-        {this.renderDragLayer()}
-      </div>
+      <ListsContainer
+        width={width}
+        height={height}
+        columnWidth={columnWidth}
+        lists={lists}
+        isScrolling={isScrolling}
+        scrollLeft={scrollLeft}
+        scrollToLeft={this.scrollToLeft}
+        scrollToRight={this.scrollToRight}
+        scrollToTop={this.scrollToTop}
+        scrollToBottom={this.scrollToBottom}
+        stopScrolling={this.stopScrolling}
+        moveRow={this.moveRow}
+      />
     );
   }
 }
-
-Kanban.defaultProps = {
-  columnWidth: 200,
-};
-
 
 export default DragDropContext(HTML5Backend)(Kanban);

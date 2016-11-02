@@ -20,6 +20,11 @@ const rowSource = {
     };
   },
 
+  endDrag(props) {
+    // TODO: Grab from context
+    props.stopScrolling();
+  },
+
   // TODO: Review
   isDragging({ row }, monitor) {
      const draggingRow = monitor.getItem().row;
