@@ -5,10 +5,12 @@ function generateRandom(count) {
 
   return Array.from({length: count}, (_, i) => {
     const name = chance.sentence({words: Math.ceil(Math.random() * 8)});
+    const realtime = Math.ceil(Math.random() * 5) === 1;
 
     return {
       id: String(i + 1),
       name,
+      realtime,
     };
   });
 }
