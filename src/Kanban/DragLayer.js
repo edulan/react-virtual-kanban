@@ -28,13 +28,15 @@ class KanbanDragLayer extends Component {
     this.renderRow = this.renderRow.bind(this);
   }
 
-  renderRow(type, item) {
+  renderRow(type, item, lists) {
+    const { listIndex, index } = item;
+
     switch (type) {
     case ItemTypes.ROW_TYPE:
       return (
         // TODO: Move me toa RowPreview component
         <div style={{width: this.props.columnWidth - 14, transform: 'rotate(4deg)'}}>
-          <Row row={item.row} />
+          <Row row={lists[listIndex][index]} invalidateRow={() => {}} />
         </div>
       );
     default:
@@ -43,7 +45,7 @@ class KanbanDragLayer extends Component {
   }
 
   render() {
-    const { item, itemType, isDragging } = this.props;
+    const { item, itemType, isDragging, lists } = this.props;
 
     if (!isDragging) {
       return null;
@@ -52,7 +54,7 @@ class KanbanDragLayer extends Component {
     return (
       <div className='DragLayer'>
         <div style={getStyles(this.props)}>
-          {this.renderRow(itemType, item)}
+          {this.renderRow(itemType, item, lists)}
         </div>
       </div>
     );

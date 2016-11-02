@@ -20,7 +20,6 @@ const rowSource = {
     };
   },
 
-  // TODO: Review
   isDragging({ row }, monitor) {
      const draggingRow = monitor.getItem().row;
 

@@ -78,6 +78,7 @@ class List extends Component {
         listIndex={this.props.listIndex}
         row={row}
         moveRow={this.props.moveRow}
+        invalidateRow={this.resetMeasurementForRow}
       />
     );
   }
@@ -103,7 +104,9 @@ class List extends Component {
         cellRenderer={this.renderRowForMeasure}
         cellSizeCache={new RowSizeCache(this.props.rows, this._cachedRows)}
       >
-        {({ getRowHeight }) => {
+        {({ getRowHeight, resetMeasurementForRow }) => {
+          this.resetMeasurementForRow = resetMeasurementForRow;
+
           return (
             <VirtualScroll
               ref={(c) => (this._list = c)}

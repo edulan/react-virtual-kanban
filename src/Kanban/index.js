@@ -7,7 +7,8 @@ import { Grid } from 'react-virtualized';
 import KanbanDragLayer from './DragLayer';
 
 import { updateLists } from './services/update_lists';
-import { generateLists } from './services/generate_lists';
+import { updateRow } from './services/update_row';
+import { generateLists, generateRandomWord } from './services/generate_lists';
 
 import 'react-virtualized/styles.css';
 import './styles/index.css';
@@ -19,13 +20,26 @@ class Kanban extends Component {
     super(props);
 
     this.state = {
-      lists: generateLists(5, 500),
+      lists: generateLists(20, 20),
     };
 
     this.moveRow = this.moveRow.bind(this);
+    this.updateRow = this.updateRow.bind(this);
     this.renderList = this.renderList.bind(this);
     this.renderLists = this.renderLists.bind(this);
     this.renderDragLayer = this.renderDragLayer.bind(this);
+  }
+
+  componentDidMount() {
+    setInterval(() => {
+      const { lists } = this.state;
+      const randomListIndex = Math.floor(Math.random() * 50) % lists.length;
+      const randomList = lists[randomListIndex];
+      const randomRowIndex = Math.floor(Math.random() * 10) % randomList.length;
+      const randomRow = randomList[randomRowIndex];
+
+      this.updateRow(randomListIndex, randomRowIndex, {...randomRow, name: `${randomRow.name} ${generateRandomWord()}`});
+    }, 50);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -34,6 +48,10 @@ class Kanban extends Component {
 
   moveRow(from, to) {
     this.setState({lists: updateLists(this.state.lists, {from, to}), from, to});
+  }
+
+  updateRow(listIndex, rowIndex, row) {
+    this.setState({lists: updateRow(this.state.lists, listIndex, rowIndex, row)});
   }
 
   renderList({ columnIndex, width, height }) {
@@ -73,13 +91,15 @@ class Kanban extends Component {
     const { columnWidth } = this.props;
 
     return (
-      <KanbanDragLayer columnWidth={columnWidth} />
+      <KanbanDragLayer columnWidth={columnWidth} lists={this.state.lists} />
     );
   }
 
   render() {
+    const { width, height } = this.props;
+
     return (
-      <div>
+      <div style={{width, height}}>
         {this.renderLists()}
         {this.renderDragLayer()}
       </div>

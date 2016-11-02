@@ -6,9 +6,9 @@ body {
 }
 
 .KanbanWrapper {
-  width: 1000px;
-  height: 600px;
-  margin-top: 20px;
-  margin-left: auto;
-  margin-right: auto;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
 }
