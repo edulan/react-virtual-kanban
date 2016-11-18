@@ -7,7 +7,7 @@ function generateRandom(count) {
     const name = chance.sentence({words: Math.ceil(Math.random() * 8)});
 
     return {
-      id: String(i + 1),
+      id: `r${i}`,
       name,
     };
   });
@@ -18,17 +18,20 @@ export function generateLists(count, rowsPerList) {
 
   console.time('rows generation');
   rows = generateRandom(count * rowsPerList);
-  console.timeEnd('rows generation');
 
-  return rows.reduce((memo, row, i) => {
-    const group = memo[i % count];
+  const lists = rows.reduce((memo, row, i) => {
+    let group = memo[i % count];
 
     if (!group) {
-      memo[i % count] = [row];
-    } else {
-      group.push(row);
+      group = memo[i % count] = {id: `l${i}`, rows: []};
     }
+
+    group.rows.push(row);
 
     return memo;
   }, []);
+
+  console.timeEnd('rows generation');
+
+  return lists;
 }
