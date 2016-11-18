@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { DragLayer } from 'react-dnd';
 
 import Row from '../Row';
+import ListPreview from '../ListPreview';
 import * as ItemTypes from '../types';
 
 import './styles/index.css';
@@ -25,16 +26,22 @@ class KanbanDragLayer extends Component {
   constructor(props) {
     super(props);
 
-    this.renderRow = this.renderRow.bind(this);
+    this.renderItem = this.renderItem.bind(this);
   }
 
-  renderRow(type, item) {
+  renderItem(type, item) {
     switch (type) {
     case ItemTypes.ROW_TYPE:
       return (
         // TODO: Move me toa RowPreview component
-        <div style={{width: this.props.columnWidth - 14, transform: 'rotate(4deg)'}}>
+        <div className='RowPreviewWrapper' style={{width: this.props.columnWidth - 14}}>
           <Row row={item.row} />
+        </div>
+      );
+    case ItemTypes.LIST_TYPE:
+      return (
+        <div className='ListPreviewWrapper' style={{width: 200}}>
+          <ListPreview listId={item.listId} />
         </div>
       );
     default:
@@ -52,7 +59,7 @@ class KanbanDragLayer extends Component {
     return (
       <div className='DragLayer'>
         <div style={getStyles(this.props)}>
-          {this.renderRow(itemType, item)}
+          {this.renderItem(itemType, item)}
         </div>
       </div>
     );
