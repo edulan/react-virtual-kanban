@@ -1,8 +1,3 @@
-.List {
-  outline: none;
-  background-color: #e6e6e6;
-}
-
 .ListHeader {
   background-color: #e6e6e6;
   padding: 9px 6px 3px 6px;
@@ -15,9 +10,4 @@
   height: 100%;
   box-sizing: border-box;
   color: #4d4d4d;
-}
-
-.ListWrapperPlaceholder {
-  color: #c4c9cc;
-  background-color: #c4c9cc;
 }

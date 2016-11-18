@@ -20,31 +20,49 @@ function buildUpdateOperation(list, { from, to }) {
 }
 
 export function updateLists(lists, { from, to }) {
-  const { dragIndex, dragListIndex } = from;
-  const { hoverIndex, hoverListIndex } = to;
+  const { dragIndex = -1, dragListIndex } = from;
+  const { hoverIndex = -1, hoverListIndex } = to;
 
+  // Move lists
+  if (dragListIndex !== hoverListIndex && dragIndex === -1 && hoverIndex === -1) {
+    return update(lists, {
+      $splice: [
+        [dragListIndex, 1],
+        [hoverListIndex, 0, lists[dragListIndex]],
+      ]
+    });
+  }
+
+  // Move rows between different lists
   if (dragListIndex !== hoverListIndex) {
     return update(lists, {
       // Remove row from source list
       [dragListIndex]: {
-        $splice: [
-          [dragIndex, 1],
-        ]
+        rows: {
+          $splice: [
+            [dragIndex, 1],
+          ]
+        }
       },
       // Add row to target list
       [hoverListIndex]: {
-        $splice: [
-          [hoverIndex, 0, lists[dragListIndex][dragIndex]]
-        ]
+        rows: {
+          $splice: [
+            [hoverIndex, 0, lists[dragListIndex].rows[dragIndex]]
+          ]
+        }
       },
     });
   }
 
+  // Move rows inside same list
   return update(lists, {
     [dragListIndex]: {
-      $splice: [
-        buildUpdateOperation(lists[dragListIndex], {from: dragIndex, to: hoverIndex})
-      ]
+      rows: {
+        $splice: [
+          buildUpdateOperation(lists[dragListIndex].rows, {from: dragIndex, to: hoverIndex})
+        ]
+      }
     }
   });
 }

@@ -91,13 +91,13 @@ class SortableRow extends Component {
   render() {
     const { isDragging, connectDragSource, connectDropTarget, ...rowProps } = this.props;
 
-    const classes = classnames({
+    const className = classnames({
       RowWrapper: true,
-      RowWrapperDragging: isDragging,
+      RowWrapperPlaceholder: isDragging,
     });
 
     return connectDragSource(connectDropTarget(
-      <div className={classes}>
+      <div className={className}>
         <Row {...rowProps} />
       </div>
     ));

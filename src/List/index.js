@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { VirtualScroll, CellMeasurer } from 'react-virtualized';
-import { DropTarget } from 'react-dnd';
+import { DragSource, DropTarget } from 'react-dnd';
+import { getEmptyImage } from 'react-dnd-html5-backend';
 
 import RowSizeCache from '../utils/RowSizeCache';
 import SortableRow from '../SortableRow';
@@ -11,22 +12,63 @@ import { LIST_TYPE, ROW_TYPE } from '../types';
 
 import './styles/index.css';
 
+const listSource = {
+  beginDrag(props) {
+    return {
+      listId: props.listId,
+      listIndex: props.listIndex,
+    };
+  },
+
+  isDragging({ listId }, monitor) {
+    const draggingListId = monitor.getItem().listId;
+
+    return listId === draggingListId;
+  },
+};
+
 const listTarget = {
   hover(props, monitor) {
     if (!monitor.canDrop()) return;
 
-    const { index: dragIndex, listIndex: dragListIndex } = monitor.getItem();
-    const hoverIndex = 0;
-    const hoverListIndex = props.listIndex;
+    const item = monitor.getItem();
+    const itemType = monitor.getItemType();
 
-    props.moveRow({dragIndex, dragListIndex}, {hoverIndex, hoverListIndex});
+    if (itemType === LIST_TYPE) {
+      const dragListIndex = item.listIndex;
+      const hoverListIndex = props.listIndex;
 
-    monitor.getItem().index = hoverIndex;
-    monitor.getItem().listIndex = hoverListIndex;
+      props.moveList({dragListIndex}, {hoverListIndex});
+
+      // TODO: Review
+      item.listIndex = hoverListIndex;
+      return;
+    }
+
+    if (itemType === ROW_TYPE) {
+      const { index: dragIndex, listIndex: dragListIndex } = item;
+      const hoverIndex = 0;
+      const hoverListIndex = props.listIndex;
+
+      props.moveRow({dragIndex, dragListIndex}, {hoverIndex, hoverListIndex});
+
+      item.index = hoverIndex;
+      item.listIndex = hoverListIndex;
+      return;
+    }
   },
 
-  canDrop(props) {
-    return props.rows.length === 0;
+  canDrop(props, monitor) {
+    const item = monitor.getItem();
+    const itemType = monitor.getItemType();
+
+    if (itemType === LIST_TYPE) {
+      return item.listIndex !== props.listIndex;
+    }
+
+    if (itemType === ROW_TYPE) {
+      return props.rows.length === 0;
+    }
   }
 };
 
@@ -57,7 +99,15 @@ class List extends Component {
     this._cachedRows = new Map();
   }
 
+  componentDidMount() {
+    this.props.connectDragPreview(getEmptyImage(), {
+      captureDraggingState: true
+    });
+  }
+
   componentDidUpdate() {
+    if (!this._list) return;
+
     this._list.recomputeRowHeights();
   }
 
@@ -122,7 +172,7 @@ class List extends Component {
   }
 
   render() {
-    const { connectDropTarget } = this.props;
+    const { listId, isDragging, connectDragSource, connectDropTarget } = this.props;
 
     const HEADER_HEIGHT = 30;
     // TODO: Review! This creates invalid dimensions when measuring
@@ -131,12 +181,18 @@ class List extends Component {
     const width = this.props.width - (WRAPPER_PADDING * 2);
     const height = this.props.height - HEADER_HEIGHT - 20;
 
-    return connectDropTarget(
+    if (isDragging) {
+      return (
+        <div className='ListWrapper ListWrapperPlaceholder'></div>
+      );
+    }
+
+    return connectDragSource(connectDropTarget(
       <div className='ListWrapper' style={{paddingLeft: WRAPPER_PADDING, paddingRight: WRAPPER_PADDING}}>
-        <div className='ListHeader' style={{height: HEADER_HEIGHT}}>L{this.props.listIndex}</div>
+        <div className='ListHeader' style={{height: HEADER_HEIGHT}}>{this.props.listId}</div>
         {this.renderList({width, height})}
       </div>
-    );
+    ));
   }
 }
 
@@ -144,4 +200,10 @@ const connectDrop = DropTarget([LIST_TYPE, ROW_TYPE], listTarget, connect => ({
   connectDropTarget: connect.dropTarget(),
 }))
 
-export default connectDrop(List);
+const connectDrag = DragSource(LIST_TYPE, listSource, (connect, monitor) => ({
+  connectDragSource: connect.dragSource(),
+  connectDragPreview: connect.dragPreview(),
+  isDragging: monitor.isDragging(),
+}))
+
+export default connectDrop(connectDrag(List));

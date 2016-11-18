@@ -3,7 +3,7 @@
   height: 100%;
 }
 
-.RowWrapperDragging .RowContent {
+.RowWrapperPlaceholder .RowContent {
   box-sizing: border-box;
   background-color: #c4c9cc;
   color: #c4c9cc;
