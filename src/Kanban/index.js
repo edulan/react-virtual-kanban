@@ -3,6 +3,7 @@ import shallowCompare from 'react-addons-shallow-compare';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { Grid } from 'react-virtualized';
+import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 
 import KanbanDragLayer from '../DragLayer';
 
@@ -36,6 +37,11 @@ class Kanban extends Component {
     return shallowCompare(this, nextProps, nextState);
   }
 
+  componentDidUpdate(_, prevState) {
+    if (prevState.lists === this.state.lists) return;
+    this._grid.forceUpdate();
+  }
+
   moveRow(from, to) {
     this.setState({lists: updateLists(this.state.lists, {from, to}), from, to});
   }
@@ -44,13 +50,12 @@ class Kanban extends Component {
     this.setState({lists: updateLists(this.state.lists, {from, to}), from, to});
   }
 
-  renderList({ columnIndex, width, height }) {
+  renderList({ columnIndex }) {
     const { id, rows } = this.state.lists[columnIndex];
 
+    // TODO: Select which component should be rendered (Draggable or ReadOnly list)
     return (
       <List
-        width={200}
-        height={height}
         listId={id}
         listIndex={columnIndex}
         rows={rows}
@@ -67,13 +72,15 @@ class Kanban extends Component {
 
     return (
       <Grid
+        ref={(c) => (this._grid = c)}
         width={width}
         height={height}
         columnWidth={columnWidth}
-        rowHeight={height}
+        rowHeight={height - scrollbarSize()}
         columnCount={lists.length}
         rowCount={1}
-        cellRenderer={({ columnIndex }) => this.renderList({columnIndex, width, height})}
+        cellRenderer={this.renderList}
+        overscanColumnCount={5}
       />
     );
   }

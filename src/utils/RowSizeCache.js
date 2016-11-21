@@ -1,5 +1,8 @@
+// Poor man's cache singleton. Delete me ASAP!!!
+const cachedRows = new Map();
+
 class RowSizeCache {
-  constructor(rows, backend) {
+  constructor(rows, backend = cachedRows) {
     this.rows = rows;
     this.backend = backend;
   }

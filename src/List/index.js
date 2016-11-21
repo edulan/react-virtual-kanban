@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import { VirtualScroll, CellMeasurer } from 'react-virtualized';
+import { VirtualScroll, CellMeasurer, AutoSizer } from 'react-virtualized';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 
@@ -95,28 +95,20 @@ class List extends Component {
     this.renderList = this.renderList.bind(this);
   }
 
-  componentWillMount() {
-    this._cachedRows = new Map();
-  }
-
   componentDidMount() {
     this.props.connectDragPreview(getEmptyImage(), {
       captureDraggingState: true
     });
   }
 
-  componentDidUpdate() {
-    if (!this._list) return;
-
+  componentDidUpdate(prevProps) {
+    if(this.props.isDragging) return;
+    if (prevProps.rows === this.props.rows) return;
     this._list.recomputeRowHeights();
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return shallowCompare(this, nextProps, nextState);
-  }
-
-  componentWillUnmount() {
-    this._cachedRows = null;
   }
 
   renderRow({ index }) {
@@ -144,53 +136,57 @@ class List extends Component {
     );
   }
 
-  renderList({ width, height }) {
+  renderList() {
     return (
-      <CellMeasurer
-        width={width}
-        columnCount={1}
-        rowCount={this.props.rows.length}
-        cellRenderer={this.renderRowForMeasure}
-        cellSizeCache={new RowSizeCache(this.props.rows, this._cachedRows)}
-      >
-        {({ getRowHeight }) => {
-          return (
-            <VirtualScroll
-              ref={(c) => (this._list = c)}
-              className='List'
-              width={width}
-              height={height}
-              rowHeight={getRowHeight}
-              rowCount={this.props.rows.length}
-              rowRenderer={this.renderRow}
-              overscanRowCount={2}
-             />
-          );
-         }}
-       </CellMeasurer>
+      <AutoSizer>
+        {({ width, height }) => (
+          <CellMeasurer
+            width={width}
+            columnCount={1}
+            rowCount={this.props.rows.length}
+            cellRenderer={this.renderRowForMeasure}
+            cellSizeCache={new RowSizeCache(this.props.rows)}
+          >
+            {({ getRowHeight }) => (
+              <VirtualScroll
+                ref={(c) => (this._list = c)}
+                className='List'
+                width={width}
+                height={height}
+                rowHeight={getRowHeight}
+                rowCount={this.props.rows.length}
+                rowRenderer={this.renderRow}
+                overscanRowCount={2}
+               />
+             )}
+          </CellMeasurer>
+        )}
+      </AutoSizer>
     );
   }
 
   render() {
     const { listId, isDragging, connectDragSource, connectDropTarget } = this.props;
 
-    const HEADER_HEIGHT = 30;
-    // TODO: Review! This creates invalid dimensions when measuring
-    const WRAPPER_PADDING = 0;
-
-    const width = this.props.width - (WRAPPER_PADDING * 2);
-    const height = this.props.height - HEADER_HEIGHT - 20;
-
     if (isDragging) {
       return (
-        <div className='ListWrapper ListWrapperPlaceholder'></div>
+        <div className='ListWrapper'>
+          <div className='ListWrapperPlaceholder'/>
+        </div>
       );
     }
 
     return connectDragSource(connectDropTarget(
-      <div className='ListWrapper' style={{paddingLeft: WRAPPER_PADDING, paddingRight: WRAPPER_PADDING}}>
-        <div className='ListHeader' style={{height: HEADER_HEIGHT}}>{this.props.listId}</div>
-        {this.renderList({width, height})}
+      <div className='ListWrapper'>
+        <div className='ListHeader'>
+          <div className='ListTitle'>{listId}</div>
+          <div className='ListActions'>
+            <a className='ListActionItem' href='#'>Add a task</a>
+          </div>
+        </div>
+        <div className='ListContainer'>
+          {this.renderList()}
+        </div>
       </div>
     ));
   }

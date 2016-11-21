@@ -12,7 +12,7 @@ import './index.css';
 
 window.Perf = Perf;
 
-const lists = generateLists(5, 20);
+const lists = generateLists(50, 7);
 
 ReactDOM.render(
   <div className='KanbanWrapper'>
