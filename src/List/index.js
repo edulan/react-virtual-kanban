@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import { VirtualScroll, CellMeasurer, AutoSizer } from 'react-virtualized';
+import { List as VirtualScroll, CellMeasurer, AutoSizer } from 'react-virtualized';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 
@@ -111,11 +111,13 @@ class List extends Component {
     return shallowCompare(this, nextProps, nextState);
   }
 
-  renderRow({ index }) {
+  renderRow({ index, key, style }) {
     const row = this.props.rows[index];
 
     return (
       <SortableRow
+        key={key}
+        rowStyle={style}
         index={index}
         listIndex={this.props.listIndex}
         row={row}
@@ -166,29 +168,19 @@ class List extends Component {
   }
 
   render() {
-    const { listId, isDragging, connectDragSource, connectDropTarget } = this.props;
+    const { listId, listComponent: DecoratedList, isDragging, connectDragSource, connectDropTarget, style } = this.props;
 
-    if (isDragging) {
-      return (
-        <div className='ListWrapper'>
-          <div className='ListWrapperPlaceholder'/>
-        </div>
-      );
-    }
-
-    return connectDragSource(connectDropTarget(
-      <div className='ListWrapper'>
-        <div className='ListHeader'>
-          <div className='ListTitle'>{listId}</div>
-          <div className='ListActions'>
-            <a className='ListActionItem' href='#'>Add a task</a>
-          </div>
-        </div>
-        <div className='ListContainer'>
-          {this.renderList()}
-        </div>
-      </div>
-    ));
+    return (
+      <DecoratedList
+        listId={listId}
+        style={style}
+        isDragging={isDragging}
+        connectDragSource={connectDragSource}
+        connectDropTarget={connectDropTarget}
+      >
+        {this.renderList()}
+      </DecoratedList>
+    );
   }
 }
 

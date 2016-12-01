@@ -1,18 +1,50 @@
 .ListWrapper {
-  display: flex;
-  flex-direction: column;
+  padding: 0 4px 8px 4px;
+  margin: 0 4px;
   box-sizing: border-box;
-  color: #4d4d4d;
-  height: 100%;
-}
-
-.ListHeader {
-  padding: 9px 6px 3px 6px;
-  background-color: #e6e6e6;
+  position: relative;
 }
 
 .ListContainer {
-  flex: 1;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  color: #4d4d4d;
+  background-color: #e6e6e6;
+  height: 100%;
+  align-items: stretch;
+}
+
+.ListPlaceholder {
+  background-color: rgba(0, 0, 0, .2);
+}
+
+.ListPlaceholder .ListHeader,
+.ListPlaceholder .ListContent,
+.ListPlaceholder .ListFooter {
+  opacity: 0;
+}
+
+.ListHeader {
+  padding: 8px 10px;
+  flex: 0 1 10px;
+  /*flex-shrink: 0;
+  flex-basis: auto;*/
+}
+
+.ListContent {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
+  margin: 0 4px;
+  padding: 0 4px;
+}
+
+.ListFooter {
+  flex: 0 1 auto;
+  /*flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: auto;*/
 }
 
 .ListTitle {
@@ -21,21 +53,20 @@
 }
 
 .ListActions {
-  min-height: 20px;
+  padding: 8px 10px;
   display: flex;
   align-items: center;
 }
 
 .ListActionItem {
-  align-self: center;
+  background: none;
+  border: medium none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #8c8c8c;
 }
 
 .List {
   outline: none;
   background-color: #e6e6e6;
-}
-
-.ListPlaceholder {
-  color: #c4c9cc;
-  background-color: #c4c9cc;
 }

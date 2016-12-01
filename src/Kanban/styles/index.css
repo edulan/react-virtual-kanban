@@ -4,6 +4,10 @@
   top: 0;
 }
 
+.KanbanGrid {
+  outline: none;
+}
+
 .DragLayer {
   position: fixed;
   pointer-events: none;

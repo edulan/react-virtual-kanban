@@ -16,7 +16,7 @@ import List from '../List';
 
 class Kanban extends Component {
   static defaultProps = {
-    columnWidth: 200,
+    columnWidth: 270,
   }
 
   constructor(props) {
@@ -50,14 +50,17 @@ class Kanban extends Component {
     this.setState({lists: updateLists(this.state.lists, {from, to}), from, to});
   }
 
-  renderList({ columnIndex }) {
+  renderList({ columnIndex, key, style }) {
     const { id, rows } = this.state.lists[columnIndex];
 
     // TODO: Select which component should be rendered (Draggable or ReadOnly list)
     return (
       <List
+        key={key}
+        style={style}
         listId={id}
         listIndex={columnIndex}
+        listComponent={this.props.listComponent}
         rows={rows}
         moveRow={this.moveRow}
         moveList={this.moveList}
@@ -72,6 +75,7 @@ class Kanban extends Component {
 
     return (
       <Grid
+        className='KanbanGrid'
         ref={(c) => (this._grid = c)}
         width={width}
         height={height}

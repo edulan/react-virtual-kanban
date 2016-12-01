@@ -1,13 +1,6 @@
-.ListHeader {
+.ListPreviewHeader {
   background-color: #e6e6e6;
   padding: 9px 6px 3px 6px;
   box-sizing: border-box;
   font-weight: bold;
-}
-
-.ListWrapper {
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  color: #4d4d4d;
 }

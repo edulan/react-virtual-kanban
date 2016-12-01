@@ -89,7 +89,7 @@ class SortableRow extends Component {
   }
 
   render() {
-    const { isDragging, connectDragSource, connectDropTarget, ...rowProps } = this.props;
+    const { isDragging, connectDragSource, connectDropTarget, rowStyle, ...rowProps } = this.props;
 
     const className = classnames({
       RowWrapper: true,
@@ -97,7 +97,7 @@ class SortableRow extends Component {
     });
 
     return connectDragSource(connectDropTarget(
-      <div className={className}>
+      <div className={className} style={rowStyle}>
         <Row {...rowProps} />
       </div>
     ));
