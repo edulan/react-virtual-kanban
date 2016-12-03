@@ -4,11 +4,3 @@ body {
   font-family: sans-serif;
   background-color: #21a5b8;
 }
-
-.KanbanWrapper {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-}

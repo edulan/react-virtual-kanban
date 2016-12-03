@@ -18,7 +18,7 @@ class List extends Component {
     rows: PropTypes.array,
     width: PropTypes.number,
     height: PropTypes.number,
-    listId: PropTypes.number,
+    listId: PropTypes.string,
     listIndex: PropTypes.number,
     listComponent: PropTypes.func,
     itemComponent: PropTypes.func,
