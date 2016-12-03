@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -6,6 +6,10 @@ import { Grid } from 'react-virtualized';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 
 import KanbanDragLayer from '../DragLayer';
+import defaultItemComponent from '../decorators/Item';
+import defaultListComponent from '../decorators/List';
+import defaultItemPreviewComponent from '../decorators/ItemPreview';
+import defaultListPreviewComponent from '../decorators/ListPreview';
 
 import { updateLists } from './services/update_lists';
 
@@ -15,8 +19,24 @@ import './styles/index.css';
 import List from '../List';
 
 class Kanban extends Component {
+  static propTypes = {
+    lists: PropTypes.array,
+    width: PropTypes.number,
+    listWidth: PropTypes.number,
+    height: PropTypes.number,
+    listComponent: PropTypes.func,
+    itemComponent: PropTypes.func,
+    onMoveRow: PropTypes.func,
+    onMoveList: PropTypes.func,
+  }
+
   static defaultProps = {
-    columnWidth: 270,
+    itemComponent: defaultItemComponent,
+    listComponent: defaultListComponent,
+    itemPreviewComponent: defaultItemPreviewComponent,
+    listPreviewComponent: defaultListPreviewComponent,
+    onMoveRow: () => {},
+    onMoveList: () => {},
   }
 
   constructor(props) {
@@ -29,8 +49,6 @@ class Kanban extends Component {
     this.moveRow = this.moveRow.bind(this);
     this.moveList = this.moveList.bind(this);
     this.renderList = this.renderList.bind(this);
-    this.renderLists = this.renderLists.bind(this);
-    this.renderDragLayer = this.renderDragLayer.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -43,17 +61,24 @@ class Kanban extends Component {
   }
 
   moveRow(from, to) {
-    this.setState({lists: updateLists(this.state.lists, {from, to}), from, to});
+    this.setState(
+      {lists: updateLists(this.state.lists, {from, to}), from, to},
+      () => this.props.onMoveRow(from, to),
+    );
   }
 
   moveList(from, to) {
-    this.setState({lists: updateLists(this.state.lists, {from, to}), from, to});
+    this.setState(
+      {lists: updateLists(this.state.lists, {from, to}), from, to},
+      () => this.props.onMoveList(from, to),
+    );
   }
 
   renderList({ columnIndex, key, style }) {
     const { id, rows } = this.state.lists[columnIndex];
 
     // TODO: Select which component should be rendered (Draggable or ReadOnly list)
+    // TODO: Create a SortableList component
     return (
       <List
         key={key}
@@ -61,6 +86,7 @@ class Kanban extends Component {
         listId={id}
         listIndex={columnIndex}
         listComponent={this.props.listComponent}
+        itemComponent={this.props.itemComponent}
         rows={rows}
         moveRow={this.moveRow}
         moveList={this.moveList}
@@ -69,42 +95,28 @@ class Kanban extends Component {
 
   }
 
-  renderLists() {
-    const { width, height, columnWidth } = this.props;
+  render() {
+    const { width, height, listWidth, itemPreviewComponent, listPreviewComponent } = this.props;
     const { lists } = this.state;
 
     return (
-      <Grid
-        className='KanbanGrid'
-        ref={(c) => (this._grid = c)}
-        width={width}
-        height={height}
-        columnWidth={columnWidth}
-        rowHeight={height - scrollbarSize()}
-        columnCount={lists.length}
-        rowCount={1}
-        cellRenderer={this.renderList}
-        overscanColumnCount={5}
-      />
-    );
-  }
-
-  renderDragLayer() {
-    return (
-      <KanbanDragLayer
-        columnWidth={this.props.columnWidth}
-        width={this.props.width}
-        height={this.props.height}
-        lists={this.state.lists}
-      />
-    );
-  }
-
-  render() {
-    return (
       <div>
-        {this.renderLists()}
-        {this.renderDragLayer()}
+        <Grid
+          className='KanbanGrid'
+          ref={(c) => (this._grid = c)}
+          width={width}
+          height={height}
+          columnWidth={listWidth}
+          rowHeight={height - scrollbarSize()}
+          columnCount={lists.length}
+          rowCount={1}
+          cellRenderer={this.renderList}
+          overscanColumnCount={5}
+        />
+        <KanbanDragLayer
+          itemPreviewComponent={itemPreviewComponent}
+          listPreviewComponent={listPreviewComponent}
+        />
       </div>
     );
   }

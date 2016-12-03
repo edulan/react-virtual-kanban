@@ -1,4 +1,4 @@
-.DragLayer {
+.KanbanDragLayer {
   position: fixed;
   pointer-events: none;
   z-index: 100;
@@ -6,12 +6,4 @@
   top: 0;
   width: 100%;
   height: 100%;
-}
-
-.RowPreviewWrapper {
-  transform: rotate(4deg);
-}
-
-.ListPreviewWrapper {
-  transform: rotate(4deg);
 }

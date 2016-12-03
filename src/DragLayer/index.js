@@ -1,8 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { DragLayer } from 'react-dnd';
 
-import Row from '../Row';
-import ListPreview from '../ListPreview';
 import * as ItemTypes from '../types';
 
 import './styles/index.css';
@@ -18,11 +16,21 @@ function getStyles({ currentOffset }) {
   const transform = `translate(${x}px, ${y}px)`;
 
   return {
-    transform: transform,
+    transform,
   };
 }
 
 class KanbanDragLayer extends Component {
+  static propTypes = {
+    item: PropTypes.object,
+    itemType: PropTypes.string,
+    currentOffset: PropTypes.shape({
+      x: PropTypes.number.isRequired,
+      y: PropTypes.number.isRequired
+    }),
+    isDragging: PropTypes.bool.isRequired,
+  }
+
   constructor(props) {
     super(props);
 
@@ -30,20 +38,17 @@ class KanbanDragLayer extends Component {
   }
 
   renderItem(type, item) {
+    let Preview;
+
     switch (type) {
     case ItemTypes.ROW_TYPE:
-      return (
-        // TODO: Move me toa RowPreview component
-        <div className='RowPreviewWrapper' style={{width: this.props.columnWidth - 14}}>
-          <Row row={item.row} />
-        </div>
-      );
+      Preview = this.props.itemPreviewComponent;
+
+      return <Preview />;
     case ItemTypes.LIST_TYPE:
-      return (
-        <div className='ListPreviewWrapper' style={{width: 200}}>
-          <ListPreview listId={item.listId} />
-        </div>
-      );
+      Preview = this.props.listPreviewComponent;
+
+      return <Preview />;
     default:
       return null;
     }
@@ -57,7 +62,7 @@ class KanbanDragLayer extends Component {
     }
 
     return (
-      <div className='DragLayer'>
+      <div className='KanbanDragLayer'>
         <div style={getStyles(this.props)}>
           {this.renderItem(itemType, item)}
         </div>
@@ -65,16 +70,6 @@ class KanbanDragLayer extends Component {
     );
   }
 }
-
-KanbanDragLayer.propTypes = {
-  item: PropTypes.object,
-  itemType: PropTypes.string,
-  currentOffset: PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired
-  }),
-  isDragging: PropTypes.bool.isRequired
-};
 
 function collect(monitor) {
   return {

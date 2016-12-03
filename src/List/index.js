@@ -5,80 +5,25 @@ import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 
 import RowSizeCache from '../utils/RowSizeCache';
-import SortableRow from '../SortableRow';
-import Row from '../Row';
+import SortableItem from '../SortableItem';
 
 import { LIST_TYPE, ROW_TYPE } from '../types';
+import * as dragSpec from './dragSpec';
+import * as dropSpec from './dropSpec';
 
 import './styles/index.css';
 
-const listSource = {
-  beginDrag(props) {
-    return {
-      listId: props.listId,
-      listIndex: props.listIndex,
-    };
-  },
-
-  isDragging({ listId }, monitor) {
-    const draggingListId = monitor.getItem().listId;
-
-    return listId === draggingListId;
-  },
-};
-
-const listTarget = {
-  hover(props, monitor) {
-    if (!monitor.canDrop()) return;
-
-    const item = monitor.getItem();
-    const itemType = monitor.getItemType();
-
-    if (itemType === LIST_TYPE) {
-      const dragListIndex = item.listIndex;
-      const hoverListIndex = props.listIndex;
-
-      props.moveList({dragListIndex}, {hoverListIndex});
-
-      // TODO: Review
-      item.listIndex = hoverListIndex;
-      return;
-    }
-
-    if (itemType === ROW_TYPE) {
-      const { index: dragIndex, listIndex: dragListIndex } = item;
-      const hoverIndex = 0;
-      const hoverListIndex = props.listIndex;
-
-      props.moveRow({dragIndex, dragListIndex}, {hoverIndex, hoverListIndex});
-
-      item.index = hoverIndex;
-      item.listIndex = hoverListIndex;
-      return;
-    }
-  },
-
-  canDrop(props, monitor) {
-    const item = monitor.getItem();
-    const itemType = monitor.getItemType();
-
-    if (itemType === LIST_TYPE) {
-      return item.listIndex !== props.listIndex;
-    }
-
-    if (itemType === ROW_TYPE) {
-      return props.rows.length === 0;
-    }
-  }
-};
-
 class List extends Component {
   static propTypes = {
+    rows: PropTypes.array,
     width: PropTypes.number,
     height: PropTypes.number,
+    listId: PropTypes.number,
     listIndex: PropTypes.number,
-    rows: PropTypes.array,
+    listComponent: PropTypes.func,
+    itemComponent: PropTypes.func,
     moveRow: PropTypes.func,
+    moveList: PropTypes.func,
   };
 
   static defaultProps = {
@@ -115,11 +60,12 @@ class List extends Component {
     const row = this.props.rows[index];
 
     return (
-      <SortableRow
+      <SortableItem
         key={key}
         rowStyle={style}
         index={index}
         listIndex={this.props.listIndex}
+        itemComponent={this.props.itemComponent}
         row={row}
         moveRow={this.props.moveRow}
       />
@@ -127,14 +73,19 @@ class List extends Component {
   }
 
   renderRowForMeasure({ rowIndex: index }) {
+    const { itemComponent: DecoratedItem } = this.props;
     const row = this.props.rows[index];
 
+    // TODO: Determine whether scrollbar is visible or not :/
+    // const width = this.props.width;
+
     return (
-      <div style={{width: this.props.width, overflowY: 'scroll'}}>
-        <div className='RowWrapper'>
-          <Row row={row} />
-        </div>
-      </div>
+      <DecoratedItem
+        row={row}
+        connectDragSource={(e) => e}
+        connectDropTarget={(e) => e}
+        isDragging={false}
+      />
     );
   }
 
@@ -152,7 +103,7 @@ class List extends Component {
             {({ getRowHeight }) => (
               <VirtualScroll
                 ref={(c) => (this._list = c)}
-                className='List'
+                className='KanbanList'
                 width={width}
                 height={height}
                 rowHeight={getRowHeight}
@@ -184,11 +135,11 @@ class List extends Component {
   }
 }
 
-const connectDrop = DropTarget([LIST_TYPE, ROW_TYPE], listTarget, connect => ({
+const connectDrop = DropTarget([LIST_TYPE, ROW_TYPE], dropSpec, connect => ({
   connectDropTarget: connect.dropTarget(),
 }))
 
-const connectDrag = DragSource(LIST_TYPE, listSource, (connect, monitor) => ({
+const connectDrag = DragSource(LIST_TYPE, dragSpec, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   connectDragPreview: connect.dragPreview(),
   isDragging: monitor.isDragging(),
