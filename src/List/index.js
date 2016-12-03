@@ -16,27 +16,20 @@ import './styles/index.css';
 class List extends Component {
   static propTypes = {
     rows: PropTypes.array,
-    width: PropTypes.number,
-    height: PropTypes.number,
     listId: PropTypes.string,
     listIndex: PropTypes.number,
+    listStyle: PropTypes.object,
     listComponent: PropTypes.func,
     itemComponent: PropTypes.func,
     moveRow: PropTypes.func,
     moveList: PropTypes.func,
   };
 
-  static defaultProps = {
-    width: 200,
-    height: 280,
-    rowHeight: 62,
-  };
-
   constructor(props) {
     super(props);
 
     this.renderRow = this.renderRow.bind(this);
-    this.renderRowForMeasure = this.renderRowForMeasure.bind(this);
+    this.renderItemForMeasure = this.renderItemForMeasure.bind(this);
     this.renderList = this.renderList.bind(this);
   }
 
@@ -47,7 +40,7 @@ class List extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if(this.props.isDragging) return;
+    if (this.props.isDragging) return;
     if (prevProps.rows === this.props.rows) return;
     this._list.recomputeRowHeights();
   }
@@ -72,7 +65,7 @@ class List extends Component {
     );
   }
 
-  renderRowForMeasure({ rowIndex: index }) {
+  renderItemForMeasure({ rowIndex: index }) {
     const { itemComponent: DecoratedItem } = this.props;
     const row = this.props.rows[index];
 
@@ -89,47 +82,45 @@ class List extends Component {
     );
   }
 
-  renderList() {
+  renderList({ width, height }) {
     return (
-      <AutoSizer>
-        {({ width, height }) => (
-          <CellMeasurer
+      <CellMeasurer
+        width={width}
+        columnCount={1}
+        rowCount={this.props.rows.length}
+        cellRenderer={this.renderItemForMeasure}
+        cellSizeCache={new RowSizeCache(this.props.rows)}
+      >
+        {({ getRowHeight }) => (
+          <VirtualScroll
+            ref={(c) => (this._list = c)}
+            className='KanbanList'
             width={width}
-            columnCount={1}
+            height={height}
+            rowHeight={getRowHeight}
             rowCount={this.props.rows.length}
-            cellRenderer={this.renderRowForMeasure}
-            cellSizeCache={new RowSizeCache(this.props.rows)}
-          >
-            {({ getRowHeight }) => (
-              <VirtualScroll
-                ref={(c) => (this._list = c)}
-                className='KanbanList'
-                width={width}
-                height={height}
-                rowHeight={getRowHeight}
-                rowCount={this.props.rows.length}
-                rowRenderer={this.renderRow}
-                overscanRowCount={2}
-               />
-             )}
-          </CellMeasurer>
-        )}
-      </AutoSizer>
+            rowRenderer={this.renderRow}
+            overscanRowCount={2}
+           />
+         )}
+      </CellMeasurer>
     );
   }
 
   render() {
-    const { listId, listComponent: DecoratedList, isDragging, connectDragSource, connectDropTarget, style } = this.props;
+    const { listId, listComponent: DecoratedList, isDragging, connectDragSource, connectDropTarget, listStyle } = this.props;
 
     return (
       <DecoratedList
         listId={listId}
-        style={style}
+        style={listStyle}
         isDragging={isDragging}
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}
       >
-        {this.renderList()}
+        <AutoSizer>
+          {(dimensions) => this.renderList(dimensions)}
+        </AutoSizer>
       </DecoratedList>
     );
   }

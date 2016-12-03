@@ -60,9 +60,9 @@ class Kanban extends Component {
     return (
       <List
         key={key}
-        style={style}
         listId={id}
         listIndex={columnIndex}
+        listStyle={style}
         listComponent={this.props.listComponent}
         itemComponent={this.props.itemComponent}
         rows={rows}
