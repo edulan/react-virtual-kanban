@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { AutoSizer } from 'react-virtualized';
 
-import Kanban from './Kanban';
+import Kanban from '../';
 
 import { updateLists } from './utils/update_lists';
 
@@ -44,6 +44,8 @@ class App extends Component {
                 height={height}
                 onMoveRow={this.moveRow}
                 onMoveList={this.moveList}
+                listGetter={({ listIndex }) => {}}
+                itemGetter={({ itemIndex, listIndex }) => {}}
               />
             );
           }}
