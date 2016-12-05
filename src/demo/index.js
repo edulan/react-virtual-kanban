@@ -11,6 +11,6 @@ import './index.css';
 window.Perf = Perf;
 
 ReactDOM.render(
-  <App lists={generateLists(20, 10)} />,
+  <App lists={generateLists(20, 7)} />,
   document.getElementById('root')
 );

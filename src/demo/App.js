@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { AutoSizer } from 'react-virtualized';
 
-import Kanban from '../';
+import { VirtualKanban } from '../';
 
 import { updateLists } from './utils/update_lists';
 
@@ -21,13 +21,13 @@ class App extends Component {
 
   moveRow(from, to) {
     this.setState(
-      {lists: updateLists(this.state.lists, {from, to}), from, to}
+      {lists: updateLists(this.state.lists, {from, to})}
     );
   }
 
   moveList(from, to) {
     this.setState(
-      {lists: updateLists(this.state.lists, {from, to}), from, to}
+      {lists: updateLists(this.state.lists, {from, to})}
     );
   }
 
@@ -37,15 +37,13 @@ class App extends Component {
         <AutoSizer>
           {({ width, height }) => {
             return (
-              <Kanban
+              <VirtualKanban
                 lists={this.state.lists}
                 width={width}
                 listWidth={270}
                 height={height}
                 onMoveRow={this.moveRow}
                 onMoveList={this.moveList}
-                listGetter={({ listIndex }) => {}}
-                itemGetter={({ itemIndex, listIndex }) => {}}
               />
             );
           }}

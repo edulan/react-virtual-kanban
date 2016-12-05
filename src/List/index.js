@@ -52,8 +52,6 @@ class List extends Component {
   renderRow({ index, key, style }) {
     const row = this.props.rows[index];
 
-    this.props.itemGetter({listIndex: this.props.listIndex, itemIndex: index});
-
     return (
       <SortableItem
         key={key}

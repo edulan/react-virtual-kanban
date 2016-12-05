@@ -1,3 +1,3 @@
 import Kanban from './Kanban';
 
-export default Kanban;
+export { Kanban as VirtualKanban };
