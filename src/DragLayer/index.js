@@ -3,8 +3,6 @@ import { DragLayer } from 'react-dnd';
 
 import * as ItemTypes from '../types';
 
-import './styles/index.css';
-
 function getStyles({ currentOffset }) {
   if (!currentOffset) {
     return {

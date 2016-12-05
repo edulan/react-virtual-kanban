@@ -1,8 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import './styles/index.css';
-
 // TODO: Implement SCU
 
 /**

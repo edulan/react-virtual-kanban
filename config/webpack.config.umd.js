@@ -13,7 +13,7 @@ const plugins = [
     comments: true,
     mangle: false
   }),
-  new ExtractTextPlugin('[name].css', {
+  new ExtractTextPlugin('styles.css', {
     allChunks: false,
     beautify: true,
     mangle: false

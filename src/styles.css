@@ -1,3 +1,27 @@
+.KanbanDragLayer {
+  position: fixed;
+  pointer-events: none;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.KanbanGrid {
+  outline: none;
+}
+
+.KanbanList {
+  outline: none;
+}
+
+/* ListPreview */
+.ListPreviewWrapper {
+  transform: rotate(4deg);
+}
+
+/* List */
 .ListWrapper {
   padding: 8px 4px 8px 4px;
   margin: 0 4px;
@@ -64,4 +88,43 @@
   cursor: pointer;
   font-size: 14px;
   color: #8c8c8c;
+}
+
+/* ItemPreview */
+.ItemPreviewWrapper {
+  transform: rotate(4deg);
+}
+
+/* Item */
+.ItemWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.ItemContainer {
+  padding: 6px 6px 2px 8px;
+  width: 100%;
+  height: 100%;
+  border-color: darkgray;
+  border-radius: 3px;
+  background-color: white;
+  flex: 1;
+  box-shadow: 1px 1px 0px 0px #ccc;
+  box-sizing: border-box;
+}
+
+.ItemPlaceholder {
+  background-color: #C4C9CC;
+}
+
+.ItemPlaceholder .ItemContent {
+  opacity: 0;
+}
+
+.ItemContent {
+
 }

@@ -11,8 +11,6 @@ import { LIST_TYPE, ROW_TYPE } from '../types';
 import * as dragSpec from './dragSpec';
 import * as dropSpec from './dropSpec';
 
-import './styles/index.css';
-
 class List extends Component {
   static propTypes = {
     rows: PropTypes.array,

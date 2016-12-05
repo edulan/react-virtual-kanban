@@ -11,9 +11,6 @@ import defaultListComponent from '../decorators/List';
 import defaultItemPreviewComponent from '../decorators/ItemPreview';
 import defaultListPreviewComponent from '../decorators/ListPreview';
 
-import 'react-virtualized/styles.css';
-import './styles/index.css';
-
 import List from '../List';
 
 class Kanban extends Component {
