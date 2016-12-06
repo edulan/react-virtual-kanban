@@ -11,6 +11,6 @@ import App from './App';
 window.Perf = Perf;
 
 ReactDOM.render(
-  <App lists={generateLists(20, 7)} />,
+  <App lists={generateLists(20, 10)} />,
   document.getElementById('root')
 );

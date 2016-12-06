@@ -38,9 +38,9 @@ class List extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.isDragging) return;
-    if (prevProps.rows === this.props.rows) return;
-    this._list.recomputeRowHeights();
+    if (prevProps.rows !== this.props.rows) {
+      this._list.recomputeRowHeights();
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {

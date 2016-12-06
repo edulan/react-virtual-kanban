@@ -47,8 +47,9 @@ class Kanban extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.lists === this.props.lists) return;
-    this._grid.forceUpdate();
+    if (prevProps.lists !== this.props.lists) {
+      this._grid.forceUpdate();
+    }
   }
 
   renderList({ columnIndex, key, style }) {
