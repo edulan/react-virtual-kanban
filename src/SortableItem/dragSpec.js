@@ -1,6 +1,7 @@
 export function beginDrag(props) {
   return {
     row: props.row,
+    rowStyle: props.rowStyle,
     index: props.index,
     listIndex: props.listIndex,
   };

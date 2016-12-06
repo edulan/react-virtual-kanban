@@ -91,6 +91,7 @@ class Kanban extends Component {
           overscanColumnCount={5}
         />
         <DragLayer
+          listWidth={listWidth}
           itemPreviewComponent={itemPreviewComponent}
           listPreviewComponent={listPreviewComponent}
         />

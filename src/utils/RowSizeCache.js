@@ -26,21 +26,11 @@ class RowSizeCache {
   hasRowHeight(index) {
     const { id } = this.rows[index];
 
-    const r = this.backend.has(id);
-
-    if (r) {
-      // console.log(`cached row #${id}`);
-    } else {
-      // console.log(`cache missed row #${id}`);
-    }
-
-    return r;
+    return this.backend.has(id);
   }
 
   setRowHeight(index, height) {
     const { id } = this.rows[index];
-
-    // console.log(`caching row #${id}`);
 
     this.backend.set(id, height);
   }
