@@ -55,7 +55,6 @@ class Kanban extends Component {
   renderList({ columnIndex, key, style }) {
     const { id, rows } = this.props.lists[columnIndex];
 
-    // TODO: Select which component should be rendered (Draggable or ReadOnly list)
     // TODO: Create a SortableList component
     return (
       <List
