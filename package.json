@@ -4,6 +4,10 @@
   "private": true,
   "homepage": "https://edulan.github.io/react-virtual-kanban",
   "main": "lib/index.js",
+  "files": [
+    "dist",
+    "lib"
+  ],
   "devDependencies": {
     "autoprefixer": "6.4.0",
     "babel-cli": "^6.18.0",
@@ -21,7 +25,6 @@
     "babel-preset-latest": "6.14.0",
     "babel-preset-react": "6.11.1",
     "babel-preset-stage-0": "^6.16.0",
-    "babel-runtime": "6.11.6",
     "case-sensitive-paths-webpack-plugin": "1.1.3",
     "chalk": "1.1.3",
     "chance": "1.0.4",
@@ -50,7 +53,11 @@
     "postcss-cli": "^2.6.0",
     "postcss-loader": "0.9.1",
     "promise": "7.1.1",
-    "react-addons-perf": "15.4.0",
+    "react": "15.4.1",
+    "react-addons-perf": "15.4.1",
+    "react-addons-update": "15.4.1",
+    "react-addons-shallow-compare": "15.4.1",
+    "react-dom": "15.4.1",
     "recursive-readdir": "2.0.0",
     "rimraf": "2.5.4",
     "strip-ansi": "3.0.1",
@@ -61,14 +68,16 @@
     "whatwg-fetch": "1.0.0"
   },
   "dependencies": {
+    "babel-runtime": "6.11.6",
     "classnames": "2.2.5",
-    "react": "15.4.0",
-    "react-addons-shallow-compare": "15.4.0",
-    "react-addons-update": "15.4.0",
     "react-dnd": "2.1.4",
     "react-dnd-html5-backend": "2.1.2",
-    "react-dom": "15.4.0",
     "react-virtualized": "8.5.3"
+  },
+  "peerDependencies": {
+    "react": "^0.14.0 || ^15.0.0",
+    "react-addons-shallow-compare": "^0.14.0 || ^15.0.0",
+    "react-dom": "^0.14.0 || ^15.0.0"
   },
   "scripts": {
     "build:commonjs": "NODE_ENV=production BABEL_ENV=commonjs babel src --out-dir lib --ignore src/demo/",
