@@ -8,7 +8,6 @@ function generateRandom(count) {
 
     return {
       id: `r${i}`,
-      name,
     };
   });
 }

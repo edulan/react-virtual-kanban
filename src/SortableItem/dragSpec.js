@@ -1,15 +1,15 @@
 export function beginDrag(props) {
   return {
-    row: props.row,
-    rowStyle: props.rowStyle,
     index: props.index,
+    rowId: props.rowId,
+    rowStyle: props.rowStyle,
     listIndex: props.listIndex,
   };
 }
 
 // TODO: Review
-export function isDragging({ row }, monitor) {
-   const draggingRow = monitor.getItem().row;
+export function isDragging({ rowId }, monitor) {
+   const draggingRowId = monitor.getItem().rowId;
 
-   return row.id === draggingRow.id;
+   return rowId === draggingRowId;
 }

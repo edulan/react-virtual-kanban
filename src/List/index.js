@@ -48,16 +48,16 @@ class List extends Component {
   }
 
   renderRow({ index, key, style }) {
-    const row = this.props.rows[index];
+    const { id } = this.props.rows[index];
 
     return (
       <SortableItem
         key={key}
+        rowId={id}
         rowStyle={style}
         index={index}
         listIndex={this.props.listIndex}
         itemComponent={this.props.itemComponent}
-        row={row}
         moveRow={this.props.moveRow}
       />
     );
@@ -65,17 +65,16 @@ class List extends Component {
 
   renderItemForMeasure({ rowIndex: index }) {
     const { itemComponent: DecoratedItem } = this.props;
-    const row = this.props.rows[index];
+    const { id } = this.props.rows[index];
 
     // TODO: Determine whether scrollbar is visible or not :/
-    // const width = this.props.width;
 
     return (
       <DecoratedItem
-        row={row}
+        rowId={id}
+        isDragging={false}
         connectDragSource={(e) => e}
         connectDropTarget={(e) => e}
-        isDragging={false}
       />
     );
   }

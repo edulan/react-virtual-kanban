@@ -8,7 +8,7 @@ export default class Item extends Component {
   }
 
   render() {
-    const { row, style, connectDragSource, connectDropTarget, isDragging } = this.props;
+    const { rowId, style, connectDragSource, connectDropTarget, isDragging } = this.props;
 
     const itemContainerClass = classnames({
       'ItemContainer': true,
@@ -20,7 +20,7 @@ export default class Item extends Component {
         {connectDragSource(connectDropTarget(
           <div className={itemContainerClass}>
             <div className='ItemContent'>
-              <p>{row.name}</p>
+              <p>{rowId}</p>
             </div>
           </div>
         ))}
