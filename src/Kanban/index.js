@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
 import { Grid } from 'react-virtualized';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 
@@ -12,6 +13,9 @@ import defaultItemPreviewComponent from '../decorators/ItemPreview';
 import defaultListPreviewComponent from '../decorators/ListPreview';
 
 import List from '../List';
+
+const GridWithScrollZone = withScrolling(Grid);
+const horizontalStrength = createHorizontalStrength(200);
 
 class Kanban extends Component {
   static propTypes = {
@@ -83,7 +87,8 @@ class Kanban extends Component {
 
     return (
       <div>
-        <Grid
+        <GridWithScrollZone
+          lists={lists}
           className='KanbanGrid'
           ref={(c) => (this._grid = c)}
           width={width}
@@ -94,6 +99,9 @@ class Kanban extends Component {
           rowCount={1}
           cellRenderer={this.renderList}
           overscanColumnCount={2}
+          horizontalStrength={horizontalStrength}
+          verticalStrength={() => {}}
+          speed={100}
         />
         <DragLayer
           listWidth={listWidth}
