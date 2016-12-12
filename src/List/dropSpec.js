@@ -1,14 +1,20 @@
 import { LIST_TYPE, ROW_TYPE } from '../types';
 
-export function hover(props, monitor) {
+export function hover(props, monitor, component) {
+  if (!monitor.isOver({shallow: true})) return;
   if (!monitor.canDrop()) return;
 
   const item = monitor.getItem();
   const itemType = monitor.getItemType();
+  const dragListIndex = item.listIndex;
+  const hoverListIndex = props.listIndex;
+
+  if (dragListIndex === hoverListIndex) {
+    return;
+  }
 
   if (itemType === LIST_TYPE) {
     const dragListIndex = item.listIndex;
-    const hoverListIndex = props.listIndex;
 
     props.moveList({dragListIndex}, {hoverListIndex});
 
@@ -19,8 +25,7 @@ export function hover(props, monitor) {
 
   if (itemType === ROW_TYPE) {
     const { index: dragIndex, listIndex: dragListIndex } = item;
-    const hoverIndex = 0;
-    const hoverListIndex = props.listIndex;
+    const hoverIndex = props.rows.length;
 
     props.moveRow({dragIndex, dragListIndex}, {hoverIndex, hoverListIndex});
 
@@ -35,10 +40,16 @@ export function canDrop(props, monitor) {
   const itemType = monitor.getItemType();
 
   if (itemType === LIST_TYPE) {
-    return item.listIndex !== props.listIndex;
+    return true;
   }
 
   if (itemType === ROW_TYPE) {
-    return props.rows.length === 0;
+    return item.listIndex !== props.listIndex;
   }
+}
+
+export function drop(props) {
+  const listId = props.listId;
+
+  props.dropList({listId});
 }

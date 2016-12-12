@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import shallowEqual from 'fbjs/lib/shallowEqual';
 import { List as VirtualScroll, CellMeasurer, AutoSizer } from 'react-virtualized';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
@@ -10,6 +10,7 @@ import SortableItem from '../SortableItem';
 import { LIST_TYPE, ROW_TYPE } from '../types';
 import * as dragSpec from './dragSpec';
 import * as dropSpec from './dropSpec';
+
 
 class List extends Component {
   static propTypes = {
@@ -44,7 +45,10 @@ class List extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
+    const { _listStyle, ...restProps } = this.props;
+    const { listStyle: _nextListStyle, ...restNextProps } = nextProps;
+
+    return !shallowEqual(restProps, restNextProps);
   }
 
   renderRow({ index, key, style }) {
@@ -54,11 +58,13 @@ class List extends Component {
       <SortableItem
         key={key}
         rowId={id}
+        listId={this.props.listId}
         rowStyle={style}
         index={index}
         listIndex={this.props.listIndex}
         itemComponent={this.props.itemComponent}
         moveRow={this.props.moveRow}
+        dropRow={this.props.dropRow}
       />
     );
   }
@@ -105,10 +111,11 @@ class List extends Component {
   }
 
   render() {
-    const { listId, listComponent: DecoratedList, isDragging, connectDragSource, connectDropTarget, listStyle } = this.props;
+    const { listId, listComponent: DecoratedList, isDragging, connectDragSource, connectDropTarget, listStyle, ...listProps } = this.props;
 
     return (
       <DecoratedList
+        {...listProps}
         listId={listId}
         style={listStyle}
         isDragging={isDragging}

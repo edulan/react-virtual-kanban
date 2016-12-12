@@ -20,15 +20,23 @@ class SortableItem extends Component {
   }
 
   render() {
-    const { index, isDragging, itemComponent: DecoratedItem, connectDragSource, connectDropTarget, rowStyle, ...rowProps } = this.props;
+    const {
+      index: _index,
+      itemComponent: DecoratedItem,
+      isDragging,
+      connectDragSource,
+      connectDropTarget,
+      rowStyle,
+      ...rowProps
+    } = this.props;
 
     return (
       <DecoratedItem
+        {...rowProps}
         style={rowStyle}
         isDragging={isDragging}
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}
-        {...rowProps}
       />
     );
   }

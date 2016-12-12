@@ -1,7 +1,9 @@
 import { findDOMNode } from 'react-dom';
 
 export function hover(props, monitor, component) {
-  const { index: dragIndex, listIndex: dragListIndex } = monitor.getItem();
+  const item = monitor.getItem();
+  const dragIndex = item.index;
+  const dragListIndex = item.listIndex;
   const hoverIndex = props.index;
   const hoverListIndex = props.listIndex;
 
@@ -26,8 +28,8 @@ export function hover(props, monitor, component) {
       clientOffset.x < hoverBoundingRect.right &&
       dragListIndex !== hoverListIndex) {
     props.moveRow({dragIndex, dragListIndex}, {hoverIndex, hoverListIndex});
-    monitor.getItem().index = hoverIndex;
-    monitor.getItem().listIndex = hoverListIndex;
+    item.index = hoverIndex;
+    item.listIndex = hoverListIndex;
     return;
   }
 
@@ -43,6 +45,13 @@ export function hover(props, monitor, component) {
 
   props.moveRow({dragIndex, dragListIndex}, {hoverIndex, hoverListIndex});
 
-  monitor.getItem().index = hoverIndex;
-  monitor.getItem().listIndex = hoverListIndex;
+  item.index = hoverIndex;
+  item.listIndex = hoverListIndex;
+}
+
+export function drop(props) {
+  const rowId = props.rowId;
+  const listIndex = props.listId;
+
+  props.dropRow({rowId, listIndex});
 }

@@ -34,6 +34,8 @@ class Kanban extends Component {
     listPreviewComponent: defaultListPreviewComponent,
     onMoveRow: () => {},
     onMoveList: () => {},
+    onDropRow: () => {},
+    onDropList: () => {},
   }
 
   constructor(props) {
@@ -69,6 +71,8 @@ class Kanban extends Component {
         rows={rows}
         moveRow={this.props.onMoveRow}
         moveList={this.props.onMoveList}
+        dropRow={this.props.onDropRow}
+        dropList={this.props.onDropList}
       />
     );
 
