@@ -1,7 +1,6 @@
 {
   "name": "react-virtual-kanban",
   "version": "0.0.1",
-  "private": true,
   "homepage": "https://edulan.github.io/react-virtual-kanban",
   "main": "lib/index.js",
   "files": [
