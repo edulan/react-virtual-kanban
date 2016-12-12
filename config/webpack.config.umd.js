@@ -35,11 +35,7 @@ var config = {
   externals: {
     'react': 'React',
     'react-dom': 'ReactDOM',
-    'react-addons-shallow-compare': 'var React.addons.shallowCompare',
-    'react-virtualized': 'ReactVirtualized',
-    'react-dnd': 'ReactDnD',
-    'react-dnd-html5-backend': 'ReactDnDHTML5Backend',
-    'classnames': 'classNames'
+    'react-addons-shallow-compare': 'var React.addons.shallowCompare'
   },
   module: {
     loaders: [
