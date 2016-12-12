@@ -15,16 +15,14 @@ export default class Item extends Component {
       'ItemPlaceholder': isDragging,
     });
 
-    return (
+    return connectDragSource(connectDropTarget(
       <div className='ItemWrapper' style={style}>
-        {connectDragSource(connectDropTarget(
-          <div className={itemContainerClass}>
-            <div className='ItemContent'>
-              <p>{rowId}</p>
-            </div>
+        <div className={itemContainerClass}>
+          <div className='ItemContent'>
+            <p>{rowId}</p>
           </div>
-        ))}
+        </div>
       </div>
-    );
+    ));
   }
 }

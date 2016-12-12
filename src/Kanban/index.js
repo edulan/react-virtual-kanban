@@ -58,6 +58,8 @@ class Kanban extends Component {
     // TODO: Create a SortableList component
     return (
       <List
+        kanbanWidth={this.props.width}
+        kanbanHeight={this.props.height}
         key={key}
         listId={id}
         listIndex={columnIndex}
@@ -87,7 +89,7 @@ class Kanban extends Component {
           columnCount={lists.length}
           rowCount={1}
           cellRenderer={this.renderList}
-          overscanColumnCount={5}
+          overscanColumnCount={2}
         />
         <DragLayer
           listWidth={listWidth}

@@ -15,7 +15,7 @@ export default class List extends Component {
       'ListPlaceholder': isDragging
     });
 
-    return (connectDropTarget(
+    return (
       <div className='ListWrapper' style={style}>
         <div className={listContainerClass}>
           {connectDragSource(
@@ -23,9 +23,11 @@ export default class List extends Component {
               <span className='ListTitle'>List {listId}</span>
             </div>
           )}
-          <div className='ListContent'>
-            {children}
-          </div>
+          {connectDropTarget(
+            <div className='ListContent'>
+              {children}
+            </div>
+          )}
           <div className='ListFooter'>
             <div className='ListActions'>
               <button className='ListActionItem'>Add a task...</button>
@@ -33,6 +35,6 @@ export default class List extends Component {
           </div>
         </div>
       </div>
-    ));
+    );
   }
 }

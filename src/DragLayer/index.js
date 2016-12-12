@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import { DragLayer } from 'react-dnd';
 
 import * as ItemTypes from '../types';
@@ -33,6 +34,10 @@ class KanbanDragLayer extends Component {
     super(props);
 
     this.renderItem = this.renderItem.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
   }
 
   renderItem(type, item) {
