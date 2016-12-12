@@ -12,11 +12,13 @@ class App extends Component {
     super(props);
 
     this.state = {
-      lists: props.lists,
+      lists: props.getLists(),
     };
 
     this.moveRow = this.moveRow.bind(this);
     this.moveList = this.moveList.bind(this);
+    this.dropRow = this.dropRow.bind(this);
+    this.dropList = this.dropList.bind(this);
   }
 
   moveRow(from, to) {
@@ -29,6 +31,14 @@ class App extends Component {
     this.setState(
       {lists: updateLists(this.state.lists, {from, to})}
     );
+  }
+
+  dropRow(_to) {
+    this.props.setLists(this.state.lists);
+  }
+
+  dropList(to) {
+    this.props.setLists(this.state.lists);
   }
 
   render() {
@@ -44,6 +54,8 @@ class App extends Component {
                 height={height}
                 onMoveRow={this.moveRow}
                 onMoveList={this.moveList}
+                onDropRow={this.dropRow}
+                onDropList={this.dropList}
               />
             );
           }}
