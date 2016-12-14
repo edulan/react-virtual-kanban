@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import shallowEqual from 'fbjs/lib/shallowEqual';
+import shallowCompare from 'react-addons-shallow-compare';
 import { List as VirtualScroll, CellMeasurer, AutoSizer } from 'react-virtualized';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
@@ -45,10 +45,7 @@ class List extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { _listStyle, ...restProps } = this.props;
-    const { listStyle: _nextListStyle, ...restNextProps } = nextProps;
-
-    return !shallowEqual(restProps, restNextProps);
+    return shallowCompare(this, nextProps, nextState);
   }
 
   renderRow({ index, key, style }) {
@@ -111,7 +108,15 @@ class List extends Component {
   }
 
   render() {
-    const { listId, listComponent: DecoratedList, isDragging, connectDragSource, connectDropTarget, listStyle, ...listProps } = this.props;
+    const {
+      listId,
+      listComponent: DecoratedList,
+      isDragging,
+      connectDragSource,
+      connectDropTarget,
+      listStyle,
+      ...listProps,
+    } = this.props;
 
     return (
       <DecoratedList
