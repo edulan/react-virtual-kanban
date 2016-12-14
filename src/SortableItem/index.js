@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import shallowCompare from 'react-addons-shallow-compare';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';

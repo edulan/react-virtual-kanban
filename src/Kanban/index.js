@@ -90,6 +90,8 @@ class Kanban extends Component {
         <GridWithScrollZone
           lists={lists}
           className='KanbanGrid'
+          // Needed for fixing disappearing items when scrolling
+          containerStyle={{pointerEvents: 'auto'}}
           ref={(c) => (this._grid = c)}
           width={width}
           height={height}
