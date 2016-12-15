@@ -14,7 +14,9 @@
     "babel-eslint": "6.1.2",
     "babel-loader": "6.2.5",
     "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-class-display-name": "0.0.3",
     "babel-plugin-transform-class-properties": "6.11.5",
+    "babel-plugin-transform-export-extensions": "^6.8.0",
     "babel-plugin-transform-object-rest-spread": "6.8.0",
     "babel-plugin-transform-react-constant-elements": "6.9.1",
     "babel-plugin-transform-react-remove-prop-types": "^0.2.11",
@@ -72,7 +74,7 @@
     "react-dnd": "2.1.4",
     "react-dnd-html5-backend": "2.1.2",
     "react-dnd-scrollzone": "3.1.0",
-    "react-virtualized": "8.8.0"
+    "react-virtualized": "8.8.1"
   },
   "peerDependencies": {
     "react": "^0.14.0 || ^15.0.0",

@@ -1,6 +1,7 @@
 {
   "presets": ["latest", "react"],
   "plugins": [
+    "babel-plugin-transform-export-extensions",
     "babel-plugin-transform-class-properties",
     "babel-plugin-transform-object-rest-spread",
     "babel-plugin-transform-regenerator",
