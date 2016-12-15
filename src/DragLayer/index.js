@@ -1,8 +1,10 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { DragLayer } from 'react-dnd';
 
 import * as ItemTypes from '../types';
+
+import BaseComponent from '../BaseComponent';
 
 function getStyles({ currentOffset }) {
   if (!currentOffset) {
@@ -19,7 +21,7 @@ function getStyles({ currentOffset }) {
   };
 }
 
-class KanbanDragLayer extends Component {
+class KanbanDragLayer extends BaseComponent {
   static propTypes = {
     item: PropTypes.object,
     itemType: PropTypes.string,
@@ -28,6 +30,9 @@ class KanbanDragLayer extends Component {
       y: PropTypes.number.isRequired
     }),
     isDragging: PropTypes.bool.isRequired,
+    listWidth: PropTypes.number.isRequired,
+    itemPreviewComponent: PropTypes.func.isRequired,
+    listPreviewComponent: PropTypes.func.isRequired,
   }
 
   constructor(props) {

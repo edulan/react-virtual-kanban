@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
@@ -7,7 +7,9 @@ import { ROW_TYPE } from '../types';
 import * as dragSpec from './dragSpec';
 import * as dropSpec from './dropSpec';
 
-class SortableItem extends Component {
+import BaseComponent from '../BaseComponent';
+
+class SortableItem extends BaseComponent {
   shouldComponentUpdate(nextProps, nextState) {
     return shallowCompare(this, nextProps, nextState);
   }

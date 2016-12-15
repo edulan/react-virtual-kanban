@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -6,18 +6,16 @@ import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
 import { Grid } from 'react-virtualized';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 
+import BaseComponent from '../BaseComponent';
 import DragLayer from '../DragLayer';
-import defaultItemComponent from '../decorators/Item';
-import defaultListComponent from '../decorators/List';
-import defaultItemPreviewComponent from '../decorators/ItemPreview';
-import defaultListPreviewComponent from '../decorators/ListPreview';
+import * as decorators from '../decorators';
 
 import List from '../List';
 
 const GridWithScrollZone = withScrolling(Grid);
 const horizontalStrength = createHorizontalStrength(200);
 
-class Kanban extends Component {
+class Kanban extends BaseComponent {
   static propTypes = {
     lists: PropTypes.array,
     width: PropTypes.number,
@@ -29,13 +27,15 @@ class Kanban extends Component {
     listPreviewComponent: PropTypes.func,
     onMoveRow: PropTypes.func,
     onMoveList: PropTypes.func,
+    onDropRow: PropTypes.func,
+    onDropList: PropTypes.func,
   }
 
   static defaultProps = {
-    itemComponent: defaultItemComponent,
-    listComponent: defaultListComponent,
-    itemPreviewComponent: defaultItemPreviewComponent,
-    listPreviewComponent: defaultListPreviewComponent,
+    itemComponent: decorators.Item,
+    listComponent: decorators.List,
+    itemPreviewComponent: decorators.ItemPreview,
+    listPreviewComponent: decorators.ListPreview,
     onMoveRow: () => {},
     onMoveList: () => {},
     onDropRow: () => {},
@@ -54,7 +54,7 @@ class Kanban extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.lists !== this.props.lists) {
-      this._grid.forceUpdate();
+      this._grid.wrappedInstance.forceUpdate();
     }
   }
 
@@ -64,8 +64,6 @@ class Kanban extends Component {
     // TODO: Create a SortableList component
     return (
       <List
-        kanbanWidth={this.props.width}
-        kanbanHeight={this.props.height}
         key={key}
         listId={id}
         listIndex={columnIndex}

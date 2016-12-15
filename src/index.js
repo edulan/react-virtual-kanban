@@ -1,3 +1,7 @@
 import Kanban from './Kanban';
+import * as decorators from './decorators';
 
-export { Kanban as VirtualKanban };
+export {
+  decorators,
+  Kanban as VirtualKanban
+};

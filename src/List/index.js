@@ -1,18 +1,18 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { List as VirtualScroll, CellMeasurer, AutoSizer } from 'react-virtualized';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 
 import RowSizeCache from '../utils/RowSizeCache';
+import BaseComponent from '../BaseComponent';
 import SortableItem from '../SortableItem';
 
 import { LIST_TYPE, ROW_TYPE } from '../types';
 import * as dragSpec from './dragSpec';
 import * as dropSpec from './dropSpec';
 
-
-class List extends Component {
+class List extends BaseComponent {
   static propTypes = {
     rows: PropTypes.array,
     listId: PropTypes.string,
@@ -22,6 +22,13 @@ class List extends Component {
     itemComponent: PropTypes.func,
     moveRow: PropTypes.func,
     moveList: PropTypes.func,
+    dropRow: PropTypes.func,
+    dropList: PropTypes.func,
+    // React DnD
+    isDragging: PropTypes.bool,
+    connectDropTarget: PropTypes.func,
+    connectDragSource: PropTypes.func,
+    connectDragPreview: PropTypes.func,
   };
 
   constructor(props) {
