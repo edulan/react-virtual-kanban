@@ -1,5 +1,4 @@
-React Virtual Kanban
-====================
+# React Virtual Kanban
 
 A Kanban component in React.
 
