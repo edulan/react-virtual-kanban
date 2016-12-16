@@ -6,12 +6,13 @@ A Kanban component in React.
 ### Key Features
 * Performance
 * Fully virtualized
-* Drag and drop support
+* Built-in drag and drop support
 * Dynamic heights
+* Custom Item and List components
 
 ### TODO
-* Smooth scrolling
-* Customization
+* Auto scrolling
+* Performance++
 * Doc and examples
 * Integration with state managers (Redux, Mobx...)
 * Animations
