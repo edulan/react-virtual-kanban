@@ -3,14 +3,90 @@ React Virtual Kanban
 
 A Kanban component in React.
 
-### Key Features
-* Performance
+Demo available here:
+https://edulan.github.io/react-virtual-kanban/
+
+## Features
 * Fully virtualized
 * Built-in drag and drop support
 * Dynamic heights
 * Custom Item and List components
 
-### TODO
+## Installation
+Via npm:
+```shell
+npm install react-virtual-kanban --save
+```
+
+## Usage
+### Basic example
+```javascript
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { VirtualKanban } from 'react-virtual-kanban';
+
+// Import only once
+import 'react-virtual-kanban/lib/styles.css';
+
+// Declare lists with the following structure
+const lists = [
+  {
+    id: 'list#1',
+    rows: [
+      {id: 'item#1'},
+      {id: 'item#2'},
+      {id: 'item#3'},
+      {id: 'item#4'}
+    ]
+  },
+  {
+    id: 'list#2',
+    rows: [
+      {id: 'item#5'},
+      {id: 'item#6'},
+      {id: 'item#7'},
+      {id: 'item#8'}
+    ]
+  },
+  {
+    id: 'list#3',
+    rows: [
+      {id: 'item#9'},
+      {id: 'item#10'},
+      {id: 'item#11'},
+      {id: 'item#12'}
+    ]
+  }
+];
+
+ReactDOM.render(
+  <VirtualKanban
+    lists={lists}
+    width={800}
+    height={600}
+    listWidth={200}
+  />,
+  document.getElementById('root')
+);
+```
+
+## API
+| Property | Type | Default | Description |
+|:---------------------------|:------------------|:-----------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| lists | Array | `[]` | Array of lists to be rendered |
+| width | Number | | The width of the kanban board |
+| height | Number | | The height of the kanban board |
+| listWidth | Number | | Width of each list |
+| listComponent | Function | `List` | List decorator component |
+| itemComponent | Function | `Item` | Item decorator component |
+| itemPreviewComponent | Function | ItemPreview | Item preview decorator component |
+| listPreviewComponent | Function | | List preview decorator component |
+| onMoveRow | Function | | Move row callback |
+| onMoveList | Function | | Move list callback |
+| onDropRow | Function | | Drop row callback |
+| onDropList | Function | | Drop list callback |
+
+## TODO
 * Auto scrolling
 * Performance++
 * Doc and examples
