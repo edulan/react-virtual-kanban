@@ -1,13 +1,12 @@
 export function beginDrag(props) {
   return {
-    index: props.index,
     rowId: props.rowId,
-    rowStyle: props.rowStyle,
+    rowIndex: props.rowIndex,
     listIndex: props.listIndex,
+    rowStyle: props.rowStyle,
   };
 }
 
-// TODO: Review
 export function isDragging({ rowId }, monitor) {
    const draggingRowId = monitor.getItem().rowId;
 

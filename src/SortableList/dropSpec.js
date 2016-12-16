@@ -18,18 +18,17 @@ export function hover(props, monitor, component) {
 
     props.moveList({dragListIndex}, {hoverListIndex});
 
-    // TODO: Review
     item.listIndex = hoverListIndex;
     return;
   }
 
   if (itemType === ROW_TYPE) {
-    const { index: dragIndex, listIndex: dragListIndex } = item;
+    const { rowIndex: dragIndex, listIndex: dragListIndex } = item;
     const hoverIndex = props.rows.length;
 
     props.moveRow({dragIndex, dragListIndex}, {hoverIndex, hoverListIndex});
 
-    item.index = hoverIndex;
+    item.rowIndex = hoverIndex;
     item.listIndex = hoverListIndex;
     return;
   }

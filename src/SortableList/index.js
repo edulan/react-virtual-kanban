@@ -1,18 +1,17 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { List as VirtualScroll, CellMeasurer, AutoSizer } from 'react-virtualized';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 
-import RowSizeCache from '../utils/RowSizeCache';
-import BaseComponent from '../BaseComponent';
+import { ItemCache } from './itemCache';
 import SortableItem from '../SortableItem';
 
 import { LIST_TYPE, ROW_TYPE } from '../types';
 import * as dragSpec from './dragSpec';
 import * as dropSpec from './dropSpec';
 
-class List extends BaseComponent {
+class SortableList extends Component {
   static propTypes = {
     rows: PropTypes.array,
     listId: PropTypes.string,
@@ -63,9 +62,9 @@ class List extends BaseComponent {
         key={key}
         rowId={id}
         listId={this.props.listId}
-        rowStyle={style}
-        index={index}
+        rowIndex={index}
         listIndex={this.props.listIndex}
+        rowStyle={style}
         itemComponent={this.props.itemComponent}
         moveRow={this.props.moveRow}
         dropRow={this.props.dropRow}
@@ -96,7 +95,7 @@ class List extends BaseComponent {
         columnCount={1}
         rowCount={this.props.rows.length}
         cellRenderer={this.renderItemForMeasure}
-        cellSizeCache={new RowSizeCache(this.props.rows)}
+        cellSizeCache={new ItemCache(this.props.rows)}
       >
         {({ getRowHeight }) => (
           <VirtualScroll
@@ -152,4 +151,4 @@ const connectDrag = DragSource(LIST_TYPE, dragSpec, (connect, monitor) => ({
   isDragging: monitor.isDragging(),
 }))
 
-export default connectDrop(connectDrag(List));
+export default connectDrop(connectDrag(SortableList));

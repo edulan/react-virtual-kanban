@@ -2,9 +2,9 @@ import { findDOMNode } from 'react-dom';
 
 export function hover(props, monitor, component) {
   const item = monitor.getItem();
-  const dragIndex = item.index;
+  const dragIndex = item.rowIndex;
   const dragListIndex = item.listIndex;
-  const hoverIndex = props.index;
+  const hoverIndex = props.rowIndex;
   const hoverListIndex = props.listIndex;
 
   if (dragIndex === hoverIndex && dragListIndex === hoverListIndex) {
@@ -28,7 +28,7 @@ export function hover(props, monitor, component) {
       clientOffset.x < hoverBoundingRect.right &&
       dragListIndex !== hoverListIndex) {
     props.moveRow({dragIndex, dragListIndex}, {hoverIndex, hoverListIndex});
-    item.index = hoverIndex;
+    item.rowIndex = hoverIndex;
     item.listIndex = hoverListIndex;
     return;
   }
@@ -45,7 +45,7 @@ export function hover(props, monitor, component) {
 
   props.moveRow({dragIndex, dragListIndex}, {hoverIndex, hoverListIndex});
 
-  item.index = hoverIndex;
+  item.rowIndex = hoverIndex;
   item.listIndex = hoverListIndex;
 }
 
