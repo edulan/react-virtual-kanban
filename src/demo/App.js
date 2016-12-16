@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import { AutoSizer } from 'react-virtualized';
 
 import { VirtualKanban } from '../';
-
-import { updateLists } from './utils/update_lists';
 
 import './App.css';
 
@@ -15,22 +12,8 @@ class App extends Component {
       lists: props.getLists(),
     };
 
-    this.moveRow = this.moveRow.bind(this);
-    this.moveList = this.moveList.bind(this);
     this.dropRow = this.dropRow.bind(this);
     this.dropList = this.dropList.bind(this);
-  }
-
-  moveRow(from, to) {
-    this.setState(
-      {lists: updateLists(this.state.lists, {from, to})}
-    );
-  }
-
-  moveList(from, to) {
-    this.setState(
-      {lists: updateLists(this.state.lists, {from, to})}
-    );
   }
 
   dropRow(_to) {
@@ -44,22 +27,12 @@ class App extends Component {
   render() {
     return (
       <div className='KanbanWrapper'>
-        <AutoSizer>
-          {({ width, height }) => {
-            return (
-              <VirtualKanban
-                lists={this.state.lists}
-                width={width}
-                listWidth={270}
-                height={height}
-                onMoveRow={this.moveRow}
-                onMoveList={this.moveList}
-                onDropRow={this.dropRow}
-                onDropList={this.dropList}
-              />
-            );
-          }}
-        </AutoSizer>
+        <VirtualKanban
+          lists={this.state.lists}
+          width={1000}
+          listWidth={200}
+          height={600}
+        />
       </div>
     );
   }
