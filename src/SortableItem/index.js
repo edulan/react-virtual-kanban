@@ -36,7 +36,7 @@ class SortableItem extends Component {
 
   render() {
     const {
-      index: _index,
+      rowIndex: _rowIndex,
       itemComponent: DecoratedItem,
       isDragging,
       connectDragSource,
