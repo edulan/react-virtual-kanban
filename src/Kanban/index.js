@@ -6,9 +6,10 @@ import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
 import { Grid } from 'react-virtualized';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 
-import DragLayer from '../DragLayer';
-import * as decorators from '../decorators';
+import { updateLists } from './updateLists';
 
+import * as decorators from '../decorators';
+import DragLayer from '../DragLayer';
 import SortableList from '../SortableList';
 
 const GridWithScrollZone = withScrolling(Grid);
@@ -31,6 +32,7 @@ class Kanban extends Component {
   }
 
   static defaultProps = {
+    lists: [],
     itemComponent: decorators.Item,
     listComponent: decorators.List,
     itemPreviewComponent: decorators.ItemPreview,
@@ -44,21 +46,45 @@ class Kanban extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      lists: props.lists
+    };
+
+    this.onMoveList =this.onMoveList.bind(this);
+    this.onMoveRow =this.onMoveRow.bind(this);
     this.renderList = this.renderList.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({lists: nextProps.lists});
+  }
+
+  onMoveList(from, to) {
+    this.setState(
+      {lists: updateLists(this.state.lists, {from, to})},
+      () => this.props.onMoveList(from, to)
+    );
+  }
+
+  onMoveRow(from, to) {
+    this.setState(
+      {lists: updateLists(this.state.lists, {from, to})},
+      () => this.props.onMoveRow(from, to)
+    );
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return shallowCompare(this, nextProps, nextState);
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.lists !== this.props.lists) {
+  componentDidUpdate(_prevProps, prevState) {
+    if (prevState.lists !== this.state.lists) {
       this._grid.wrappedInstance.forceUpdate();
     }
   }
 
   renderList({ columnIndex, key, style }) {
-    const { id, rows } = this.props.lists[columnIndex];
+    const { id, rows } = this.state.lists[columnIndex];
 
     return (
       <SortableList
@@ -69,17 +95,17 @@ class Kanban extends Component {
         listComponent={this.props.listComponent}
         itemComponent={this.props.itemComponent}
         rows={rows}
-        moveRow={this.props.onMoveRow}
-        moveList={this.props.onMoveList}
+        moveRow={this.onMoveRow}
+        moveList={this.onMoveList}
         dropRow={this.props.onDropRow}
         dropList={this.props.onDropList}
       />
     );
-
   }
 
   render() {
-    const { lists, width, height, listWidth, itemPreviewComponent, listPreviewComponent } = this.props;
+    const { width, height, listWidth, itemPreviewComponent, listPreviewComponent } = this.props;
+    const { lists } = this.state;
 
     return (
       <div>
