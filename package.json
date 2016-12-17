@@ -70,6 +70,7 @@
   "dependencies": {
     "babel-runtime": "6.11.6",
     "classnames": "2.2.5",
+    "dom-helpers": "^2.4.0",
     "react-addons-update": "15.4.1",
     "react-dnd": "2.1.4",
     "react-dnd-html5-backend": "2.1.2",
