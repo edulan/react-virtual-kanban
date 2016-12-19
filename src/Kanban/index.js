@@ -52,6 +52,8 @@ class Kanban extends Component {
 
     this.onMoveList =this.onMoveList.bind(this);
     this.onMoveRow =this.onMoveRow.bind(this);
+    this.onDropList =this.onDropList.bind(this);
+    this.onDropRow =this.onDropRow.bind(this);
     this.renderList = this.renderList.bind(this);
   }
 
@@ -71,6 +73,14 @@ class Kanban extends Component {
       {lists: updateLists(this.state.lists, {from, to})},
       () => this.props.onMoveRow(from, to)
     );
+  }
+
+  onDropList({ listId }) {
+    this.props.onDropList({listId, lists: this.state.lists});
+  }
+
+  onDropRow({ rowId, listId }) {
+    this.props.onDropRow({rowId, listId, lists: this.state.lists});
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -97,8 +107,8 @@ class Kanban extends Component {
         rows={rows}
         moveRow={this.onMoveRow}
         moveList={this.onMoveList}
-        dropRow={this.props.onDropRow}
-        dropList={this.props.onDropList}
+        dropRow={this.onDropRow}
+        dropList={this.onDropList}
       />
     );
   }

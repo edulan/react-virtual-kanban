@@ -51,7 +51,7 @@ export function hover(props, monitor, component) {
 
 export function drop(props) {
   const rowId = props.rowId;
-  const listIndex = props.listId;
+  const listId = props.listId;
 
-  props.dropRow({rowId, listIndex});
+  props.dropRow({rowId, listId});
 }
