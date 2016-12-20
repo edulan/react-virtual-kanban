@@ -1,5 +1,6 @@
 var path = require('path');
 var autoprefixer = require('autoprefixer');
+var atImport = require('postcss-import');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
@@ -55,29 +56,6 @@ module.exports = {
     // In development, we always serve from the root. This makes config easier.
     publicPath: '/'
   },
-  resolve: {
-    // These are the reasonable defaults supported by the Node ecosystem.
-    extensions: ['.js', '.json', ''],
-    alias: {
-      // This `alias` section can be safely removed after ejection.
-      // We do this because `babel-runtime` may be inside `react-scripts`,
-      // so when `babel-plugin-transform-runtime` imports it, it will not be
-      // available to the app directly. This is a temporary solution that lets
-      // us ship support for generators. However it is far from ideal, and
-      // if we don't have a good solution, we should just make `babel-runtime`
-      // a dependency in generated projects.
-      // See https://github.com/facebookincubator/create-react-app/issues/255
-      'babel-runtime/regenerator': require.resolve('babel-runtime/regenerator'),
-      'react-native': 'react-native-web'
-    }
-  },
-  // Resolve loaders (webpack plugins for CSS, images, transpilation) from the
-  // directory of `react-scripts` itself rather than the project directory.
-  // You can remove this after ejecting.
-  resolveLoader: {
-    root: paths.ownNodeModules,
-    moduleTemplates: ['*-loader']
-  },
   module: {
     // First, run the linter.
     // It's important to do this before Babel processes the JS.
@@ -104,7 +82,7 @@ module.exports = {
       {
         test: /\.css$/,
         include: [paths.appSrc, paths.appNodeModules],
-        loader: 'style!css!postcss'
+        loader: 'style!css!postcss?-import'
       },
       // JSON is not enabled by default in Webpack but both Node and Browserify
       // allow it implicitly so we also enable it.
@@ -153,6 +131,7 @@ module.exports = {
           'not ie < 9', // React doesn't support IE8 anyway
         ]
       }),
+      atImport()
     ];
   },
   plugins: [

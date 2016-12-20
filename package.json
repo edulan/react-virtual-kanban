@@ -52,6 +52,7 @@
     "opn": "4.0.2",
     "postcss": "^5.2.6",
     "postcss-cli": "^2.6.0",
+    "postcss-import": "^9.0.0",
     "postcss-loader": "0.9.1",
     "promise": "7.1.1",
     "react": "15.4.1",
@@ -83,11 +84,12 @@
     "react-dom": "^0.14.0 || ^15.0.0"
   },
   "scripts": {
-    "build:commonjs": "NODE_ENV=production BABEL_ENV=commonjs babel src --out-dir lib --ignore src/demo/",
+    "build:clean": "rm -rf ./lib ./dist",
+    "build:lib": "NODE_ENV=production BABEL_ENV=commonjs babel src --out-dir lib --ignore src/demo/",
     "build:umd": "NODE_ENV=production webpack --config config/webpack.config.umd.js --bail",
     "build:demo": "node ./scripts/build.js",
-    "build:css": "postcss --use autoprefixer src/styles.css > lib/styles.css",
-    "build": "npm run build:umd && npm run build:commonjs && npm run build:css",
+    "build:css": "postcss --use autoprefixer --use postcss-import src/styles.css > lib/styles.css",
+    "build": "npm run build:clean && npm run build:umd && npm run build:lib && npm run build:css",
     "start": "node ./scripts/start.js"
   },
   "eslintConfig": {
