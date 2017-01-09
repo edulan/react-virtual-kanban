@@ -75,8 +75,8 @@ class Kanban extends Component {
     );
   }
 
-  onDropList({ listId }) {
-    this.props.onDropList({listId, lists: this.state.lists});
+  onDropList({ listId, listIndex }) {
+    this.props.onDropList({listId, listIndex, lists: this.state.lists});
   }
 
   onDropRow({ rowId, listId, rowIndex, listIndex }) {

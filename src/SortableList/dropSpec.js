@@ -48,7 +48,7 @@ export function canDrop(props, monitor) {
 }
 
 export function drop(props) {
-  const listId = props.listId;
+  const { listId, listIndex } = props;
 
-  props.dropList({listId});
+  props.dropList({listId, listIndex});
 }
