@@ -11,17 +11,6 @@ class App extends Component {
     this.state = {
       lists: props.getLists(),
     };
-
-    this.dropRow = this.dropRow.bind(this);
-    this.dropList = this.dropList.bind(this);
-  }
-
-  dropRow(_to) {
-    this.props.setLists(this.state.lists);
-  }
-
-  dropList(to) {
-    this.props.setLists(this.state.lists);
   }
 
   render() {
