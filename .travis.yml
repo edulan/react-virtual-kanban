@@ -6,4 +6,3 @@ node_js:
 
 before_install:
   - npm install -g npm@3
-  - npm -v
