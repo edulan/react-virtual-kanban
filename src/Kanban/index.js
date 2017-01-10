@@ -63,14 +63,14 @@ class Kanban extends Component {
 
   onMoveList(from, to) {
     this.setState(
-      {lists: updateLists(this.state.lists, {from, to})},
+      (prevState) => ({lists: updateLists(prevState.lists, {from, to})}),
       () => this.props.onMoveList(from, to)
     );
   }
 
   onMoveRow(from, to) {
     this.setState(
-      {lists: updateLists(this.state.lists, {from, to})},
+      (prevState) => ({lists: updateLists(prevState.lists, {from, to})}),
       () => this.props.onMoveRow(from, to)
     );
   }
