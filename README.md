@@ -1,4 +1,5 @@
 # React Virtual Kanban
+![](https://img.shields.io/travis/edulan/react-virtual-kanban.svg)
 
 A Kanban component in React.
 
