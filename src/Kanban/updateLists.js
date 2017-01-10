@@ -35,6 +35,14 @@ export function updateLists(lists, { from, to }) {
 
   // Move rows between different lists
   if (fromListIndex !== toListIndex) {
+    const row = lists[fromListIndex].rows[fromRowIndex];
+
+    if (!row) {
+      // TODO: Review edge case with out of bounds fromRowIndex
+      // Just return a clone of initial lists
+      return lists.concat();
+    }
+
     return update(lists, {
       // Remove row from source list
       [fromListIndex]: {
@@ -48,7 +56,7 @@ export function updateLists(lists, { from, to }) {
       [toListIndex]: {
         rows: {
           $splice: [
-            [toRowIndex, 0, lists[fromListIndex].rows[fromRowIndex]]
+            [toRowIndex, 0, row]
           ]
         }
       },
