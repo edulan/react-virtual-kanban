@@ -27,7 +27,7 @@ export function hover(props, monitor, component) {
   if (hoverBoundingRect.left < clientOffset.x &&
       clientOffset.x < hoverBoundingRect.right &&
       dragListIndex !== hoverListIndex) {
-    props.moveRow({dragIndex, dragListIndex}, {hoverIndex, hoverListIndex});
+    props.moveRow({rowIndex: dragIndex, listIndex: dragListIndex}, {rowIndex: hoverIndex, listIndex: hoverListIndex});
     item.rowIndex = hoverIndex;
     item.listIndex = hoverListIndex;
     return;
@@ -43,7 +43,7 @@ export function hover(props, monitor, component) {
     return;
   }
 
-  props.moveRow({dragIndex, dragListIndex}, {hoverIndex, hoverListIndex});
+  props.moveRow({rowIndex: dragIndex, listIndex: dragListIndex}, {rowIndex: hoverIndex, listIndex: hoverListIndex});
 
   item.rowIndex = hoverIndex;
   item.listIndex = hoverListIndex;

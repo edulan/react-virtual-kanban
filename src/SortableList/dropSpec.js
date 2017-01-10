@@ -16,7 +16,7 @@ export function hover(props, monitor, component) {
   if (itemType === LIST_TYPE) {
     const dragListIndex = item.listIndex;
 
-    props.moveList({dragListIndex}, {hoverListIndex});
+    props.moveList({listIndex: dragListIndex}, {listIndex: hoverListIndex});
 
     item.listIndex = hoverListIndex;
     return;
@@ -26,7 +26,7 @@ export function hover(props, monitor, component) {
     const { rowIndex: dragIndex, listIndex: dragListIndex } = item;
     const hoverIndex = props.rows.length;
 
-    props.moveRow({dragIndex, dragListIndex}, {hoverIndex, hoverListIndex});
+    props.moveRow({rowIndex: dragIndex, listIndex: dragListIndex}, {rowIndex: hoverIndex, listIndex: hoverListIndex});
 
     item.rowIndex = hoverIndex;
     item.listIndex = hoverListIndex;
