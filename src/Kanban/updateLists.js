@@ -20,35 +20,35 @@ function buildUpdateOperation(list, { from, to }) {
 }
 
 export function updateLists(lists, { from, to }) {
-  const { dragIndex = -1, dragListIndex } = from;
-  const { hoverIndex = -1, hoverListIndex } = to;
+  const { rowIndex: fromRowIndex, listIndex: fromListIndex } = from;
+  const { rowIndex: toRowIndex, listIndex: toListIndex } = to;
 
   // Move lists
-  if (dragListIndex !== hoverListIndex && dragIndex === -1 && hoverIndex === -1) {
+  if (fromListIndex !== toListIndex && fromRowIndex === void 0 && toRowIndex === void 0) {
     return update(lists, {
       $splice: [
-        [dragListIndex, 1],
-        [hoverListIndex, 0, lists[dragListIndex]],
+        [fromListIndex, 1],
+        [toListIndex, 0, lists[fromListIndex]],
       ]
     });
   }
 
   // Move rows between different lists
-  if (dragListIndex !== hoverListIndex) {
+  if (fromListIndex !== toListIndex) {
     return update(lists, {
       // Remove row from source list
-      [dragListIndex]: {
+      [fromListIndex]: {
         rows: {
           $splice: [
-            [dragIndex, 1],
+            [fromRowIndex, 1],
           ]
         }
       },
       // Add row to target list
-      [hoverListIndex]: {
+      [toListIndex]: {
         rows: {
           $splice: [
-            [hoverIndex, 0, lists[dragListIndex].rows[dragIndex]]
+            [toRowIndex, 0, lists[fromListIndex].rows[fromRowIndex]]
           ]
         }
       },
@@ -57,10 +57,10 @@ export function updateLists(lists, { from, to }) {
 
   // Move rows inside same list
   return update(lists, {
-    [dragListIndex]: {
+    [fromListIndex]: {
       rows: {
         $splice: [
-          buildUpdateOperation(lists[dragListIndex].rows, {from: dragIndex, to: hoverIndex})
+          buildUpdateOperation(lists[fromListIndex].rows, {from: fromRowIndex, to: toRowIndex})
         ]
       }
     }
