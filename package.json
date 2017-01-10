@@ -53,6 +53,7 @@
     "gzip-size": "3.0.0",
     "html-webpack-plugin": "2.22.0",
     "http-proxy-middleware": "0.17.0",
+    "jest": "^18.1.0",
     "json-loader": "0.5.4",
     "object-assign": "4.1.0",
     "opn": "4.0.2",
@@ -96,7 +97,8 @@
     "build:demo": "node ./scripts/build.js",
     "build:css": "postcss --use autoprefixer --use postcss-import src/styles.css > lib/styles.css",
     "build": "npm run build:clean && npm run build:umd && npm run build:lib && npm run build:css",
-    "start": "node ./scripts/start.js"
+    "start": "node ./scripts/start.js",
+    "test": "jest"
   },
   "eslintConfig": {
     "extends": "./config/eslint.js"
