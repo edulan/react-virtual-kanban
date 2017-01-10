@@ -4,7 +4,7 @@ import Perf from 'react-addons-perf';
 
 import '../styles.css';
 
-import { generateLists } from './utils/generate_lists';
+import { generateLists } from './utils/generateLists';
 
 import App from './App';
 
