@@ -11,3 +11,7 @@ lib
 # misc
 .DS_Store
 npm-debug.log
+
+# doc
+TODO.md
+RELEASE_STEPS.md
