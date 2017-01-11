@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { VirtualKanban } from '../';
+import { VirtualKanban } from '../../lib';
 
 import './App.css';
 

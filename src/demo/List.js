@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import { decorators } from '../';
+import { decorators } from '../../lib';
 
 export default class List extends decorators.List {
   render() {

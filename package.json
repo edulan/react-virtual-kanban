@@ -3,7 +3,7 @@
   "description": "A Kanban component in React",
   "version": "0.0.6",
   "author": "Eduardo Lanchares <eduardo@elanchares.com>",
-  "homepage": "https://github.com/edulan/react-virtual-kanban",
+  "homepage": "https://edulan.github.io/react-virtual-kanban/",
   "main": "lib/index.js",
   "repository": {
     "type": "git",
@@ -100,7 +100,8 @@
     "build": "npm run build:clean && npm run build:umd && npm run build:lib && npm run build:css && npm run build:demo",
     "deploy": "gh-pages -d build",
     "prepublish": "npm run build",
-    "start": "node ./scripts/start.js",
+    "postpublish": "npm run deploy",
+    "start": "npm run build:lib && node ./scripts/start.js",
     "test": "jest"
   },
   "eslintConfig": {
