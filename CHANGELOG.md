@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+### 0.0.7
+Use generated lib for demo application
+
 ### 0.0.6
 Added jest test runner :green_apple:. Also added tests for `updateList` module.
 
