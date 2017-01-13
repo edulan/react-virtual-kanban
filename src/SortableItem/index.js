@@ -3,14 +3,16 @@ import shallowCompare from 'react-addons-shallow-compare';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 
+import { PropTypes as CustomPropTypes } from '../propTypes';
+
 import { ROW_TYPE } from '../types';
 import * as dragSpec from './dragSpec';
 import * as dropSpec from './dropSpec';
 
 class SortableItem extends Component {
   static propTypes = {
-    rowId: PropTypes.string,
-    listId: PropTypes.string,
+    rowId: CustomPropTypes.id.isRequired,
+    listId: CustomPropTypes.id.isRequired,
     rowIndex: PropTypes.number,
     listIndex: PropTypes.number,
     rowStyle: PropTypes.object,

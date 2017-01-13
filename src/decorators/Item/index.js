@@ -2,10 +2,12 @@ import React, { PropTypes, Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import classnames from 'classnames';
 
+import { PropTypes as CustomPropTypes } from '../../propTypes';
+
 export default class Item extends Component {
   static propTypes = {
-    rowId: PropTypes.string.isRequired,
-    listId: PropTypes.string.isRequired,
+    rowId: CustomPropTypes.id.isRequired,
+    listId: CustomPropTypes.id.isRequired,
     rowIndex: PropTypes.number.isRequired,
     listIndex: PropTypes.number.isRequired,
     isDragging: PropTypes.bool.isRequired,

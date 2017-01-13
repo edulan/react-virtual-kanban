@@ -1,9 +1,11 @@
 import React, { PropTypes, Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 
+import { PropTypes as CustomPropTypes } from '../../propTypes';
+
 export default class ListPreview extends Component {
   static propTypes = {
-    listId: PropTypes.string.isRequired,
+    listId: CustomPropTypes.id.isRequired,
     listStyle: PropTypes.object.isRequired,
   };
 

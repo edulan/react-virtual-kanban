@@ -4,6 +4,8 @@ import { List as VirtualScroll, CellMeasurer, AutoSizer } from 'react-virtualize
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 
+import { PropTypes as CustomPropTypes } from '../propTypes';
+
 import { ItemCache } from './itemCache';
 import SortableItem from '../SortableItem';
 
@@ -16,7 +18,7 @@ const identity = (c) => c;
 class SortableList extends Component {
   static propTypes = {
     rows: PropTypes.array,
-    listId: PropTypes.string,
+    listId: CustomPropTypes.id.isRequired,
     listIndex: PropTypes.number,
     listStyle: PropTypes.object,
     listComponent: PropTypes.func,

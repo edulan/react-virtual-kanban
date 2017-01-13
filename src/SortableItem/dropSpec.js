@@ -1,4 +1,5 @@
 import { findDOMNode } from 'react-dom';
+import { width } from 'dom-helpers/query';
 
 export function hover(props, monitor, component) {
   const item = monitor.getItem();
@@ -12,7 +13,8 @@ export function hover(props, monitor, component) {
   }
 
   // Determine rectangle on screen
-  const hoverBoundingRect = findDOMNode(component).getBoundingClientRect();
+  const node = findDOMNode(component);
+  const hoverBoundingRect = node.getBoundingClientRect();
 
   // Get vertical middle
   const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
@@ -30,6 +32,7 @@ export function hover(props, monitor, component) {
     props.moveRow({rowIndex: dragIndex, listIndex: dragListIndex}, {rowIndex: hoverIndex, listIndex: hoverListIndex});
     item.rowIndex = hoverIndex;
     item.listIndex = hoverListIndex;
+    item.containerWidth = width(node);
     return;
   }
 
@@ -47,6 +50,7 @@ export function hover(props, monitor, component) {
 
   item.rowIndex = hoverIndex;
   item.listIndex = hoverListIndex;
+  item.containerWidth = width(node);
 }
 
 export function drop(props) {

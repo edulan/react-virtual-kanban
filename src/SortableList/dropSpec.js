@@ -1,3 +1,6 @@
+import { findDOMNode } from 'react-dom';
+import { width, querySelectorAll } from 'dom-helpers/query';
+
 import { LIST_TYPE, ROW_TYPE } from '../types';
 
 export function hover(props, monitor, component) {
@@ -30,6 +33,12 @@ export function hover(props, monitor, component) {
 
     item.rowIndex = hoverIndex;
     item.listIndex = hoverListIndex;
+
+    const innerScrollContainer = querySelectorAll(findDOMNode(component), '.ReactVirtualized__Grid__innerScrollContainer')[0];
+
+    if (!innerScrollContainer) return;
+
+    item.containerWidth = width(innerScrollContainer);
     return;
   }
 }
