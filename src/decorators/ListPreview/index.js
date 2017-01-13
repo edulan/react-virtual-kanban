@@ -1,7 +1,12 @@
-import React, { Component } from 'react';
+import React, { PropTypes, Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 
 export default class ListPreview extends Component {
+  static propTypes = {
+    listId: PropTypes.string.isRequired,
+    listStyle: PropTypes.object.isRequired,
+  };
+
   shouldComponentUpdate(nextProps, nextState) {
     return shallowCompare(this, nextProps, nextState);
   }

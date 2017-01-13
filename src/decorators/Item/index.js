@@ -1,14 +1,25 @@
-import React, { Component } from 'react';
+import React, { PropTypes, Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import classnames from 'classnames';
 
 export default class Item extends Component {
+  static propTypes = {
+    rowId: PropTypes.string.isRequired,
+    listId: PropTypes.string.isRequired,
+    rowIndex: PropTypes.number.isRequired,
+    listIndex: PropTypes.number.isRequired,
+    isDragging: PropTypes.bool.isRequired,
+    rowStyle: PropTypes.object.isRequired,
+    connectDragSource: PropTypes.func.isRequired,
+    connectDropTarget: PropTypes.func.isRequired,
+  };
+
   shouldComponentUpdate(nextProps, nextState) {
     return shallowCompare(this, nextProps, nextState);
   }
 
   render() {
-    const { rowId, style, connectDragSource, connectDropTarget, isDragging } = this.props;
+    const { rowId, rowStyle, connectDragSource, connectDropTarget, isDragging } = this.props;
 
     const itemContainerClass = classnames({
       'ItemContainer': true,
@@ -16,7 +27,7 @@ export default class Item extends Component {
     });
 
     return connectDragSource(connectDropTarget(
-      <div className='ItemWrapper' style={style}>
+      <div className='ItemWrapper' style={rowStyle}>
         <div className={itemContainerClass}>
           <div className='ItemContent'>
             <p>{rowId}</p>
