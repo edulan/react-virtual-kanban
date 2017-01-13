@@ -36,19 +36,24 @@ class SortableItem extends Component {
 
   render() {
     const {
-      rowIndex: _rowIndex,
+      rowId,
+      listId,
+      rowIndex,
+      listIndex,
       itemComponent: DecoratedItem,
       isDragging,
       connectDragSource,
       connectDropTarget,
       rowStyle,
-      ...rowProps
     } = this.props;
 
     return (
       <DecoratedItem
-        {...rowProps}
-        style={rowStyle}
+        rowId={rowId}
+        listId={listId}
+        rowIndex={rowIndex}
+        listIndex={listIndex}
+        rowStyle={rowStyle}
         isDragging={isDragging}
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}

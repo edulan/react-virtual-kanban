@@ -11,6 +11,8 @@ import { LIST_TYPE, ROW_TYPE } from '../types';
 import * as dragSpec from './dragSpec';
 import * as dropSpec from './dropSpec';
 
+const identity = (c) => c;
+
 class SortableList extends Component {
   static propTypes = {
     rows: PropTypes.array,
@@ -72,18 +74,22 @@ class SortableList extends Component {
     );
   }
 
-  renderItemForMeasure({ rowIndex: index }) {
+  renderItemForMeasure({ rowIndex }) {
     const { itemComponent: DecoratedItem } = this.props;
-    const { id } = this.props.rows[index];
+    const { id } = this.props.rows[rowIndex];
 
     // TODO: Determine whether scrollbar is visible or not :/
 
     return (
       <DecoratedItem
         rowId={id}
+        listId={this.props.listId}
+        rowIndex={rowIndex}
+        listIndex={this.props.listIndex}
+        rowStyle={{}}
         isDragging={false}
-        connectDragSource={(e) => e}
-        connectDropTarget={(e) => e}
+        connectDragSource={identity}
+        connectDropTarget={identity}
       />
     );
   }
@@ -116,18 +122,18 @@ class SortableList extends Component {
   render() {
     const {
       listId,
+      listIndex,
       listComponent: DecoratedList,
       isDragging,
       connectDragSource,
       connectDropTarget,
       listStyle,
-      ...listProps,
     } = this.props;
 
     return (
       <DecoratedList
-        {...listProps}
         listId={listId}
+        listIndex={listIndex}
         style={listStyle}
         isDragging={isDragging}
         connectDragSource={connectDragSource}
