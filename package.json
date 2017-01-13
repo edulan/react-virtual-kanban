@@ -101,7 +101,7 @@
     "deploy": "gh-pages -d build",
     "prepublish": "npm run build",
     "postpublish": "npm run deploy",
-    "start": "npm run build:lib && node ./scripts/start.js",
+    "start": "npm run build:lib && npm run build:css && node ./scripts/start.js",
     "test": "jest"
   },
   "eslintConfig": {
