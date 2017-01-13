@@ -28,7 +28,6 @@ class KanbanDragLayer extends Component {
       y: PropTypes.number.isRequired
     }),
     isDragging: PropTypes.bool.isRequired,
-    listWidth: PropTypes.number.isRequired,
     itemPreviewComponent: PropTypes.func.isRequired,
     listPreviewComponent: PropTypes.func.isRequired,
   }
@@ -50,11 +49,11 @@ class KanbanDragLayer extends Component {
     case ItemTypes.ROW_TYPE:
       Preview = this.props.itemPreviewComponent;
 
-      return <Preview listWidth={this.props.listWidth} rowId={item.rowId} rowStyle={item.rowStyle} />;
+      return <Preview rowId={item.rowId} rowStyle={item.rowStyle} />;
     case ItemTypes.LIST_TYPE:
       Preview = this.props.listPreviewComponent;
 
-      return <Preview listWidth={this.props.listWidth} listId={item.listId} listStyle={item.listStyle} />;
+      return <Preview listId={item.listId} listStyle={item.listStyle} />;
     default:
       return null;
     }

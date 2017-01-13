@@ -138,7 +138,6 @@ class Kanban extends Component {
           speed={100}
         />
         <DragLayer
-          listWidth={listWidth}
           itemPreviewComponent={itemPreviewComponent}
           listPreviewComponent={listPreviewComponent}
         />
