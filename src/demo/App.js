@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { AutoSizer } from 'react-virtualized';
 
 import { VirtualKanban } from '../../lib';
 
@@ -16,12 +17,16 @@ class App extends Component {
   render() {
     return (
       <div className='KanbanWrapper'>
-        <VirtualKanban
-          lists={this.state.lists}
-          width={1000}
-          listWidth={200}
-          height={600}
-        />
+        <AutoSizer>
+          {({ width, height }) => (
+            <VirtualKanban
+              lists={this.state.lists}
+              width={width}
+              height={height}
+              listWidth={200}
+            />
+          )}
+        </AutoSizer>
       </div>
     );
   }
