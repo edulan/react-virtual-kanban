@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+### 0.0.9
+Updated PropTypes for List decorator. Also pass `rows` prop.
+
 ### 0.0.8
 Pass `containerWidth` for preview components
 
