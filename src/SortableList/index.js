@@ -125,6 +125,7 @@ class SortableList extends Component {
     const {
       listId,
       listIndex,
+      rows,
       listComponent: DecoratedList,
       isDragging,
       connectDragSource,
@@ -136,7 +137,8 @@ class SortableList extends Component {
       <DecoratedList
         listId={listId}
         listIndex={listIndex}
-        style={listStyle}
+        rows={rows}
+        listStyle={listStyle}
         isDragging={isDragging}
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}
