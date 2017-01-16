@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+### 0.0.8
+Pass `containerWidth` for preview components
+
+Use explicit props for decorated components
+
 ### 0.0.7
 Use generated lib for demo application
 
