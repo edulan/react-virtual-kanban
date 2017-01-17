@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+### 0.0.10
+Fixed a bug that was causing out of index errors when moving an row between lists.
+
+Now when moving a row to a list, the row will be placed at the beginning of that list (previously was at the end).
+
 ### 0.0.9
 Updated PropTypes for List decorator. Also pass `rows` prop.
 
@@ -20,7 +25,6 @@ Update param names for `moveRow` and `moveList` callbacks on `SortableList` comp
 Defend wierd out of bounds edge case when dragging too fast. Need more investigation though.
 
 Added travis ci.
-
 
 ### 0.0.5
 Pass `listIndex` to `onDropList` callback.
