@@ -3,6 +3,17 @@ import { width, querySelectorAll } from 'dom-helpers/query';
 
 import { LIST_TYPE, ROW_TYPE } from '../types';
 
+function calculateContainerWidth(component) {
+  const innerScrollContainer = querySelectorAll(
+    findDOMNode(component),
+    '.ReactVirtualized__Grid__innerScrollContainer'
+  )[0];
+
+  if (!innerScrollContainer) return 0;
+
+  return width(innerScrollContainer);
+}
+
 export function hover(props, monitor, component) {
   if (!monitor.isOver({shallow: true})) return;
   if (!monitor.canDrop()) return;
@@ -17,28 +28,21 @@ export function hover(props, monitor, component) {
   }
 
   if (itemType === LIST_TYPE) {
-    const dragListIndex = item.listIndex;
+    item.listIndex = hoverListIndex;
 
     props.moveList({listIndex: dragListIndex}, {listIndex: hoverListIndex});
-
-    item.listIndex = hoverListIndex;
     return;
   }
 
   if (itemType === ROW_TYPE) {
-    const { rowIndex: dragIndex, listIndex: dragListIndex } = item;
-    const hoverIndex = props.rows.length;
-
-    props.moveRow({rowIndex: dragIndex, listIndex: dragListIndex}, {rowIndex: hoverIndex, listIndex: hoverListIndex});
+    const dragIndex = item.rowIndex;
+    const hoverIndex = 0;
 
     item.rowIndex = hoverIndex;
     item.listIndex = hoverListIndex;
+    item.containerWidth = calculateContainerWidth(component) || item.containerWidth;
 
-    const innerScrollContainer = querySelectorAll(findDOMNode(component), '.ReactVirtualized__Grid__innerScrollContainer')[0];
-
-    if (!innerScrollContainer) return;
-
-    item.containerWidth = width(innerScrollContainer);
+    props.moveRow({rowIndex: dragIndex, listIndex: dragListIndex}, {rowIndex: hoverIndex, listIndex: hoverListIndex});
     return;
   }
 }

@@ -38,12 +38,6 @@ export function updateLists(lists, { from, to }) {
 
   // Move rows between different lists
   if (fromListIndex !== toListIndex) {
-    // TODO: Review edge case with out of bounds fromRowIndex
-    // Just return a clone of initial lists
-    if (!fromRow) {
-      return lists.concat();
-    }
-
     return update(lists, {
       // Remove row from source list
       [fromListIndex]: {
