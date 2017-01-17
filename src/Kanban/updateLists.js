@@ -23,23 +23,24 @@ export function updateLists(lists, { from, to }) {
   const { rowIndex: fromRowIndex, listIndex: fromListIndex } = from;
   const { rowIndex: toRowIndex, listIndex: toListIndex } = to;
 
+  const fromList = lists[fromListIndex];
+  const fromRow = fromList.rows[fromRowIndex];
+
   // Move lists
   if (fromListIndex !== toListIndex && fromRowIndex === void 0 && toRowIndex === void 0) {
     return update(lists, {
       $splice: [
         [fromListIndex, 1],
-        [toListIndex, 0, lists[fromListIndex]],
+        [toListIndex, 0, fromList],
       ]
     });
   }
 
   // Move rows between different lists
   if (fromListIndex !== toListIndex) {
-    const row = lists[fromListIndex].rows[fromRowIndex];
-
-    if (!row) {
-      // TODO: Review edge case with out of bounds fromRowIndex
-      // Just return a clone of initial lists
+    // TODO: Review edge case with out of bounds fromRowIndex
+    // Just return a clone of initial lists
+    if (!fromRow) {
       return lists.concat();
     }
 
@@ -56,7 +57,7 @@ export function updateLists(lists, { from, to }) {
       [toListIndex]: {
         rows: {
           $splice: [
-            [toRowIndex, 0, row]
+            [toRowIndex, 0, fromRow]
           ]
         }
       },
@@ -68,7 +69,7 @@ export function updateLists(lists, { from, to }) {
     [fromListIndex]: {
       rows: {
         $splice: [
-          buildUpdateOperation(lists[fromListIndex].rows, {from: fromRowIndex, to: toRowIndex})
+          buildUpdateOperation(fromList.rows, {from: fromRowIndex, to: toRowIndex})
         ]
       }
     }

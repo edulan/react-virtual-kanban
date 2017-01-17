@@ -44,6 +44,54 @@ test('move between lists', () => {
   expect(JSON.stringify(updatedList)).toMatchSnapshot();
 });
 
+test('move item to an empty list', () => {
+  const otherLists = [
+    {
+      id: 1,
+      rows: [
+        {id: 1},
+        {id: 2}
+      ]
+    },
+    {
+      id: 2,
+      rows: []
+    }
+  ];
+
+  const updatedList = updateLists(otherLists, {
+    from: {listIndex: 0, rowIndex: 0},
+    to: {listIndex: 1, rowIndex: 0}
+  });
+
+  expect(JSON.stringify(updatedList)).toMatchSnapshot();
+});
+
+test('move item from a list with a single element', () => {
+  const otherLists = [
+    {
+      id: 1,
+      rows: [
+        {id: 1},
+        {id: 2}
+      ]
+    },
+    {
+      id: 2,
+      rows: [
+        {id: 3}
+      ]
+    }
+  ];
+
+  const updatedList = updateLists(otherLists, {
+    from: {listIndex: 1, rowIndex: 0},
+    to: {listIndex: 0, rowIndex: 2}
+  });
+
+  expect(JSON.stringify(updatedList)).toMatchSnapshot();
+});
+
 test('null move', () => {
   const updatedList = updateLists(lists, {
     from: {listIndex: 0, rowIndex: 0},
