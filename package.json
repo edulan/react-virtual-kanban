@@ -93,7 +93,7 @@
   },
   "scripts": {
     "build:clean": "rm -rf ./lib ./dist",
-    "build:lib": "NODE_ENV=production BABEL_ENV=commonjs babel src --out-dir lib --ignore src/demo/",
+    "build:lib": "NODE_ENV=production BABEL_ENV=commonjs babel src --out-dir lib --ignore src/demo/ --ignore src/**/__tests__",
     "build:umd": "NODE_ENV=production webpack --config config/webpack.config.umd.js --bail",
     "build:demo": "node ./scripts/build.js",
     "build:css": "postcss --use autoprefixer --use postcss-import src/styles.css > lib/styles.css",
@@ -106,5 +106,13 @@
   },
   "eslintConfig": {
     "extends": "./config/eslint.js"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ],
+    "testPathIgnorePatterns": [
+      "(lib|build|docs|node_modules)[/\\\\]"
+    ]
   }
 }
