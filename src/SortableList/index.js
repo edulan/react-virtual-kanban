@@ -175,10 +175,11 @@ class SortableList extends Component {
       return false;
     }
 
-    return true;
-      //this.state.totalChildrenHeight === null ||
-      //this.shouldComponentUpdate()
-    //);
+    console.log('wat');
+
+    return (
+      this.state.totalChildrenHeight === null
+    );
   }
 
   render() {
@@ -212,6 +213,7 @@ class SortableList extends Component {
         connectDropTarget={connectDropTarget}
         totalChildrenHeight={this.state.totalChildrenHeight}
       >
+        {this.measureTotalChildrenHeight()}
         <AutoSizer>
           {(dimensions) => this.renderList(dimensions)}
         </AutoSizer>
