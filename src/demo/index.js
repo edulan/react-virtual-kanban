@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import Perf from 'react-addons-perf';
 import shuffle from 'lodash.shuffle';
 
-import '../../lib/styles.css';
+import '../styles.css';
 
 import { generateLists } from './utils/generateLists';
 

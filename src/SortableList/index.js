@@ -15,7 +15,7 @@ import * as dragSpec from './dragSpec';
 import * as dropSpec from './dropSpec';
 
 const identity = (c) => c;
-const defer = (cb) => setTimeout(cb, 0);
+const gervasioDefer = (cb) => setTimeout(cb, 0);
 
 class SortableList extends Component {
   static propTypes = {
@@ -135,14 +135,11 @@ class SortableList extends Component {
   }
 
   scheduleMeasurement({ getRowHeight }) {
-    console.log('scheduling measurment');
-
-    defer(() => {
+    gervasioDefer(() => {
       const totalChildrenHeight = (
         range(this.props.rows.length)
           .reduce((acc, index) => acc + getRowHeight({ index }), 0)
       );
-      console.log('measured!', totalChildrenHeight);
 
       this.setState({totalChildrenHeight});
     });
@@ -175,7 +172,9 @@ class SortableList extends Component {
       return false;
     }
 
-    console.log('wat');
+    if (this.props.isScrolling) {
+      return false;
+    }
 
     return (
       this.state.totalChildrenHeight === null
@@ -183,24 +182,17 @@ class SortableList extends Component {
   }
 
   render() {
-    console.log('rerender!');
-
-    if (this.shouldMeasureTotalChildrenHeight()) {
-      return this.measureTotalChildrenHeight();
-    }
-
     const {
       listId,
       listIndex,
       rows,
       listComponent: DecoratedList,
       isDragging,
+      isScrolling,
       connectDragSource,
       connectDropTarget,
       listStyle,
     } = this.props;
-
-    console.log('what in the fuck?');
 
     return (
       <DecoratedList
@@ -209,6 +201,7 @@ class SortableList extends Component {
         rows={rows}
         listStyle={listStyle}
         isDragging={isDragging}
+        isScrolling={isScrolling}
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}
         totalChildrenHeight={this.state.totalChildrenHeight}

@@ -3,7 +3,7 @@
   "description": "A Kanban component in React",
   "version": "0.0.10",
   "author": "Eduardo Lanchares <eduardo@elanchares.com>",
-  "homepage": "https://edulan.github.io/react-virtual-kanban/",
+  "homepage": "https://github.com/edulan/react-virtual-kanban",
   "main": "lib/index.js",
   "repository": {
     "type": "git",

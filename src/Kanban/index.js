@@ -95,7 +95,7 @@ class Kanban extends Component {
     }
   }
 
-  renderList({ columnIndex, key, style }) {
+  renderList({ columnIndex, key, style, isScrolling }) {
     const { id, rows } = this.state.lists[columnIndex];
 
     return (
@@ -111,6 +111,7 @@ class Kanban extends Component {
         moveList={this.onMoveList}
         dropRow={this.onDropRow}
         dropList={this.onDropList}
+        isScrolling={isScrolling}
         __DANGEROUSLY_MEASURE_TOTAL_CHILDREN_HEIGHT_DO_NOT_USE_OR_YOU_WILL_SUFFER_A_VERY_SLOW_AND_PAINFUL_DEATH={this.props.__DANGEROUSLY_MEASURE_TOTAL_CHILDREN_HEIGHT_DO_NOT_USE_OR_YOU_WILL_SUFFER_A_VERY_SLOW_AND_PAINFUL_DEATH}
       />
     );
