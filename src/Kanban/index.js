@@ -69,6 +69,8 @@ class Kanban extends Component {
   }
 
   onMoveRow(from, to) {
+    console.log('from', from);
+    console.log('to', to);
     this.setState(
       (prevState) => ({lists: updateLists(prevState.lists, {from, to})}),
       () => this.props.onMoveRow(from, to)
@@ -109,6 +111,7 @@ class Kanban extends Component {
         moveList={this.onMoveList}
         dropRow={this.onDropRow}
         dropList={this.onDropList}
+        __DANGEROUSLY_MEASURE_TOTAL_CHILDREN_HEIGHT_DO_NOT_USE_OR_YOU_WILL_SUFFER_A_VERY_SLOW_AND_PAINFUL_DEATH={this.props.__DANGEROUSLY_MEASURE_TOTAL_CHILDREN_HEIGHT_DO_NOT_USE_OR_YOU_WILL_SUFFER_A_VERY_SLOW_AND_PAINFUL_DEATH}
       />
     );
   }

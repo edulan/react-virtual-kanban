@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Perf from 'react-addons-perf';
+import shuffle from 'lodash.shuffle';
 
 import '../../lib/styles.css';
 
@@ -11,9 +12,15 @@ import App from './App';
 window.Perf = Perf;
 
 function getLists() {
-  const lists = window.localStorage.getItem('lists');
+  const lists = ([
+    ...generateLists(5, 1),
+    ...generateLists(10, 2),
+    ...generateLists(5, 0)
+  ]);
 
-  return JSON.parse(lists) || generateLists(20, 50);
+  console.log(lists);
+
+  return shuffle(lists);
 }
 
 function setLists(lists) {

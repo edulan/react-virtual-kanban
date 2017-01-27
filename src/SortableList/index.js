@@ -36,6 +36,10 @@ class SortableList extends Component {
     connectDragPreview: PropTypes.func,
   };
 
+  static defaultProps = {
+    rows: [],
+  };
+
   constructor(props) {
     super(props);
 
@@ -55,7 +59,7 @@ class SortableList extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.rows !== this.props.rows) {
+    if (prevProps.rows !== this.props.rows && !!this._list) {
       this._list.recomputeRowHeights();
     }
   }
@@ -102,21 +106,16 @@ class SortableList extends Component {
     );
   }
 
-  renderList({ width, height }, scheduleMeasurement) {
-    console.log('render list o ke ase'); // not rendering list D:
-
+  renderList({ width, height }) {
     return (
       <CellMeasurer
         width={width}
         columnCount={1}
-        rowCount={this.props.rows.length}
+        rowCount={(this.props.rows || []).length}
         cellRenderer={this.renderItemForMeasure}
         cellSizeCache={new ItemCache(this.props.rows)}
       >
         {({ getRowHeight }) => {
-          if (scheduleMeasurement) {
-            this.scheduleMeasurement({ getRowHeight, height });
-          }
 
           return (
             <VirtualScroll
@@ -135,7 +134,7 @@ class SortableList extends Component {
     );
   }
 
-  scheduleMeasurement({ getRowHeight, height: containerHeight }) {
+  scheduleMeasurement({ getRowHeight }) {
     console.log('scheduling measurment');
 
     defer(() => {
@@ -143,48 +142,50 @@ class SortableList extends Component {
         range(this.props.rows.length)
           .reduce((acc, index) => acc + getRowHeight({ index }), 0)
       );
-      console.log('measured!');
+      console.log('measured!', totalChildrenHeight);
 
       this.setState({totalChildrenHeight});
     });
   }
 
-  renderListForMeasure({width, height}) {
-    return this.renderList({width, height}, /* scheduleMeasurement */ true);
-  }
-
-  shadowRenderForMeasure() {
+  measureTotalChildrenHeight() {
     return (
       <AutoSizer>
-        {({width, height}) =>
+        {({width}) =>
           <CellMeasurer
             width={width}
             columnCount={1}
             rowCount={this.props.rows.length}
-            cellRenderer={() => this.renderListForMeasure({width, height})}
+            cellRenderer={this.renderItemForMeasure}
+            cellSizeCache={new ItemCache(this.props.rows)}
           >
-            {({ getRowHeight }) => (
-              <VirtualScroll
-                className='KanbanList'
-                width={width}
-                height={height}
-                rowHeight={getRowHeight}
-                rowCount={this.props.rows.length}
-                rowRenderer={() => this.renderList({width, height})}
-                overscanRowCount={2}
-               />
-            )}
+            {({ getRowHeight }) => {
+              this.scheduleMeasurement({ getRowHeight });
+
+              return <noscript/>;
+            }}
           </CellMeasurer>
         }
       </AutoSizer>
     )
   }
 
-  render() {
-    console.log('wtf [ totalChildrenHeight ]', this.state.totalChildrenHeight);
+  shouldMeasureTotalChildrenHeight() {
+    if (!this.props.__DANGEROUSLY_MEASURE_TOTAL_CHILDREN_HEIGHT_DO_NOT_USE_OR_YOU_WILL_SUFFER_A_VERY_SLOW_AND_PAINFUL_DEATH) {
+      return false;
+    }
 
-    if (this.state.totalChildrenHeight === null) {
-      return this.shadowRenderForMeasure();
+    return true;
+      //this.state.totalChildrenHeight === null ||
+      //this.shouldComponentUpdate()
+    //);
+  }
+
+  render() {
+    console.log('rerender!');
+
+    if (this.shouldMeasureTotalChildrenHeight()) {
+      return this.measureTotalChildrenHeight();
     }
 
     const {
@@ -198,6 +199,8 @@ class SortableList extends Component {
       listStyle,
     } = this.props;
 
+    console.log('what in the fuck?');
+
     return (
       <DecoratedList
         listId={listId}
@@ -207,6 +210,7 @@ class SortableList extends Component {
         isDragging={isDragging}
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}
+        totalChildrenHeight={this.state.totalChildrenHeight}
       >
         <AutoSizer>
           {(dimensions) => this.renderList(dimensions)}

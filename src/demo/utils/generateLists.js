@@ -1,12 +1,25 @@
 function generateRandom(count) {
+  if (count === 0 ) {
+    return [];
+  }
+
   return Array.from({length: count}, (_, i) => {
     return {
-      id: i,
+      id: id(),
     };
   });
 }
 
+const id = ((i = 0) => () => i++)();
+
 export function generateLists(count, rowsPerList) {
+  if (rowsPerList === 0) {
+    return Array.from(
+      {length: count},
+      (_, i) => ({id: id(), rows: []}),
+    );
+  }
+
   let rows;
 
   console.time('rows generation');

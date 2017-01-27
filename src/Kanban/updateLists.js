@@ -28,6 +28,7 @@ export function updateLists(lists, { from, to }) {
 
   // Move lists
   if (fromListIndex !== toListIndex && fromRowIndex === void 0 && toRowIndex === void 0) {
+    deb
     return update(lists, {
       $splice: [
         [fromListIndex, 1],
@@ -38,6 +39,8 @@ export function updateLists(lists, { from, to }) {
 
   // Move rows between different lists
   if (fromListIndex !== toListIndex) {
+    //debugger;
+
     return update(lists, {
       // Remove row from source list
       [fromListIndex]: {
