@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+### 0.0.11
+Added guard in SortableList component when list reference is not set.
+
 ### 0.0.10
 Fixed a bug that was causing out of index errors when moving an row between lists.
 
