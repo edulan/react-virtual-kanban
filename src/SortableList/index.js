@@ -49,7 +49,7 @@ class SortableList extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.rows !== this.props.rows) {
+    if (prevProps.rows !== this.props.rows && !!this._list) {
       this._list.recomputeRowHeights();
     }
   }
