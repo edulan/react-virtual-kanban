@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+### 0.0.12
+Now `Kanban` component gets `DragDropManager` from context or creates a new one. This is useful for scenarios where react-dnd is used inside decorators.
+
 ### 0.0.11
 Added guard in SortableList component when list reference is not set.
 
