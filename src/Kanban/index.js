@@ -1,6 +1,5 @@
 import React, { PropTypes, Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
 import { Grid } from 'react-virtualized';
@@ -14,6 +13,16 @@ import SortableList from '../SortableList';
 
 const GridWithScrollZone = withScrolling(Grid);
 const horizontalStrength = createHorizontalStrength(200);
+import { DragDropManager } from 'dnd-core';
+
+/**
+ * Grab dragDropManager from context
+ *
+ * More info: https://github.com/gaearon/react-dnd/issues/186
+ */
+const getDndContext = ((dragDropManager = new DragDropManager(HTML5Backend)) => (context) => (
+  context.dragDropManager || dragDropManager
+))();
 
 class Kanban extends Component {
   static propTypes = {
@@ -43,6 +52,14 @@ class Kanban extends Component {
     onDropList: () => {},
   }
 
+  static childContextTypes = {
+    dragDropManager: React.PropTypes.object.isRequired,
+  }
+
+  static contextTypes = {
+    dragDropManager: React.PropTypes.object.isRequired,
+  }
+
   constructor(props) {
     super(props);
 
@@ -55,6 +72,12 @@ class Kanban extends Component {
     this.onDropList =this.onDropList.bind(this);
     this.onDropRow =this.onDropRow.bind(this);
     this.renderList = this.renderList.bind(this);
+  }
+
+  getChildContext() {
+    return {
+      dragDropManager: getDndContext(this.context),
+    };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -146,4 +169,4 @@ class Kanban extends Component {
   }
 }
 
-export default DragDropContext(HTML5Backend)(Kanban);
+export default Kanban;
