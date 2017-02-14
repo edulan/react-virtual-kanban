@@ -38,6 +38,8 @@ export function updateLists(lists, { from, to }) {
 
   // Move rows between different lists
   if (fromListIndex !== toListIndex) {
+    //debugger;
+
     return update(lists, {
       // Remove row from source list
       [fromListIndex]: {

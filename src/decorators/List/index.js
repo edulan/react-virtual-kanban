@@ -28,6 +28,7 @@ export default class List extends Component {
       connectDropTarget,
       isDragging,
       children,
+      totalChildrenHeight,
     } = this.props;
 
     let listContainerClass = classnames({
@@ -35,7 +36,10 @@ export default class List extends Component {
       'ListPlaceholder': isDragging
     });
 
-    return (
+    console.log('this.props', this.props);
+    console.log('totalChildrenHeight', totalChildrenHeight);
+
+    return connectDropTarget(
       <div className='ListWrapper' style={listStyle}>
         <div className={listContainerClass}>
           {connectDragSource(
@@ -43,11 +47,9 @@ export default class List extends Component {
               <span className='ListTitle'>List {listId} ({rows.length})</span>
             </div>
           )}
-          {connectDropTarget(
-            <div className='ListContent'>
-              {children}
-            </div>
-          )}
+          <div className='ListContent' style={{height: totalChildrenHeight}}>
+            {children}
+          </div>
           <div className='ListFooter'>
             <div className='ListActions'>
               <button className='ListActionItem'>Add a task...</button>

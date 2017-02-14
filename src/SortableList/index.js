@@ -3,6 +3,7 @@ import shallowCompare from 'react-addons-shallow-compare';
 import { List as VirtualScroll, CellMeasurer, AutoSizer } from 'react-virtualized';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
+import range from 'lodash.range';
 
 import { PropTypes as CustomPropTypes } from '../propTypes';
 
@@ -14,6 +15,7 @@ import * as dragSpec from './dragSpec';
 import * as dropSpec from './dropSpec';
 
 const identity = (c) => c;
+const gervasioDefer = (cb) => setTimeout(cb, 0);
 
 class SortableList extends Component {
   static propTypes = {
@@ -34,8 +36,16 @@ class SortableList extends Component {
     connectDragPreview: PropTypes.func,
   };
 
+  static defaultProps = {
+    rows: [],
+  };
+
   constructor(props) {
     super(props);
+
+    this.state = {
+      totalChildrenHeight: null,
+    };
 
     this.renderRow = this.renderRow.bind(this);
     this.renderItemForMeasure = this.renderItemForMeasure.bind(this);
@@ -101,23 +111,73 @@ class SortableList extends Component {
       <CellMeasurer
         width={width}
         columnCount={1}
-        rowCount={this.props.rows.length}
+        rowCount={(this.props.rows || []).length}
         cellRenderer={this.renderItemForMeasure}
         cellSizeCache={new ItemCache(this.props.rows)}
       >
-        {({ getRowHeight }) => (
-          <VirtualScroll
-            ref={(c) => (this._list = c)}
-            className='KanbanList'
-            width={width}
-            height={height}
-            rowHeight={getRowHeight}
-            rowCount={this.props.rows.length}
-            rowRenderer={this.renderRow}
-            overscanRowCount={2}
-           />
-         )}
+        {({ getRowHeight }) => {
+
+          return (
+            <VirtualScroll
+              ref={(c) => (this._list = c)}
+              className='KanbanList'
+              width={width}
+              height={height}
+              rowHeight={getRowHeight}
+              rowCount={this.props.rows.length}
+              rowRenderer={this.renderRow}
+              overscanRowCount={2}
+             />
+          );
+         }}
       </CellMeasurer>
+    );
+  }
+
+  scheduleMeasurement({ getRowHeight }) {
+    gervasioDefer(() => {
+      const totalChildrenHeight = (
+        range(this.props.rows.length)
+          .reduce((acc, index) => acc + getRowHeight({ index }), 0)
+      );
+
+      this.setState({totalChildrenHeight});
+    });
+  }
+
+  measureTotalChildrenHeight() {
+    return (
+      <AutoSizer>
+        {({width}) =>
+          <CellMeasurer
+            width={width}
+            columnCount={1}
+            rowCount={this.props.rows.length}
+            cellRenderer={this.renderItemForMeasure}
+            cellSizeCache={new ItemCache(this.props.rows)}
+          >
+            {({ getRowHeight }) => {
+              this.scheduleMeasurement({ getRowHeight });
+
+              return <noscript/>;
+            }}
+          </CellMeasurer>
+        }
+      </AutoSizer>
+    )
+  }
+
+  shouldMeasureTotalChildrenHeight() {
+    if (!this.props.__DANGEROUSLY_MEASURE_TOTAL_CHILDREN_HEIGHT_DO_NOT_USE_OR_YOU_WILL_SUFFER_A_VERY_SLOW_AND_PAINFUL_DEATH) {
+      return false;
+    }
+
+    if (this.props.isScrolling) {
+      return false;
+    }
+
+    return (
+      this.state.totalChildrenHeight === null
     );
   }
 
@@ -128,6 +188,7 @@ class SortableList extends Component {
       rows,
       listComponent: DecoratedList,
       isDragging,
+      isScrolling,
       connectDragSource,
       connectDropTarget,
       listStyle,
@@ -140,9 +201,12 @@ class SortableList extends Component {
         rows={rows}
         listStyle={listStyle}
         isDragging={isDragging}
+        isScrolling={isScrolling}
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}
+        totalChildrenHeight={this.state.totalChildrenHeight}
       >
+        {this.measureTotalChildrenHeight()}
         <AutoSizer>
           {(dimensions) => this.renderList(dimensions)}
         </AutoSizer>
