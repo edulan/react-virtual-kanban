@@ -38,6 +38,8 @@ class Kanban extends Component {
     onMoveList: PropTypes.func,
     onDropRow: PropTypes.func,
     onDropList: PropTypes.func,
+    overscanListCount: PropTypes.number,
+    overscanRowCount: PropTypes.number,
   }
 
   static defaultProps = {
@@ -50,6 +52,8 @@ class Kanban extends Component {
     onMoveList: () => {},
     onDropRow: () => {},
     onDropList: () => {},
+    overscanListCount: 2,
+    overscanRowCount: 2,
   }
 
   static childContextTypes = {
@@ -132,13 +136,21 @@ class Kanban extends Component {
         moveList={this.onMoveList}
         dropRow={this.onDropRow}
         dropList={this.onDropList}
+        overscanRowCount={this.props.overscanRowCount}
       />
     );
   }
 
   render() {
-    const { width, height, listWidth, itemPreviewComponent, listPreviewComponent } = this.props;
     const { lists } = this.state;
+    const {
+      width,
+      height,
+      listWidth,
+      itemPreviewComponent,
+      listPreviewComponent,
+      overscanListCount,
+    } = this.props;
 
     return (
       <div>
@@ -155,7 +167,7 @@ class Kanban extends Component {
           columnCount={lists.length}
           rowCount={1}
           cellRenderer={this.renderList}
-          overscanColumnCount={2}
+          overscanColumnCount={overscanListCount}
           horizontalStrength={horizontalStrength}
           verticalStrength={() => {}}
           speed={100}

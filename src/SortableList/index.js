@@ -32,6 +32,7 @@ class SortableList extends Component {
     connectDropTarget: PropTypes.func,
     connectDragSource: PropTypes.func,
     connectDragPreview: PropTypes.func,
+    overscanRowCount: PropTypes.number,
   };
 
   constructor(props) {
@@ -114,7 +115,7 @@ class SortableList extends Component {
             rowHeight={getRowHeight}
             rowCount={this.props.rows.length}
             rowRenderer={this.renderRow}
-            overscanRowCount={2}
+            overscanRowCount={this.props.overscanRowCount}
            />
          )}
       </CellMeasurer>
