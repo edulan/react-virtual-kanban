@@ -63,7 +63,7 @@ class SortableList extends Component {
 
     return (
       <SortableItem
-        key={key}
+        key={id}
         rowId={id}
         listId={this.props.listId}
         rowIndex={index}
