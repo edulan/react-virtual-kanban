@@ -125,7 +125,7 @@ class Kanban extends Component {
 
     return (
       <SortableList
-        key={key}
+        key={id}
         listId={id}
         listIndex={columnIndex}
         listStyle={style}
