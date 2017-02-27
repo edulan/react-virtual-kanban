@@ -85,6 +85,8 @@ ReactDOM.render(
 | onMoveList | Function | | Move list callback |
 | onDropRow | Function | | Drop row callback |
 | onDropList | Function | | Drop list callback |
+| overscanListCount | Number | | Number of lists to render before/after the visible part |
+| overscanRowCount | Number | | Number of row items to render before/after the visible part |
 
 ## TODO
 * Auto scrolling
