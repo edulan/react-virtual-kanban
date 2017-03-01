@@ -26,6 +26,8 @@ module.exports = {
     }],
     // Optimization: hoist JSX that never changes out of render()
     require.resolve('babel-plugin-transform-react-constant-elements'),
+    // Remove PropTypes declarations
+    require.resolve('babel-plugin-transform-react-remove-prop-types'),
     // Remove console.log statements
     require.resolve('babel-plugin-transform-remove-console')
   ],
