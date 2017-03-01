@@ -67,6 +67,12 @@ export function hover(props, monitor, component) {
   );
 }
 
+export function canDrop(props, monitor) {
+  const item = monitor.getItem();
+
+  return item.rowId === props.rowId;
+}
+
 export function drop(props) {
   const { rowId, listId, rowIndex, listIndex } = props;
 
