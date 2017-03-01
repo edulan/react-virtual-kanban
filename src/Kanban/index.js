@@ -57,11 +57,11 @@ class Kanban extends Component {
   }
 
   static childContextTypes = {
-    dragDropManager: React.PropTypes.object.isRequired,
+    dragDropManager: React.PropTypes.object,
   }
 
   static contextTypes = {
-    dragDropManager: React.PropTypes.object.isRequired,
+    dragDropManager: React.PropTypes.object,
   }
 
   constructor(props) {
