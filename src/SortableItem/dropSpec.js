@@ -8,7 +8,14 @@ export function hover(props, monitor, component) {
   const hoverIndex = props.rowIndex;
   const hoverListIndex = props.listIndex;
 
+  // Hovering over the same item
   if (dragIndex === hoverIndex && dragListIndex === hoverListIndex) {
+    return;
+  }
+
+  // Sometimes component may be null (probably is being unmounted?)
+  if (!component) {
+    console.warn(`null component for #${item.rowId}`);
     return;
   }
 
@@ -33,7 +40,10 @@ export function hover(props, monitor, component) {
     item.listIndex = hoverListIndex;
     item.containerWidth = width(node);
 
-    props.moveRow({rowIndex: dragIndex, listIndex: dragListIndex}, {rowIndex: hoverIndex, listIndex: hoverListIndex});
+    props.moveRow(
+      {rowIndex: dragIndex, listIndex: dragListIndex},
+      {rowIndex: hoverIndex, listIndex: hoverListIndex}
+    );
     return;
   }
 
@@ -51,7 +61,10 @@ export function hover(props, monitor, component) {
   item.listIndex = hoverListIndex;
   item.containerWidth = width(node);
 
-  props.moveRow({rowIndex: dragIndex, listIndex: dragListIndex}, {rowIndex: hoverIndex, listIndex: hoverListIndex});
+  props.moveRow(
+    {rowIndex: dragIndex, listIndex: dragListIndex},
+    {rowIndex: hoverIndex, listIndex: hoverListIndex}
+  );
 }
 
 export function drop(props) {
