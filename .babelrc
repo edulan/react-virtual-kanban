@@ -7,6 +7,7 @@
     "babel-plugin-transform-regenerator",
     "babel-plugin-transform-runtime",
     "babel-plugin-transform-react-constant-elements",
-    "babel-plugin-transform-react-remove-prop-types"
+    "babel-plugin-transform-react-remove-prop-types",
+    "babel-plugin-transform-remove-console"
   ]
 }
