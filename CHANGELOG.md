@@ -1,5 +1,13 @@
 # Changelog
 
+### 0.1.1
+`onDropRow` callback is now invoked only when dropping into a valid target.
+
+Defended against null component received when hovering over an unmounted row.
+
+Remove dragDropManager prop type warning.
+
+
 ### 0.1.0
 Added `overscanListCount` and `overscanRowCount` props to be able to configure the number of extra rendered items. You may use this if you want to tune up kanban performance.
 
