@@ -1,5 +1,7 @@
 # React Virtual Kanban
-![](https://img.shields.io/travis/edulan/react-virtual-kanban.svg)
+![NPM version](https://img.shields.io/npm/v/react-virtual-kanban.svg?style=flat)
+![NPM license](https://img.shields.io/npm/l/react-virtual-kanban.svg?style=flat)
+![Travis CI status](https://img.shields.io/travis/edulan/react-virtual-kanban.svg?style=flat)
 
 A Kanban component in React.
 
