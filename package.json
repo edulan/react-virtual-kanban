@@ -5,10 +5,20 @@
   "author": "Eduardo Lanchares <eduardo@elanchares.com>",
   "homepage": "https://edulan.github.io/react-virtual-kanban/",
   "main": "lib/index.js",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/edulan/react-virtual-kanban.git"
   },
+  "bugs": {
+    "url": "https://github.com/edulan/react-virtual-kanban/issues"
+  },
+  "keywords": [
+    "react",
+    "react-component",
+    "kanban",
+    "virtual-scroll"
+  ],
   "files": [
     "dist",
     "lib"
