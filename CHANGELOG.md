@@ -1,5 +1,15 @@
 # Changelog
 
+
+### 0.2.0
+Added itemCacheKey prop to be able to specify a custom key for caching Item components. This comes handy if underlaying Item data changes (like a title) and needs to be re-rendered to reflect new height.
+
+Added `scrollToList` and `scrollToAlignment` to set kanban scroll to desired list.
+
+Fixed items not being refreshing when moving lists around.
+
+Updated package.json and added some badges to the README.
+
 ### 0.1.1
 `onDropRow` callback is now invoked only when dropping into a valid target.
 
