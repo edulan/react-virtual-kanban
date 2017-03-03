@@ -40,6 +40,8 @@ class Kanban extends Component {
     onDropList: PropTypes.func,
     overscanListCount: PropTypes.number,
     overscanRowCount: PropTypes.number,
+    scrollToList: PropTypes.number,
+    scrollToAlignment: PropTypes.string,
   }
 
   static defaultProps = {
@@ -150,6 +152,8 @@ class Kanban extends Component {
       itemPreviewComponent,
       listPreviewComponent,
       overscanListCount,
+      scrollToList,
+      scrollToAlignment,
     } = this.props;
 
     return (
@@ -169,6 +173,8 @@ class Kanban extends Component {
           cellRenderer={this.renderList}
           overscanColumnCount={overscanListCount}
           horizontalStrength={horizontalStrength}
+          scrollToColumn={scrollToList}
+          scrollToAlignment={scrollToAlignment}
           verticalStrength={() => {}}
           speed={100}
         />
