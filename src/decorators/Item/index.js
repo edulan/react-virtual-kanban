@@ -6,6 +6,7 @@ import { PropTypes as CustomPropTypes } from '../../propTypes';
 
 export default class Item extends Component {
   static propTypes = {
+    row: PropTypes.object.isRequired,
     rowId: CustomPropTypes.id.isRequired,
     listId: CustomPropTypes.id.isRequired,
     rowIndex: PropTypes.number.isRequired,
@@ -21,7 +22,7 @@ export default class Item extends Component {
   }
 
   render() {
-    const { rowId, rowStyle, connectDragSource, connectDropTarget, isDragging } = this.props;
+    const { row, rowStyle, connectDragSource, connectDropTarget, isDragging } = this.props;
 
     const itemContainerClass = classnames({
       'ItemContainer': true,
@@ -32,7 +33,7 @@ export default class Item extends Component {
       <div className='ItemWrapper' style={rowStyle}>
         <div className={itemContainerClass}>
           <div className='ItemContent'>
-            <p>{rowId}</p>
+            <p>{row.name}</p>
           </div>
         </div>
       </div>

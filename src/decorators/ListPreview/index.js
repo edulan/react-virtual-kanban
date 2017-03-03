@@ -5,6 +5,7 @@ import { PropTypes as CustomPropTypes } from '../../propTypes';
 
 export default class ListPreview extends Component {
   static propTypes = {
+    list: PropTypes.object.isRequired,
     listId: CustomPropTypes.id.isRequired,
     listStyle: PropTypes.object.isRequired,
   };

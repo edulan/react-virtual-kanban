@@ -42,6 +42,7 @@ class Kanban extends Component {
     overscanRowCount: PropTypes.number,
     scrollToList: PropTypes.number,
     scrollToAlignment: PropTypes.string,
+    itemCacheKey: PropTypes.func,
   }
 
   static defaultProps = {
@@ -56,6 +57,7 @@ class Kanban extends Component {
     onDropList: () => {},
     overscanListCount: 2,
     overscanRowCount: 2,
+    itemCacheKey: ({ id }) => `${id}`,
   }
 
   static childContextTypes = {
@@ -123,22 +125,23 @@ class Kanban extends Component {
   }
 
   renderList({ columnIndex, key, style }) {
-    const { id, rows } = this.state.lists[columnIndex];
+    const list = this.state.lists[columnIndex];
 
     return (
       <SortableList
-        key={id}
-        listId={id}
+        key={list.id}
+        listId={list.id}
         listIndex={columnIndex}
         listStyle={style}
         listComponent={this.props.listComponent}
         itemComponent={this.props.itemComponent}
-        rows={rows}
+        list={list}
         moveRow={this.onMoveRow}
         moveList={this.onMoveList}
         dropRow={this.onDropRow}
         dropList={this.onDropList}
         overscanRowCount={this.props.overscanRowCount}
+        itemCacheKey={this.props.itemCacheKey}
       />
     );
   }

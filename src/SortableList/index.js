@@ -17,7 +17,7 @@ const identity = (c) => c;
 
 class SortableList extends Component {
   static propTypes = {
-    rows: PropTypes.array,
+    list: PropTypes.object,
     listId: CustomPropTypes.id.isRequired,
     listIndex: PropTypes.number,
     listStyle: PropTypes.object,
@@ -27,12 +27,13 @@ class SortableList extends Component {
     moveList: PropTypes.func,
     dropRow: PropTypes.func,
     dropList: PropTypes.func,
+    overscanRowCount: PropTypes.number,
+    itemCacheKey: PropTypes.func,
     // React DnD
     isDragging: PropTypes.bool,
     connectDropTarget: PropTypes.func,
     connectDragSource: PropTypes.func,
     connectDragPreview: PropTypes.func,
-    overscanRowCount: PropTypes.number,
   };
 
   constructor(props) {
@@ -50,7 +51,7 @@ class SortableList extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.rows !== this.props.rows && !!this._list) {
+    if (prevProps.list.rows !== this.props.list.rows && !!this._list) {
       this._list.recomputeRowHeights();
     }
   }
@@ -60,12 +61,13 @@ class SortableList extends Component {
   }
 
   renderRow({ index, key, style }) {
-    const { id } = this.props.rows[index];
+    const row = this.props.list.rows[index];
 
     return (
       <SortableItem
-        key={id}
-        rowId={id}
+        key={row.id}
+        row={row}
+        rowId={row.id}
         listId={this.props.listId}
         rowIndex={index}
         listIndex={this.props.listIndex}
@@ -79,13 +81,12 @@ class SortableList extends Component {
 
   renderItemForMeasure({ rowIndex }) {
     const { itemComponent: DecoratedItem } = this.props;
-    const { id } = this.props.rows[rowIndex];
-
-    // TODO: Determine whether scrollbar is visible or not :/
+    const row = this.props.list.rows[rowIndex];
 
     return (
       <DecoratedItem
-        rowId={id}
+        row={row}
+        rowId={row.id}
         listId={this.props.listId}
         rowIndex={rowIndex}
         listIndex={this.props.listIndex}
@@ -98,13 +99,15 @@ class SortableList extends Component {
   }
 
   renderList({ width, height }) {
+    // TODO: Check whether scrollbar is visible or not :/
+
     return (
       <CellMeasurer
         width={width}
         columnCount={1}
-        rowCount={this.props.rows.length}
+        rowCount={this.props.list.rows.length}
         cellRenderer={this.renderItemForMeasure}
-        cellSizeCache={new ItemCache(this.props.rows)}
+        cellSizeCache={new ItemCache(this.props.list.rows, this.props.itemCacheKey)}
       >
         {({ getRowHeight }) => (
           <VirtualScroll
@@ -113,9 +116,11 @@ class SortableList extends Component {
             width={width}
             height={height}
             rowHeight={getRowHeight}
-            rowCount={this.props.rows.length}
+            rowCount={this.props.list.rows.length}
             rowRenderer={this.renderRow}
             overscanRowCount={this.props.overscanRowCount}
+            // Hack way of forcing list re-rendering when listIndex changes
+            listIndex={this.props.listIndex}
            />
          )}
       </CellMeasurer>
@@ -124,9 +129,9 @@ class SortableList extends Component {
 
   render() {
     const {
+      list,
       listId,
       listIndex,
-      rows,
       listComponent: DecoratedList,
       isDragging,
       connectDragSource,
@@ -136,9 +141,10 @@ class SortableList extends Component {
 
     return (
       <DecoratedList
+        list={list}
         listId={listId}
         listIndex={listIndex}
-        rows={rows}
+        rows={list.rows}
         listStyle={listStyle}
         isDragging={isDragging}
         connectDragSource={connectDragSource}

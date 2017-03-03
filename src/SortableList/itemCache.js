@@ -1,9 +1,10 @@
 // Cache singleton
-const cachedRows = new Map();
+const cachedItems = new Map();
 
 export class ItemCache {
-  constructor(items, store = cachedRows) {
+  constructor(items, cacheKey, store = cachedItems) {
     this.items = items;
+    this.cacheKey = cacheKey;
     this.store = store;
   }
 
@@ -12,21 +13,21 @@ export class ItemCache {
   }
 
   clearRowHeight(index) {
-    const { id } = this.items[index];
+    const item = this.items[index];
 
-    this.store.delete(id);
+    this.store.delete(this.cacheKey(item));
   }
 
   getRowHeight(index) {
-    const { id } = this.items[index];
+    const item = this.items[index];
 
-    return this.store.get(id);
+    return this.store.get(this.cacheKey(item));
   }
 
   setRowHeight(index, height) {
-    const { id } = this.items[index];
+    const item = this.items[index];
 
-    this.store.set(id, height);
+    this.store.set(this.cacheKey(item), height);
   }
 
   // Not implemented
