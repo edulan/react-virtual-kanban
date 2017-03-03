@@ -89,6 +89,7 @@ ReactDOM.render(
 | onDropList | Function | | Drop list callback |
 | overscanListCount | Number | 2 | Number of lists to render before/after the visible part |
 | overscanRowCount | Number | 2 | Number of row items to render before/after the visible part |
+| itemCacheKey | Function | `id` | Key generator function for caching Item components | 
 
 ## TODO
 * Auto scrolling

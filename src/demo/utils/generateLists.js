@@ -2,6 +2,8 @@ function generateRandom(count) {
   return Array.from({length: count}, (_, i) => {
     return {
       id: i,
+      name: `${i}`,
+      lastModified: Date.now(),
     };
   });
 }
