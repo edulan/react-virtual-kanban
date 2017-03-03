@@ -49,11 +49,11 @@ class KanbanDragLayer extends Component {
     case ItemTypes.ROW_TYPE:
       Preview = this.props.itemPreviewComponent;
 
-      return <Preview rowId={item.rowId} rowStyle={item.rowStyle} containerWidth={item.containerWidth} />;
+      return <Preview row={item.row} rowId={item.rowId} rowStyle={item.rowStyle} containerWidth={item.containerWidth} />;
     case ItemTypes.LIST_TYPE:
       Preview = this.props.listPreviewComponent;
 
-      return <Preview listId={item.listId} listStyle={item.listStyle} />;
+      return <Preview list={item.list} listId={item.listId} listStyle={item.listStyle} />;
     default:
       return null;
     }

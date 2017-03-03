@@ -24,6 +24,7 @@ class App extends Component {
               width={width}
               height={height}
               listWidth={200}
+              itemCacheKey={({ id, lastModified }) => `${id}-${lastModified}`}
             />
           )}
         </AutoSizer>

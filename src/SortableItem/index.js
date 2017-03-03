@@ -11,6 +11,7 @@ import * as dropSpec from './dropSpec';
 
 class SortableItem extends Component {
   static propTypes = {
+    row: PropTypes.object,
     rowId: CustomPropTypes.id.isRequired,
     listId: CustomPropTypes.id.isRequired,
     rowIndex: PropTypes.number,
@@ -27,6 +28,7 @@ class SortableItem extends Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
+    // NOTE: rowStyle is causing unnecessary renders
     return shallowCompare(this, nextProps, nextState);
   }
 
@@ -38,6 +40,7 @@ class SortableItem extends Component {
 
   render() {
     const {
+      row,
       rowId,
       listId,
       rowIndex,
@@ -51,6 +54,7 @@ class SortableItem extends Component {
 
     return (
       <DecoratedItem
+        row={row}
         rowId={rowId}
         listId={listId}
         rowIndex={rowIndex}
