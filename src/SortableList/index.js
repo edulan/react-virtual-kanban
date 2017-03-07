@@ -113,6 +113,7 @@ class SortableList extends Component {
           <VirtualScroll
             autoHeight
             style={{overflowY: 'hidden'}}
+            containerStyle={{transition: 'all 0.2s ease'}}
             ref={(c) => (this._list = c)}
             className='KanbanList'
             width={width}
