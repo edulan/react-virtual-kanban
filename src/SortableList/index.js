@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import { List as VirtualScroll, CellMeasurer, AutoSizer } from 'react-virtualized';
+import { List as VirtualScroll, CellMeasurer } from 'react-virtualized';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 
@@ -98,7 +98,7 @@ class SortableList extends Component {
     );
   }
 
-  renderList({ width, height }) {
+  renderList({ width, height, scrollTop }) {
     // TODO: Check whether scrollbar is visible or not :/
 
     return (
@@ -111,6 +111,8 @@ class SortableList extends Component {
       >
         {({ getRowHeight }) => (
           <VirtualScroll
+            autoHeight
+            style={{overflowY: 'hidden'}}
             ref={(c) => (this._list = c)}
             className='KanbanList'
             width={width}
@@ -121,6 +123,7 @@ class SortableList extends Component {
             overscanRowCount={this.props.overscanRowCount}
             // Hack way of forcing list re-rendering when listIndex changes
             listIndex={this.props.listIndex}
+            scrollTop={scrollTop}
            />
          )}
       </CellMeasurer>
@@ -150,9 +153,7 @@ class SortableList extends Component {
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}
       >
-        <AutoSizer>
-          {(dimensions) => this.renderList(dimensions)}
-        </AutoSizer>
+        {this.renderList}
       </DecoratedList>
     );
   }
