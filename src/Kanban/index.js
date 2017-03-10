@@ -38,6 +38,8 @@ class Kanban extends Component {
     onDropList: PropTypes.func,
     overscanListCount: PropTypes.number,
     overscanRowCount: PropTypes.number,
+    scrollToList: PropTypes.number,
+    scrollToAlignment: PropTypes.string,
     itemCacheKey: PropTypes.func,
   }
 
