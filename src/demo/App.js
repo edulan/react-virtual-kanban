@@ -25,6 +25,7 @@ class App extends Component {
               height={height}
               listWidth={200}
               itemCacheKey={({ id, lastModified }) => `${id}-${lastModified}`}
+              onDragEndRow={(leProps) => console.log(leProps) }
             />
           )}
         </AutoSizer>
