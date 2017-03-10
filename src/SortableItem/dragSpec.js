@@ -20,3 +20,14 @@ export function isDragging({ rowId }, monitor) {
 
    return rowId === draggingRowId;
 }
+
+export function endDrag(props, monitor) {
+  const {
+    row,
+    rowId,
+    rowIndex,
+    listIndex,
+  } = monitor.getItem();
+
+  props.dragEndRow({ row, rowId, rowIndex, listIndex });
+}
