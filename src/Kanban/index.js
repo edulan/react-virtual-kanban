@@ -5,8 +5,6 @@ import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
 import { Grid } from 'react-virtualized';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 
-import { updateLists } from './updateLists';
-
 import * as decorators from '../decorators';
 import DragLayer from '../DragLayer';
 import SortableList from '../SortableList';
@@ -71,14 +69,6 @@ class Kanban extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      lists: props.lists
-    };
-
-    this.onMoveList =this.onMoveList.bind(this);
-    this.onMoveRow =this.onMoveRow.bind(this);
-    this.onDropList =this.onDropList.bind(this);
-    this.onDropRow =this.onDropRow.bind(this);
     this.renderList = this.renderList.bind(this);
   }
 
@@ -88,44 +78,18 @@ class Kanban extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({lists: nextProps.lists});
-  }
-
-  onMoveList(from, to) {
-    this.setState(
-      (prevState) => ({lists: updateLists(prevState.lists, {from, to})}),
-      () => this.props.onMoveList(from, to)
-    );
-  }
-
-  onMoveRow(from, to) {
-    this.setState(
-      (prevState) => ({lists: updateLists(prevState.lists, {from, to})}),
-      () => this.props.onMoveRow(from, to)
-    );
-  }
-
-  onDropList({ listId, listIndex }) {
-    this.props.onDropList({listId, listIndex, lists: this.state.lists});
-  }
-
-  onDropRow({ rowId, listId, rowIndex, listIndex }) {
-    this.props.onDropRow({rowId, listId, rowIndex, listIndex, lists: this.state.lists});
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
     return shallowCompare(this, nextProps, nextState);
   }
 
-  componentDidUpdate(_prevProps, prevState) {
-    if (prevState.lists !== this.state.lists) {
+  componentDidUpdate(prevProps) {
+    if (prevProps.lists !== this.props.lists) {
       this._grid.wrappedInstance.forceUpdate();
     }
   }
 
   renderList({ columnIndex, key, style }) {
-    const list = this.state.lists[columnIndex];
+    const list = this.props.lists[columnIndex];
 
     return (
       <SortableList
@@ -136,10 +100,10 @@ class Kanban extends Component {
         listComponent={this.props.listComponent}
         itemComponent={this.props.itemComponent}
         list={list}
-        moveRow={this.onMoveRow}
-        moveList={this.onMoveList}
-        dropRow={this.onDropRow}
-        dropList={this.onDropList}
+        moveRow={this.props.onMoveRow}
+        moveList={this.props.onMoveList}
+        dropRow={this.props.onDropRow}
+        dropList={this.props.onDropList}
         overscanRowCount={this.props.overscanRowCount}
         itemCacheKey={this.props.itemCacheKey}
       />
@@ -147,10 +111,10 @@ class Kanban extends Component {
   }
 
   render() {
-    const { lists } = this.state;
     const {
       width,
       height,
+      lists,
       listWidth,
       itemPreviewComponent,
       listPreviewComponent,
@@ -175,9 +139,9 @@ class Kanban extends Component {
           rowCount={1}
           cellRenderer={this.renderList}
           overscanColumnCount={overscanListCount}
-          horizontalStrength={horizontalStrength}
           scrollToColumn={scrollToList}
           scrollToAlignment={scrollToAlignment}
+          horizontalStrength={horizontalStrength}
           verticalStrength={() => {}}
           speed={100}
         />
