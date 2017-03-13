@@ -45,6 +45,14 @@ class KanbanDragLayer extends Component {
   renderItem(type, item) {
     let Preview;
 
+    if (!this.props.lists[item.listIndex]) {
+      return null;
+    }
+
+    if (!this.props.lists[item.listIndex].rows[item.rowIndex]) {
+      return null;
+    }
+
     switch (type) {
     case ItemTypes.ROW_TYPE:
       Preview = this.props.itemPreviewComponent;
