@@ -38,6 +38,7 @@ class App extends Component {
               itemCacheKey={({ id, lastModified }) => `${id}-${lastModified}`}
               onMoveRow={({ lists }) => this.setState(() => ({lists}))}
               onMoveList={({ lists }) => this.setState(() => ({lists}))}
+              onDragEndRow={(leProps) => console.log(leProps) }
             />
           )}
         </AutoSizer>
