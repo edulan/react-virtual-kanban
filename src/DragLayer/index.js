@@ -4,6 +4,8 @@ import { DragLayer } from 'react-dnd';
 
 import * as ItemTypes from '../types';
 
+import { findItemIndex, findListIndex } from '../Kanban/updateLists';
+
 function getStyles({ currentOffset }) {
   if (!currentOffset) {
     return {
@@ -43,25 +45,32 @@ class KanbanDragLayer extends Component {
   }
 
   renderItem(type, item) {
-    let Preview;
-
-    if (!this.props.lists[item.listIndex]) {
-      return null;
-    }
-
-    if (!this.props.lists[item.listIndex].rows[item.rowIndex]) {
-      return null;
-    }
+    const {
+      lists,
+      itemPreviewComponent: ItemPreview,
+      listPreviewComponent: ListPreview,
+    } = this.props;
 
     switch (type) {
     case ItemTypes.ROW_TYPE:
-      Preview = this.props.itemPreviewComponent;
-
-      return <Preview row={item.row} rowId={item.rowId} rowStyle={item.rowStyle} containerWidth={item.containerWidth} />;
+      return (
+        <ItemPreview
+          row={item.row}
+          rowId={item.rowId}
+          rowStyle={item.rowStyle}
+          containerWidth={item.containerWidth}
+          isGhost={findItemIndex(lists, item.rowId) === -1}
+        />
+      );
     case ItemTypes.LIST_TYPE:
-      Preview = this.props.listPreviewComponent;
-
-      return <Preview list={item.list} listId={item.listId} listStyle={item.listStyle} />;
+      return (
+        <ListPreview
+          list={item.list}
+          listId={item.listId}
+          listStyle={item.listStyle}
+          isGhost={findListIndex(lists, item.listId) === -1}
+        />
+      );
     default:
       return null;
     }
