@@ -13,6 +13,12 @@ export function beginDrag(props, _, component) {
   };
 }
 
+export function endDrag(props, monitor) {
+  const { rowId: itemId } = props;
+
+  props.dragEndRow({itemId});
+}
+
 /**
  * Determines whether current item is being dragged or not.
  *
@@ -22,16 +28,4 @@ export function isDragging({ rowId }, monitor) {
    const draggingRowId = monitor.getItem().rowId;
 
    return rowId === draggingRowId;
-}
-
-export function endDrag(props, monitor) {
-  const { listId } = props;
-  const {
-    row,
-    rowId,
-    rowIndex,
-    listIndex,
-  } = monitor.getItem();
-
-  props.dragEndRow({ listId, row, rowId, rowIndex, listIndex });
 }

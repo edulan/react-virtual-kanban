@@ -22,7 +22,7 @@ class App extends Component {
           return {lists: this._initialLists.concat()};
         }
       });
-    }, 1500);
+    }, 3000);
   }
 
   render() {
@@ -36,9 +36,9 @@ class App extends Component {
               height={height}
               listWidth={200}
               itemCacheKey={({ id, lastModified }) => `${id}-${lastModified}`}
-              onMoveRow={({ lists }) => this.setState(() => ({lists}))}
+              onMoveRow={({ lists, itemId, listId, itemIndex, listIndex }) => this.setState(() => ({lists, lastMovedRow: {itemId, listId, itemIndex, listIndex}}))}
               onMoveList={({ lists }) => this.setState(() => ({lists}))}
-              onDragEndRow={(leProps) => console.log(leProps) }
+              onDragEndRow={() => console.log(this.state.lastMovedRow) }
             />
           )}
         </AutoSizer>
