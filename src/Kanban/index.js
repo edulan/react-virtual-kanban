@@ -82,8 +82,10 @@ class Kanban extends Component {
     this.onMoveRow =this.onMoveRow.bind(this);
     this.onDropList =this.onDropList.bind(this);
     this.onDropRow =this.onDropRow.bind(this);
-    this.onDragEndRow = this.onDragEndRow.bind(this);
     this.onDragBeginRow = this.onDragBeginRow.bind(this);
+    this.onDragEndRow = this.onDragEndRow.bind(this);
+    this.onDragBeginList = this.onDragBeginList.bind(this);
+    this.onDragEndList = this.onDragEndList.bind(this);
     this.renderList = this.renderList.bind(this);
   }
 
@@ -127,6 +129,14 @@ class Kanban extends Component {
     this.props.onDragBeginRow({ rowId, listId: this.state.lists[listIndex].id, rowIndex, listIndex });
   }
 
+  onDragEndList({ rowId, listId, rowIndex, listIndex }) {
+    this.props.onDragEndList({ rowId, listId: this.state.lists[listIndex].id, rowIndex, listIndex });
+  }
+
+  onDragBeginList({ rowId, listId, rowIndex, listIndex }) {
+    this.props.onDragBeginList({ rowId, listId: this.state.lists[listIndex].id, rowIndex, listIndex });
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     return shallowCompare(this, nextProps, nextState);
   }
@@ -153,8 +163,10 @@ class Kanban extends Component {
         moveList={this.onMoveList}
         dropRow={this.onDropRow}
         dropList={this.onDropList}
-        dragEndRow={this.onDragEndRow}
         dragBeginRow={this.onDragBeginRow}
+        dragEndRow={this.onDragEndRow}
+        dragBeginList={this.onDragBeginList}
+        dragEndList={this.onDragEndList}
         overscanRowCount={this.props.overscanRowCount}
         itemCacheKey={this.props.itemCacheKey}
       />

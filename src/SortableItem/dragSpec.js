@@ -19,12 +19,6 @@ export function beginDrag(props, _, component) {
   return data;
 }
 
-export function isDragging({ rowId }, monitor) {
-   const draggingRowId = monitor.getItem().rowId;
-
-   return rowId === draggingRowId;
-}
-
 export function endDrag(props, monitor) {
   const {
     row,
@@ -34,4 +28,10 @@ export function endDrag(props, monitor) {
   } = monitor.getItem();
 
   props.dragEndRow({ row, rowId, rowIndex, listIndex });
+}
+
+export function isDragging({ rowId }, monitor) {
+   const draggingRowId = monitor.getItem().rowId;
+
+   return rowId === draggingRowId;
 }

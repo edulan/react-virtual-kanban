@@ -25,8 +25,10 @@ class App extends Component {
               height={height}
               listWidth={200}
               itemCacheKey={({ id, lastModified }) => `${id}-${lastModified}`}
-              onDragBeginRow={() => console.log('drag begin') }
-              onDragEndRow={() => console.log('drag end') }
+              onDragBeginList={(opts) => console.log('drag list begin', opts) }
+              onDragEndList={(opts) => console.log('drag list end', opts) }
+              onDragBeginRow={(opts) => console.log('drag row begin', opts) }
+              onDragEndRow={(opts) => console.log('drag row end', opts) }
             />
           )}
         </AutoSizer>
