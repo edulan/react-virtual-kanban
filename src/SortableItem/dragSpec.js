@@ -5,7 +5,7 @@ export function beginDrag(props, _, component) {
   const node = findDOMNode(component);
   const containerWidth = node ? width(node) : 0;
 
-  return {
+  const data = {
     row: props.row,
     rowId: props.rowId,
     rowIndex: props.rowIndex,
@@ -13,6 +13,10 @@ export function beginDrag(props, _, component) {
     rowStyle: props.rowStyle,
     containerWidth,
   };
+
+  props.dragBeginRow(data);
+
+  return data;
 }
 
 export function isDragging({ rowId }, monitor) {

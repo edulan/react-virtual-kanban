@@ -77,6 +77,7 @@ class SortableList extends Component {
         moveRow={this.props.moveRow}
         dropRow={this.props.dropRow}
         dragEndRow={this.props.dragEndRow}
+        dragBeginRow={this.props.dragBeginRow}
       />
     );
   }

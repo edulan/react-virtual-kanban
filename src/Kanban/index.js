@@ -57,6 +57,7 @@ class Kanban extends Component {
     onDropRow: () => {},
     onDropList: () => {},
     onDragEndRow: () => {},
+    onDragBeginRow: () => {},
     overscanListCount: 2,
     overscanRowCount: 2,
     itemCacheKey: ({ id }) => `${id}`,
@@ -82,6 +83,7 @@ class Kanban extends Component {
     this.onDropList =this.onDropList.bind(this);
     this.onDropRow =this.onDropRow.bind(this);
     this.onDragEndRow = this.onDragEndRow.bind(this);
+    this.onDragBeginRow = this.onDragBeginRow.bind(this);
     this.renderList = this.renderList.bind(this);
   }
 
@@ -121,8 +123,8 @@ class Kanban extends Component {
     this.props.onDragEndRow({ rowId, listId: this.state.lists[listIndex].id, rowIndex, listIndex });
   }
 
-  onDragEnd({ rowId, listId, rowIndex, listIndex }) {
-    this.props.onDropRow({rowId, listId, rowIndex, listIndex, lists: this.state.lists});
+  onDragBeginRow({ rowId, listId, rowIndex, listIndex }) {
+    this.props.onDragBeginRow({ rowId, listId: this.state.lists[listIndex].id, rowIndex, listIndex });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -152,6 +154,7 @@ class Kanban extends Component {
         dropRow={this.onDropRow}
         dropList={this.onDropList}
         dragEndRow={this.onDragEndRow}
+        dragBeginRow={this.onDragBeginRow}
         overscanRowCount={this.props.overscanRowCount}
         itemCacheKey={this.props.itemCacheKey}
       />
