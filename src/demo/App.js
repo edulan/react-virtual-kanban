@@ -61,7 +61,7 @@ class App extends Component {
               lists={this.state.lists}
               width={width}
               height={height}
-              listWidth={200}
+              listWidth={260}
               itemComponent={this.decoratedItem}
               onMoveRow={this.onMoveRow}
               onMoveList={this.onMoveList}

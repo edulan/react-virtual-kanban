@@ -95,6 +95,7 @@ class Kanban extends Component {
         listId={list.id}
         listIndex={columnIndex}
         listStyle={style}
+        listWidth={this.props.listWidth}
         listComponent={this.props.listComponent}
         itemComponent={this.props.itemComponent}
         list={list}

@@ -1,12 +1,13 @@
 import React, { PropTypes, Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import { List as VirtualScroll, CellMeasurer } from 'react-virtualized';
+import { CellMeasurer } from 'react-virtualized';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 
 import { PropTypes as CustomPropTypes } from '../propTypes';
 
 import { ItemCache } from './itemCache';
+import ScrollableList from '../ScrollableList';
 import SortableItem from '../SortableItem';
 
 import { LIST_TYPE, ROW_TYPE } from '../types';
@@ -38,6 +39,8 @@ class SortableList extends Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {};
 
     this.renderRow = this.renderRow.bind(this);
     this.renderItemForMeasure = this.renderItemForMeasure.bind(this);
@@ -98,33 +101,26 @@ class SortableList extends Component {
     );
   }
 
-  renderList({ width, height, scrollTop }) {
-    // TODO: Check whether scrollbar is visible or not :/
-
+  renderList() {
     return (
       <CellMeasurer
-        width={width}
+        width={this.props.listWidth - 40}
         columnCount={1}
         rowCount={this.props.list.rows.length}
         cellRenderer={this.renderItemForMeasure}
         cellSizeCache={new ItemCache(this.props.list.rows, this.props.itemCacheKey)}
       >
         {({ getRowHeight }) => (
-          <VirtualScroll
-            autoHeight
-            style={{overflowY: 'hidden'}}
-            containerStyle={{transition: 'all 0.2s ease'}}
+          <ScrollableList
             ref={(c) => (this._list = c)}
-            className='KanbanList'
-            width={width}
-            height={height}
+            width={this.props.listWidth - 40}
             rowHeight={getRowHeight}
             rowCount={this.props.list.rows.length}
             rowRenderer={this.renderRow}
             overscanRowCount={this.props.overscanRowCount}
+            scrollElement={this.state.scrollElement}
             // Hack way of forcing list re-rendering when listIndex changes
             listIndex={this.props.listIndex}
-            scrollTop={scrollTop}
            />
          )}
       </CellMeasurer>
@@ -154,7 +150,13 @@ class SortableList extends Component {
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}
       >
-        {this.renderList}
+        <div
+          className='Scrollable'
+          // This is what makes scrollElement to get available height
+          ref={(c) => this.setState({scrollElement: c})}
+        >
+          {this.renderList()}
+        </div>
       </DecoratedList>
     );
   }
