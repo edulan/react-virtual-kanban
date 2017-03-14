@@ -19,26 +19,6 @@ export function hover(props, monitor, component) {
 
   // Determine rectangle on screen
   const node = findDOMNode(component);
-  const hoverBoundingRect = node.getBoundingClientRect();
-
-    // Get vertical middle
-  const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-
-  // Determine mouse position
-  const clientOffset = monitor.getClientOffset();
-
-  // Get pixels to the top
-  const hoverClientY = clientOffset.y - hoverBoundingRect.top;
-
-    // Dragging downwards
-  if (dragItemId < hoverItemId && hoverClientY < hoverMiddleY) {
-    return;
-  }
-
-  // Dragging upwards
-  if (dragItemId > hoverItemId && hoverClientY > hoverMiddleY) {
-    return;
-  }
 
   item.containerWidth = width(node);
 
