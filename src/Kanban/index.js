@@ -89,6 +89,7 @@ class Kanban extends Component {
     this.onDropRow =this.onDropRow.bind(this);
     this.onDragEndRow = this.onDragEndRow.bind(this);
     this.renderList = this.renderList.bind(this);
+    this.drawFrame = this.drawFrame.bind(this);
   }
 
   getChildContext() {
@@ -98,11 +99,35 @@ class Kanban extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({lists: nextProps.lists});
+    this.scheduleUpdate(() => ({lists: nextProps.lists}));
+  }
+
+  componentWillUnmount() {
+    cancelAnimationFrame(this._requestedFrame);
+  }
+
+  scheduleUpdate(updateFn, callbackFn) {
+    this._pendingUpdateFn = updateFn;
+    this._pendingUpdateCallbackFn = callbackFn;
+
+    if (!this._requestedFrame) {
+      this._requestedFrame = requestAnimationFrame(this.drawFrame);
+    }
+  }
+
+  drawFrame() {
+    const nextState = this._pendingUpdateFn(this.state);
+    const callback = this._pendingUpdateCallbackFn;
+
+    this.setState(nextState, callback);
+
+    this._pendingUpdateFn = null;
+    this._pendingUpdateCallbackFn = null;
+    this._requestedFrame = null;
   }
 
   onMoveList(from, to) {
-    this.setState(
+    this.scheduleUpdate(
       (prevState) => ({lists: updateLists(prevState.lists, {from, to})}),
       () => {
         const lists = this.state.lists;
@@ -117,7 +142,7 @@ class Kanban extends Component {
   }
 
   onMoveRow(from, to) {
-    this.setState(
+    this.scheduleUpdate(
       (prevState) => ({lists: updateLists(prevState.lists, {from, to})}),
       () => {
           const lists = this.state.lists;

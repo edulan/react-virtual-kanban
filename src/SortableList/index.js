@@ -121,8 +121,6 @@ class SortableList extends Component {
             rowCount={this.props.list.rows.length}
             rowRenderer={this.renderRow}
             overscanRowCount={this.props.overscanRowCount}
-            // Hack way of forcing list re-rendering when listIndex changes
-            listIndex={this.props.listIndex}
            />
          )}
       </CellMeasurer>
