@@ -6,6 +6,7 @@ export function beginDrag(props, _, component) {
   const containerWidth = node ? width(node) : 0;
 
   return {
+    lists: props.lists,
     row: props.row,
     rowId: props.rowId,
     rowStyle: props.rowStyle,

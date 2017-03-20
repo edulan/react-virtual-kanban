@@ -1,24 +1,12 @@
-import React, { PropTypes, Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React from 'react';
 import classnames from 'classnames';
 
-import { PropTypes as CustomPropTypes, deprecate } from '../../propTypes';
+import * as propTypes from './propTypes';
 
-export default class List extends Component {
-  static propTypes = {
-    list: PropTypes.object.isRequired,
-    listId: CustomPropTypes.id.isRequired,
-    listIndex: PropTypes.number.isRequired,
-    rows: deprecate(PropTypes.array, '`rows` is deprecated. Use `list.rows` instead'),
-    isDragging: PropTypes.bool.isRequired,
-    listStyle: PropTypes.object.isRequired,
-    connectDragSource: PropTypes.func.isRequired,
-    connectDropTarget: PropTypes.func.isRequired,
-  };
+import PureComponent from '../../PureComponent';
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
-  }
+export default class List extends PureComponent {
+  static propTypes = propTypes;
 
   render() {
     const {
