@@ -359,8 +359,10 @@
             onMoveList: function() {},
             onDropRow: function() {},
             onDropList: function() {},
-            onDragEndRow: function() {},
             onDragBeginRow: function() {},
+            onDragEndRow: function() {},
+            onDragBeginList: function() {},
+            onDragEndList: function() {},
             overscanListCount: 2,
             overscanRowCount: 2,
             itemCacheKey: function(_ref8) {
