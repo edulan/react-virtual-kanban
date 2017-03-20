@@ -1,5 +1,4 @@
-import React, { PropTypes, Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React from 'react';
 import HTML5Backend from 'react-dnd-html5-backend';
 import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
 import { Grid } from 'react-virtualized';
@@ -13,6 +12,7 @@ import {
   findItemListId,
 } from './updateLists';
 
+import * as propTypes from './propTypes';
 import * as decorators from '../decorators';
 import DragLayer from '../DragLayer';
 import SortableList from '../SortableList';
@@ -20,6 +20,8 @@ import SortableList from '../SortableList';
 const GridWithScrollZone = withScrolling(Grid);
 const horizontalStrength = createHorizontalStrength(200);
 import { DragDropManager } from 'dnd-core';
+
+import PureComponent from '../PureComponent';
 
 /**
  * Grab dragDropManager from context
@@ -30,27 +32,8 @@ const getDndContext = ((dragDropManager = new DragDropManager(HTML5Backend)) => 
   context.dragDropManager || dragDropManager
 ))();
 
-class Kanban extends Component {
-  static propTypes = {
-    lists: PropTypes.array,
-    width: PropTypes.number,
-    listWidth: PropTypes.number,
-    height: PropTypes.number,
-    listComponent: PropTypes.func,
-    itemComponent: PropTypes.func,
-    itemPreviewComponent: PropTypes.func,
-    listPreviewComponent: PropTypes.func,
-    onMoveRow: PropTypes.func,
-    onMoveList: PropTypes.func,
-    onDropRow: PropTypes.func,
-    onDropList: PropTypes.func,
-    onDragEndRow: PropTypes.func,
-    overscanListCount: PropTypes.number,
-    overscanRowCount: PropTypes.number,
-    scrollToList: PropTypes.number,
-    scrollToAlignment: PropTypes.string,
-    itemCacheKey: PropTypes.func,
-  }
+class Kanban extends PureComponent {
+  static propTypes = propTypes;
 
   static defaultProps = {
     lists: [],
@@ -90,6 +73,7 @@ class Kanban extends Component {
     this.onDragEndRow = this.onDragEndRow.bind(this);
     this.renderList = this.renderList.bind(this);
     this.drawFrame = this.drawFrame.bind(this);
+    this.findItemIndex = this.findItemIndex.bind(this);
   }
 
   getChildContext() {
@@ -193,14 +177,14 @@ class Kanban extends Component {
     });
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
-  }
-
   componentDidUpdate(_prevProps, prevState) {
     if (prevState.lists !== this.state.lists) {
       this._grid.wrappedInstance.forceUpdate();
     }
+  }
+
+  findItemIndex(itemId) {
+    return findItemIndex(this.state.lists, itemId);
   }
 
   renderList({ columnIndex, key, style }) {
@@ -210,7 +194,6 @@ class Kanban extends Component {
       <SortableList
         key={list.id}
         listId={list.id}
-        listIndex={columnIndex}
         listStyle={style}
         listComponent={this.props.listComponent}
         itemComponent={this.props.itemComponent}
@@ -222,6 +205,7 @@ class Kanban extends Component {
         dragEndRow={this.onDragEndRow}
         overscanRowCount={this.props.overscanRowCount}
         itemCacheKey={this.props.itemCacheKey}
+        findItemIndex={this.findItemIndex}
       />
     );
   }

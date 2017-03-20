@@ -1,19 +1,11 @@
-import React, { PropTypes, Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React from 'react';
 
-import { PropTypes as CustomPropTypes } from '../../propTypes';
+import * as propTypes from './propTypes';
 
-export default class ListPreview extends Component {
-  static propTypes = {
-    list: PropTypes.object.isRequired,
-    listId: CustomPropTypes.id.isRequired,
-    listStyle: PropTypes.object.isRequired,
-    isGhost: PropTypes.bool.isRequired,
-  };
+import PureComponent from '../../PureComponent';
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
-  }
+export default class ListPreview extends PureComponent {
+  static propTypes = propTypes;
 
   render() {
     const { listId, listStyle, isGhost } = this.props;

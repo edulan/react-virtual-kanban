@@ -5,6 +5,8 @@ import { VirtualKanban } from '../';
 
 import './App.css';
 
+const keyGenerator = ({ id, lastModified }) => `${id}-${lastModified}`;
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -22,7 +24,7 @@ class App extends Component {
           return {lists: this._initialLists.concat()};
         }
       });
-    }, 1500);
+    }, 3000);
   }
 
   render() {
@@ -35,7 +37,7 @@ class App extends Component {
               width={width}
               height={height}
               listWidth={200}
-              itemCacheKey={({ id, lastModified }) => `${id}-${lastModified}`}
+              itemCacheKey={keyGenerator}
               onMoveRow={({ lists }) => this.setState(() => ({lists}))}
               onMoveList={({ lists }) => this.setState(() => ({lists}))}
             />
