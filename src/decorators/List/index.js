@@ -37,25 +37,25 @@ export default class List extends Component {
     });
 
     return (
+      connectDropTarget(
       <div className='ListWrapper' style={listStyle}>
-        <div className={listContainerClass}>
+          <div className={listContainerClass}>
           {connectDragSource(
             <div className='ListHeader'>
               <span className='ListTitle'>List {listId} ({list.rows.length})</span>
             </div>
           )}
-          {connectDropTarget(
             <div className='ListContent'>
               {children}
             </div>
-          )}
-          <div className='ListFooter'>
-            <div className='ListActions'>
-              <button className='ListActionItem'>Add a task...</button>
+            <div className='ListFooter'>
+              <div className='ListActions'>
+                <button className='ListActionItem'>Add a task...</button>
+              </div>
             </div>
           </div>
-        </div>
       </div>
+      )
     );
   }
 }
