@@ -191,6 +191,7 @@ class Kanban extends Component {
         itemComponent={this.props.itemComponent}
         list={list}
         moveList={this.onMoveList}
+        moveRow={this.onMoveRow}
         dropRow={this.onDropRow}
         dropList={this.onDropList}
         dragEndRow={this.onDragEndRow}
