@@ -29,11 +29,6 @@ class App extends Component {
     this.updateItem = this.updateItem.bind(this);
     this.onMoveRow = this.onMoveRow.bind(this);
     this.onMoveList = this.onMoveList.bind(this);
-
-    this.decoratedItem = decorateComponentWithProps(
-      Item,
-      {updateItem: this.updateItem}
-    );
   }
 
   updateItem(rowIndex, listIndex) {
