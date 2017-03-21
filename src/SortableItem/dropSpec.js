@@ -4,7 +4,7 @@ import { width } from 'dom-helpers/query';
 export function hover(props, monitor, component) {
   const item = monitor.getItem();
   const { rowId: dragItemId } = item;
-  const { rowId: hoverItemId } = props;
+  const { rowId: hoverItemId, findItemIndex } = props;
 
   // Hovering over the same item
   if (dragItemId === hoverItemId) {
@@ -16,6 +16,12 @@ export function hover(props, monitor, component) {
     console.warn(`null component for #${dragItemId}`);
     return;
   }
+
+  const dragItemIndex = findItemIndex(dragItemId);
+  const hoverItemIndex = findItemIndex(hoverItemId);
+
+  // In order to avoid swap flickering when dragging element is smaller than
+  // dropping one, we check whether dropping middle has been reached or not.
 
   // Determine rectangle on screen
   const node = findDOMNode(component);
@@ -30,13 +36,13 @@ export function hover(props, monitor, component) {
   // Get pixels to the top
   const hoverClientY = clientOffset.y - hoverBoundingRect.top;
 
-    // Dragging downwards
-  if (dragItemId < hoverItemId && hoverClientY < hoverMiddleY) {
+  // Dragging downwards
+  if (dragItemIndex < hoverItemIndex && hoverClientY < hoverMiddleY) {
     return;
   }
 
   // Dragging upwards
-  if (dragItemId > hoverItemId && hoverClientY > hoverMiddleY) {
+  if (dragItemIndex > hoverItemIndex && hoverClientY > hoverMiddleY) {
     return;
   }
 

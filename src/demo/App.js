@@ -8,6 +8,8 @@ import Item from './Item';
 
 import './App.css';
 
+const keyGenerator = ({ id, lastModified }) => `${id}-${lastModified}`;
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -72,11 +74,8 @@ class App extends Component {
               lists={this.state.lists}
               width={width}
               height={height}
-              listWidth={260}
-              itemComponent={this.decoratedItem}
-              onMoveRow={this.onMoveRow}
-              onMoveList={this.onMoveList}
-              itemCacheKey={({ id, lastModified }) => `${id}-${lastModified}`}
+              listWidth={200}
+              itemCacheKey={keyGenerator}
               onMoveRow={({ lists, itemId, listId, itemIndex, listIndex }) => this.setState(() => ({lists, lastMovedRow: {itemId, listId, itemIndex, listIndex}}))}
               onMoveList={({ lists }) => this.setState(() => ({lists}))}
               onDragEndRow={() => console.log(this.state.lastMovedRow) }

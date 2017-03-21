@@ -1,10 +1,13 @@
-import React, { PropTypes, Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React from 'react';
 import { DragLayer } from 'react-dnd';
 
 import * as ItemTypes from '../types';
+import * as propTypes from './propTypes';
 
+// TODO: Extract to utils dir
 import { findItemIndex, findListIndex } from '../Kanban/updateLists';
+
+import PureComponent from '../PureComponent';
 
 function getStyles({ currentOffset }) {
   if (!currentOffset) {
@@ -21,27 +24,13 @@ function getStyles({ currentOffset }) {
   };
 }
 
-class KanbanDragLayer extends Component {
-  static propTypes = {
-    item: PropTypes.object,
-    itemType: PropTypes.string,
-    currentOffset: PropTypes.shape({
-      x: PropTypes.number.isRequired,
-      y: PropTypes.number.isRequired
-    }),
-    isDragging: PropTypes.bool.isRequired,
-    itemPreviewComponent: PropTypes.func.isRequired,
-    listPreviewComponent: PropTypes.func.isRequired,
-  }
+class KanbanDragLayer extends PureComponent {
+  static propTypes = propTypes;
 
   constructor(props) {
     super(props);
 
     this.renderItem = this.renderItem.bind(this);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
   }
 
   renderItem(type, item) {
