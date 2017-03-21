@@ -4,7 +4,7 @@ import { List, WindowScroller } from 'react-virtualized';
 export default class ScrollableList extends Component {
   recomputeRowHeights() {
     this._list.recomputeRowHeights();
-    // this._scrolller.updateScrollPosition();
+    this._scroller && this._scroller.updatePosition();
   }
 
   render() {
@@ -12,7 +12,7 @@ export default class ScrollableList extends Component {
 
     return (
       <WindowScroller
-        ref={(c) => (this._scrolller = c)}
+        ref={(c) => (this._scroller = c)}
         scrollElement={this.props.scrollElement}
       >
         {({ height, scrollTop }) => (
