@@ -10,7 +10,7 @@ https://edulan.github.io/react-virtual-kanban/
 * Fully virtualized
 * Built-in drag and drop support
 * Dynamic heights
-* Custom Item and List components
+* Customizable
 
 ## Installation
 Via npm:
@@ -59,7 +59,11 @@ ReactDOM.render(
 );
 ```
 
-### Customizing components
+### Custom components
+By default virtual kanban ships with default `List` and `Item` components but they are totally customizable.
+
+If you just want to change component styles you can do so by adding specific CSS rules. But if you need more flexibility and want to change component structure, you can pass your own list or item components as a props. For example:
+
 ```javascript
 import React from 'react';
 
@@ -73,8 +77,6 @@ class MyItem extends React.Component {
   }
 }
 
-// ...
-
 ReactDOM.render(
   <VirtualKanban
     lists={lists}
@@ -86,6 +88,36 @@ ReactDOM.render(
   document.getElementById('root')
 );
 ```
+
+### Data structure
+React virtual kanban has 2 levels of virtualization, one for lists and other for tasks inside lists. This requires that data structure passed as `lists` prop must follow the following schema:
+
+```
+[
+  {
+    id: any,
+    ...listData,
+    rows: [
+      {
+        id: any,
+        ...itemData,
+      }
+    ]
+  }
+]
+```
+
+Note that item and list ids must be unique.
+
+### Handling state
+State is partially handled by react virtual kanban. Dragging state is managed internally but callbacks are offered for every action. The purpose of this is to optimize component rendering.
+
+## Dependencies
+React virtual kanban is built on top of two amazing libraries:
+
+[react-dnd](https://github.com/react-dnd/react-dnd): for handling drag and drop logic
+
+[react-virtualized](https://github.com/bvaughn/react-virtualized): for managing virtualization stuff
 
 ## API
 | Property | Type | Default | Description |
