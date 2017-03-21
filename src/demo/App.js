@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import { AutoSizer } from 'react-virtualized';
-import decorateComponentWithProps from 'decorate-component-with-props';
 
-import { VirtualKanban, updateLists } from '../';
-import { updateItem } from './utils/updateItem';
-import Item from './Item';
+import { VirtualKanban } from '../../lib';
 
 import './App.css';
 

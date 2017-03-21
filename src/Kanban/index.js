@@ -189,7 +189,7 @@ class Kanban extends PureComponent {
   }
 
   renderList({ columnIndex, key, style }) {
-    const list = this.props.lists[columnIndex];
+    const list = this.state.lists[columnIndex];
 
     return (
       <SortableList
@@ -213,10 +213,10 @@ class Kanban extends PureComponent {
   }
 
   render() {
+    const { lists } = this.state;
     const {
       width,
       height,
-      lists,
       listWidth,
       itemPreviewComponent,
       listPreviewComponent,
@@ -241,9 +241,9 @@ class Kanban extends PureComponent {
           rowCount={1}
           cellRenderer={this.renderList}
           overscanColumnCount={overscanListCount}
+          horizontalStrength={horizontalStrength}
           scrollToColumn={scrollToList}
           scrollToAlignment={scrollToAlignment}
-          horizontalStrength={horizontalStrength}
           verticalStrength={() => {}}
           speed={100}
         />
