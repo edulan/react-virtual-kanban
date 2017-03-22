@@ -101,6 +101,7 @@
 
 /* Item */
 .ItemWrapper {
+  flex: 1 0 auto;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -133,7 +134,11 @@
   margin: 0;
 }
 
-
+.ItemImage {
+  width: 100%;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
 
 
 

@@ -17,11 +17,16 @@ function generateWords() {
   return Array.from({length}, () => WORDS[Math.floor(Math.random() * length)]).join(' ');
 }
 
+function generateImageUrl() {
+  return `http://lorempixel.com/180/${Math.round(Math.random() * 300)}/`;
+}
+
 function generateRandom(count) {
   return Array.from({length: count}, (_, i) => {
     return {
       id: i,
       name: generateWords(),
+      imageUrl: Math.random() > 0.5 && generateImageUrl(),
       lastModified: Date.now(),
     };
   });

@@ -21,6 +21,8 @@ export default class Item extends PureComponent {
         <div className={itemContainerClass}>
           <div className='ItemContent'>
             <p>{row.name}</p>
+            {row.imageUrl &&
+              <img className='ItemImage' src={row.imageUrl} />}
           </div>
         </div>
       </div>
