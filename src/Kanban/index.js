@@ -2,6 +2,7 @@ import React from 'react';
 import HTML5Backend from 'react-dnd-html5-backend';
 import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
 import { Grid } from 'react-virtualized';
+import ChopList from '../SortableList/ChopList';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 
 import {
@@ -187,8 +188,8 @@ class Kanban extends PureComponent {
     return findItemIndex(this.state.lists, itemId);
   }
 
-  renderList({ columnIndex, key, style }) {
-    const list = this.state.lists[columnIndex];
+  renderList({ index, key, style }) {
+    const list = this.state.lists[index];
 
     return (
       <SortableList
@@ -225,6 +226,15 @@ class Kanban extends PureComponent {
 
     return (
       <div>
+        <ChopList
+          ref={(c) => (this._grid = c)}
+          rowCount={lists.length}
+          rowRenderer={this.renderList}
+          direction='horizontal'
+        >
+        </ChopList>
+
+        {/*
         <GridWithScrollZone
           lists={lists}
           className='KanbanGrid'
@@ -245,6 +255,7 @@ class Kanban extends PureComponent {
           verticalStrength={() => {}}
           speed={100}
         />
+          */}
         <DragLayer
           lists={lists}
           itemPreviewComponent={itemPreviewComponent}

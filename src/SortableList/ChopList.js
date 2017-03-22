@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './ChopList.css';
 
 const DEFAULT_INITIAL_ELEMENTS = 10;
 
