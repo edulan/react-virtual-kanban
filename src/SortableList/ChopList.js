@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import underscore from 'underscore';
 
-const DEFAULT_INITIAL_ELEMENTS = 10;
+const DEFAULT_INITIAL_ELEMENTS = 2; // 10
 
 const HORIZONTAL_DIRECTION = 'horizontal';
 const VERTICAL_DIRECTION = 'vertical';
@@ -63,6 +64,10 @@ class ChopList extends Component {
     if (this.state.initializing) {
       const containerSize = this.refs.list[keys.offset];
       const elementsSize = this.refs.innerScrollList.children.length * estimatedSize;
+
+      if (!containerSize) {
+        console.warn('Chop container has no size!!');
+      }
 
       if (containerSize > elementsSize) {
         const newWindowSize = windowSize + DEFAULT_INITIAL_ELEMENTS
@@ -164,8 +169,10 @@ class ChopList extends Component {
       realOffset = Math.max(offset - overscan, 0);
     }
 
+    // <div ref='list' className="List" onScroll={requestAnimationFrame(this.onScroll.bind(this))}>
+
     return (
-      <div ref='list' className="List" onScroll={this.onScroll.bind(this)}>
+      <div ref='list' className="List" onScroll={underscore.throttle(this.onScroll.bind(this), 25, {leading: false})}>
         <div ref='innerScrollContainer' className="innerScrollContainer" style={ containerStyle }>
           <div ref='burger' className="Burger" style={ burgerStyle }/>
           <div ref='innerScrollList' className="innerScrollList" style={ containerStyle }>

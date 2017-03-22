@@ -29,6 +29,7 @@
   margin: 0 4px;
   box-sizing: border-box;
   position: relative;
+  width: 200px;
 }
 
 .ListContainer {

@@ -180,7 +180,8 @@ class Kanban extends PureComponent {
 
   componentDidUpdate(_prevProps, prevState) {
     if (prevState.lists !== this.state.lists) {
-      this._grid.wrappedInstance.forceUpdate();
+      console.log('kanban render');
+      this._grid.forceUpdate();
     }
   }
 

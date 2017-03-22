@@ -8,4 +8,11 @@ body {
 .KanbanWrapper {
   width: 100vw;
   height: 100vh;
+  display: flex;
 }
+
+.KanbanWrapper > div {
+  display: flex;
+  flex: 1;
+}
+

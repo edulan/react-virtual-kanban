@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { AutoSizer } from 'react-virtualized';
 
-import { VirtualKanban } from '../../src';
+import { VirtualKanban } from '../../lib';
 
 import './App.css';
 
@@ -30,20 +30,14 @@ class App extends Component {
   render() {
     return (
       <div className='KanbanWrapper'>
-        <AutoSizer>
-          {({ width, height }) => (
-            <VirtualKanban
-              lists={this.state.lists}
-              width={width}
-              height={height}
-              listWidth={200}
-              itemCacheKey={keyGenerator}
-              onMoveRow={({ lists, itemId, listId, itemIndex, listIndex }) => this.setState(() => ({lists, lastMovedRow: {itemId, listId, itemIndex, listIndex}}))}
-              onMoveList={({ lists }) => this.setState(() => ({lists}))}
-              onDragEndRow={() => console.log(this.state.lastMovedRow) }
-            />
-          )}
-        </AutoSizer>
+        <VirtualKanban
+          lists={this.state.lists}
+          listWidth={200}
+          itemCacheKey={keyGenerator}
+          onMoveRow={({ lists, itemId, listId, itemIndex, listIndex }) => this.setState(() => ({lists, lastMovedRow: {itemId, listId, itemIndex, listIndex}}))}
+          onMoveList={({ lists }) => this.setState(() => ({lists}))}
+          onDragEndRow={() => console.log(this.state.lastMovedRow) }
+        />
       </div>
     );
   }
