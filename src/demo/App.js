@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { AutoSizer } from 'react-virtualized';
 
-import { VirtualKanban } from '../';
+import { VirtualKanban } from '../../src';
 
 import './App.css';
 
@@ -24,7 +24,7 @@ class App extends Component {
           return {lists: this._initialLists.concat()};
         }
       });
-    }, 3000);
+    }, 30000000);
   }
 
   render() {

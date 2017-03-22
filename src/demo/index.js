@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Perf from 'react-addons-perf';
 
-import '../../lib/styles.css';
+import '../../src/styles.css';
 
 import { generateLists } from './utils/generateLists';
 
@@ -13,7 +13,7 @@ window.Perf = Perf;
 function getLists() {
   const lists = window.localStorage.getItem('lists');
 
-  return JSON.parse(lists) || generateLists(20, 50);
+  return JSON.parse(lists) || generateLists(20, 100);
 }
 
 function setLists(lists) {

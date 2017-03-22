@@ -5,6 +5,7 @@ import { getEmptyImage } from 'react-dnd-html5-backend';
 
 import { ItemCache } from './itemCache';
 import SortableItem from '../SortableItem';
+import ChopList from './ChopList';
 
 import { LIST_TYPE, ROW_TYPE } from '../types';
 import * as dragSpec from './dragSpec';
@@ -34,7 +35,7 @@ class SortableList extends PureComponent {
 
   componentDidUpdate(prevProps) {
     if (prevProps.list.rows !== this.props.list.rows && !!this._list) {
-      this._list.recomputeRowHeights();
+      this._list.forceUpdate();
     }
   }
 
@@ -112,8 +113,6 @@ class SortableList extends PureComponent {
       listStyle,
     } = this.props;
 
-    // console.log(`SortableList render ${listId}`);
-
     return (
       <DecoratedList
         list={list}
@@ -124,9 +123,11 @@ class SortableList extends PureComponent {
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}
       >
-        <AutoSizer>
-          {(dimensions) => this.renderList(dimensions)}
-        </AutoSizer>
+        <ChopList
+          ref={(c) => (this._list = c)}
+          rowCount={list.rows.length}
+          rowRenderer={this.renderRow}
+        />
       </DecoratedList>
     );
   }

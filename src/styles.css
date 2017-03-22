@@ -64,6 +64,7 @@
   flex-basis: auto;
   margin: 0 4px;
   padding: 0 4px;
+  flex: 1;
 }
 
 .ListFooter {
