@@ -55,7 +55,6 @@ class SortableList extends PureComponent {
         moveRow={this.props.moveRow}
         dropRow={this.props.dropRow}
         dragEndRow={this.props.dragEndRow}
-        findItemIndex={this.props.findItemIndex}
       />
     );
   }

@@ -74,7 +74,6 @@ class Kanban extends PureComponent {
 
     this.renderList = this.renderList.bind(this);
     this.drawFrame = this.drawFrame.bind(this);
-    this.findItemIndex = this.findItemIndex.bind(this);
   }
 
   getChildContext() {
@@ -184,10 +183,6 @@ class Kanban extends PureComponent {
     }
   }
 
-  findItemIndex(itemId) {
-    return findItemIndex(this.state.lists, itemId);
-  }
-
   renderList({ columnIndex, key, style }) {
     const list = this.state.lists[columnIndex];
 
@@ -207,7 +202,6 @@ class Kanban extends PureComponent {
         dragEndRow={this.onDragEndRow}
         overscanRowCount={this.props.overscanRowCount}
         itemCacheKey={this.props.itemCacheKey}
-        findItemIndex={this.findItemIndex}
       />
     );
   }
