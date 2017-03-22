@@ -173,6 +173,13 @@ class Kanban extends PureComponent {
 
     this.props.onDragEndRow({
       itemId,
+      get rowId() {
+        console.warn('onDropRow: `rowId` is deprecated. Use `itemId` instead');
+        return itemId;
+      },
+      listId: findItemListId(lists, itemId),
+      rowIndex: findItemIndex(lists, itemId),
+      listIndex: findItemListIndex(lists, itemId),
       lists,
     });
   }
