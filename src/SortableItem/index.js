@@ -27,15 +27,15 @@ class SortableItem extends PureComponent {
       isDragging,
       connectDragSource,
       connectDropTarget,
-      rowStyle,
     } = this.props;
+
+    // console.log(`SortableItem ${rowId} render`);
 
     return (
       <DecoratedItem
         row={row}
         rowId={rowId}
         listId={listId}
-        rowStyle={rowStyle}
         isDragging={isDragging}
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}

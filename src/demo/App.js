@@ -4,8 +4,6 @@ import { VirtualKanban } from '../../src';
 
 import './App.css';
 
-const keyGenerator = ({ id, lastModified }) => `${id}-${lastModified}`;
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -31,11 +29,6 @@ class App extends Component {
       <div className='KanbanWrapper'>
         <VirtualKanban
           lists={this.state.lists}
-          listWidth={200}
-          itemCacheKey={keyGenerator}
-          onMoveRow={({ lists, itemId, listId, itemIndex, listIndex }) => this.setState(() => ({lists, lastMovedRow: {itemId, listId, itemIndex, listIndex}}))}
-          onMoveList={({ lists }) => this.setState(() => ({lists}))}
-          onDragEndRow={() => console.log(this.state.lastMovedRow) }
         />
       </div>
     );

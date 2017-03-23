@@ -33,7 +33,7 @@ class SortableList extends PureComponent {
     }
   }
 
-  renderRow({ index, key, style }) {
+  renderRow({ index, key }) {
     const row = this.props.list.rows[index];
 
     return (
@@ -42,7 +42,6 @@ class SortableList extends PureComponent {
         row={row}
         rowId={row.id}
         listId={this.props.listId}
-        rowStyle={style}
         itemComponent={this.props.itemComponent}
         moveRow={this.props.moveRow}
         dropRow={this.props.dropRow}
@@ -60,20 +59,21 @@ class SortableList extends PureComponent {
       isDragging,
       connectDragSource,
       connectDropTarget,
-      listStyle,
     } = this.props;
+
+    // console.log(`SortableList ${listId} render`);
 
     return (
       <DecoratedList
         list={list}
         listId={listId}
         rows={list.rows}
-        listStyle={listStyle}
         isDragging={isDragging}
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}
       >
         <ChopList
+          key={`chop-${listId}`}
           ref={(c) => (this._list = c)}
           rowCount={list.rows.length}
           rowRenderer={this.renderRow}

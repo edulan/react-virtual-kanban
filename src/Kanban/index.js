@@ -125,14 +125,14 @@ class Kanban extends PureComponent {
     this.scheduleUpdate(
       (prevState) => ({lists: updateLists(prevState.lists, {from, to})}),
       () => {
-          const lists = this.state.lists;
+        const lists = this.state.lists;
 
-          this.props.onMoveRow({
-            itemId: from.itemId,
-            listId: findItemListId(lists, from.itemId),
-            itemIndex: findItemIndex(lists, from.itemId),
-            listIndex: findItemListIndex(lists, from.itemId),
-            lists: lists,
+        this.props.onMoveRow({
+          itemId: from.itemId,
+          listId: findItemListId(lists, from.itemId),
+          itemIndex: findItemIndex(lists, from.itemId),
+          listIndex: findItemListIndex(lists, from.itemId),
+          lists: lists,
         });
       }
     );
@@ -183,14 +183,13 @@ class Kanban extends PureComponent {
     return findItemIndex(this.state.lists, itemId);
   }
 
-  renderList({ index, key, style }) {
+  renderList({ index, key }) {
     const list = this.state.lists[index];
 
     return (
       <SortableList
         key={list.id}
         listId={list.id}
-        listStyle={style}
         listComponent={this.props.listComponent}
         itemComponent={this.props.itemComponent}
         list={list}
@@ -199,8 +198,6 @@ class Kanban extends PureComponent {
         dropRow={this.onDropRow}
         dropList={this.onDropList}
         dragEndRow={this.onDragEndRow}
-        overscanRowCount={this.props.overscanRowCount}
-        itemCacheKey={this.props.itemCacheKey}
         findItemIndex={this.findItemIndex}
       />
     );
