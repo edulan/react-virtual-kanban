@@ -1,7 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 import underscore from 'underscore';
 
-const DEFAULT_INITIAL_ELEMENTS = 2; // 10
+import { addResizeListener, removeResizeListener } from  './resizeDetector';
+
+const DEFAULT_INITIAL_ELEMENTS = 1; // 10
 
 const HORIZONTAL_DIRECTION = 'horizontal';
 const VERTICAL_DIRECTION = 'vertical';
@@ -11,7 +14,9 @@ const HORIZONTAL_KEYS = {
   offset: 'offsetWidth',
   dimension: 'width',
   inverse_dimension: 'height',
-  scroll: 'scrollLeft'
+  scroll: 'scrollLeft',
+  before_margin: 'marginLeft',
+  after_margin: 'marginRight',
 }
 
 const VERTICAL_KEYS = {
@@ -19,80 +24,109 @@ const VERTICAL_KEYS = {
   offset: 'offsetHeight',
   dimension: 'height',
   inverse_dimension: 'width',
-  scroll: 'scrollTop'
+  scroll: 'scrollTop',
+  before_margin: 'marginTop',
+  after_margin: 'marginBottom',
 }
 
-class ChopList extends Component {
+export default class ChopList extends Component {
+  static propTypes = {
+    itemCount: PropTypes.number.isRequired,
+    itemRenderer: PropTypes.func.isRequired,
+    direction: PropTypes.oneOf([HORIZONTAL_DIRECTION, VERTICAL_DIRECTION]),
+    overscan: PropTypes.number,
+  };
 
   constructor(props) {
     super(props);
 
     this.handleResize = this.handleResize.bind(this);
+    this.onScroll = this.onScroll.bind(this);
+
+    // Review this
+    this.handleResize = underscore.throttle(this.handleResize, 150);
+    this.onScroll = underscore.throttle(this.onScroll, 50);
 
     const direction = props.direction || VERTICAL_DIRECTION;
     const keys = direction === HORIZONTAL_DIRECTION ? HORIZONTAL_KEYS : VERTICAL_KEYS;
 
+    this.getOffset = (child) => {
+      const style = window.getComputedStyle ? getComputedStyle(child, null) : child.currentStyle;
+
+      // Ai parfavar :facepalm:
+      const beforeMargin = parseInt(style[keys.before_margin], 10) || 0;
+      const afterMargin = parseInt(style[keys.after_margin], 10) || 0;
+
+      return child[keys.offset] + beforeMargin + afterMargin;
+    }
+    this.getDimension = () => keys.dimension;
+    this.getInverseDimension = () => keys.inverse_dimension;
+    this.getScroll = (child) => child[keys.scroll];
+    this.getFlex = () => keys.flex;
+
     this.state = {
-      keys,
       offset: 0,
-      burger: 0,
+      burgerSize: 0,
       windowSize: DEFAULT_INITIAL_ELEMENTS,
       initializing: true,
       debug: false,
     };
   }
 
-  getCurrentChildrenMeanSize() {
-    const childSizes = [...this.refs.innerScrollList.children].map(child => child[this.state.keys.offset]);
-
-    return childSizes.reduce((h1, h2) => h1 + h2, 0) / childSizes.length;
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
-    return this.props.rowCount !== nextProps.rowCount ||
+    return this.props.itemCount !== nextProps.itemCount ||
+           this.state.scrollContainerSize !== nextState.scrollContainerSize ||
            this.state.offset !== nextState.offset ||
-           this.state.burger !== nextState.burger ||
+           this.state.burgerSize !== nextState.burgerSize ||
            this.state.windowSize !== nextState.windowSize;
   }
 
+  getRenderedItems() {
+    // Skip bacon item
+    return [...this.refs.innerScrollList.children].slice(0, -1);
+  }
+
+  getRenderedItemsSize() {
+    const renderedItems = this.getRenderedItems();
+
+    return renderedItems.reduce((totalSize, child) => {
+      return totalSize + this.getOffset(child);
+    }, 0);
+  }
+
   chechInitialization() {
-    const { keys, windowSize } = this.state;
+    const containerSize = this.getOffset(this.refs.list);
 
-    const estimatedSize = this.getCurrentChildrenMeanSize();
+    if (!containerSize) {
+      console.warn('Chop container has no size!!');
 
-    // Just during the initialization
-    if (this.state.initializing) {
-      const containerSize = this.refs.list[keys.offset];
-      const elementsSize = this.refs.innerScrollList.children.length * estimatedSize;
-
-      if (!containerSize) {
-        console.warn('Chop container has no size!!');
-      }
-
-      if (containerSize > elementsSize) {
-        const newWindowSize = windowSize + DEFAULT_INITIAL_ELEMENTS
-
-        if (this.state.debug) {
-          console.log(`Initializing with ${newWindowSize} elements...`);
-        }
-
-        this.setState({
-          windowSize: newWindowSize
-        });
-      } else {
-        const newWindowSize = Math.ceil(this.refs.list[keys.offset] / estimatedSize);
-
-        // Set real scrollbar size
-        this.refs.innerScrollContainer.style[keys.dimension] = `${this.props.rowCount * estimatedSize}px`;
-
-        this.setState({
-          initializing: false,
-          windowSize: newWindowSize,
-          overscan: this.props.overscan || newWindowSize,
-          estimatedSize,
-        });
-      }
+      this.setState({
+        initializing: false,
+      });
+      return;
     }
+
+    const renderedItemsSize = this.getRenderedItemsSize();
+    const renderedItemsCount = this.getRenderedItems().length;
+    const estimatedItemSize = renderedItemsSize / renderedItemsCount;
+
+    if (containerSize > renderedItemsSize && renderedItemsCount < this.props.itemCount) {
+      this.setState((prevState) => ({
+        windowSize: prevState.windowSize + DEFAULT_INITIAL_ELEMENTS
+      }));
+
+      return;
+    }
+
+    const newWindowSize = Math.ceil(this.getOffset(this.refs.list) / estimatedItemSize);
+
+    this.setState({
+      initializing: false,
+      windowSize: newWindowSize,
+      overscan: this.props.overscan || newWindowSize,
+      estimatedItemSize,
+      scrollContainerSize: this.props.itemCount * estimatedItemSize,
+    });
   }
 
   handleResize() {
@@ -100,18 +134,19 @@ class ChopList extends Component {
       return;
     }
 
-    this.setState({
-      initializing: true
-    });
-
     this.chechInitialization();
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize);
+    removeResizeListener(findDOMNode(this.refs.innerScrollList), this.handleResize);
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if (!this.state.initializing) {
+      return;
+    }
+
     this.chechInitialization();
   }
 
@@ -119,76 +154,88 @@ class ChopList extends Component {
     this.chechInitialization();
 
     window.addEventListener('resize', this.handleResize);
+    addResizeListener(findDOMNode(this.refs.innerScrollList), this.handleResize.bind(this));
   }
 
   onScroll(event) {
-    const { rowCount } = this.props;
-    const { windowSize, overscan, keys, estimatedSize } = this.state;
+    const { itemCount } = this.props;
+    const { windowSize, overscan, estimatedItemSize } = this.state;
 
-    const scrollRelative = this.refs.list[keys.scroll];
-    const offset = Math.min(Math.floor(scrollRelative / estimatedSize), rowCount - windowSize - overscan);
-    const burger = Math.max(offset - overscan, 0) * estimatedSize;
+    const scrollRelative = this.getScroll(this.refs.list);
+    const offset = Math.min(Math.floor(scrollRelative / estimatedItemSize), Math.max(itemCount - windowSize - overscan, 0));
+    const burgerSize = Math.max(offset - overscan, 0) * estimatedItemSize;
 
     if (this.state.debug) {
       console.group();
       console.log('Offset', offset);
-      console.log('Element size', estimatedSize);
-      console.log('Elements', rowCount);
+      console.log('Element size', estimatedItemSize);
+      console.log('Elements', itemCount);
       console.log('Overscan', overscan);
       console.log('WindowSize', windowSize);
-      console.log('Total', rowCount * estimatedSize);
-      console.log('Burger', burger);
+      console.log('Total', itemCount * estimatedItemSize);
+      console.log('Burger', burgerSize);
       console.groupEnd();
     }
 
     this.setState({
       offset,
-      burger: Math.round(burger)
+      burgerSize: Math.round(burgerSize)
     });
   }
 
-  renderElements(renderedElements, realOffset) {
-    return (
-      [...Array(renderedElements)].map((x, i) =>
-        { return this.props.rowRenderer({key: 'k' + (i + realOffset), index: (i + realOffset)}) }
-      )
-    );
+  getStyles() {
+    const containerStyle = { flexDirection: this.getFlex(), [this.getInverseDimension()]: '100%' };
+    const burgerStyle = { [this.getDimension()]: this.state.burgerSize };
+    const listStyle = { flexDirection: this.getFlex(), [this.getInverseDimension()]: '100%' };
+
+    if (this.state.scrollContainerSize) {
+      containerStyle[this.getDimension()] = this.state.scrollContainerSize;
+    }
+
+    return {
+      containerStyle,
+      burgerStyle,
+      listStyle,
+    };
+  }
+
+  // TODO: Extract me
+  getItemsRangeToRender(props, state) {
+    const { itemCount } = props;
+    const { offset, overscan, windowSize, initializing } = state;
+
+    let itemsCountToRender = Math.min(windowSize, itemCount);
+    let renderOffset = 0;
+
+    if (!initializing) {
+      const previousOverscanCount = Math.min(offset, overscan);
+      const nextOverscanCount = Math.min(itemCount - (overscan + offset), overscan);
+
+      itemsCountToRender = Math.min(previousOverscanCount + windowSize + nextOverscanCount, itemCount);
+      renderOffset = Math.max(offset - overscan, 0);
+    }
+
+    return Array.from({length: itemsCountToRender}, (_, i) => renderOffset + i);
+  }
+
+  renderElements(range) {
+    return range.map((i) => this.props.itemRenderer({key: `k${i}`, index: i}));
   }
 
   render() {
-    const { offset, burger, overscan, keys, initializing, windowSize } = this.state;
+    const { containerStyle, burgerStyle, listStyle } = this.getStyles();
 
-    const containerStyle = { flexDirection: keys.flex, [`${keys.inverse_dimension}`]: '100%' };
-    const burgerStyle = { [`${keys.dimension}`]: burger };
-
-    let renderedElements = windowSize;
-    let realOffset = 0;
-
-    if (!initializing) {
-      renderedElements = windowSize + Math.min(offset, overscan) + Math.min(this.props.rowCount - (overscan + offset), overscan)
-      realOffset = Math.max(offset - overscan, 0);
-    }
-
-    // <div ref='list' className="List" onScroll={requestAnimationFrame(this.onScroll.bind(this))}>
+    const range = this.getItemsRangeToRender(this.props, this.state);
 
     return (
-      <div ref='list' className="List" onScroll={underscore.throttle(this.onScroll.bind(this), 25, {leading: false})}>
-        <div ref='innerScrollContainer' className="innerScrollContainer" style={ containerStyle }>
-          <div ref='burger' className="Burger" style={ burgerStyle }/>
-          <div ref='innerScrollList' className="innerScrollList" style={ containerStyle }>
-            {renderedElements > 0 && this.renderElements(renderedElements, realOffset)}
+      <div ref='list' className="List" onScroll={this.onScroll}>
+        <div ref='innerScrollContainer' className="innerScrollContainer" style={containerStyle}>
+          <div className="Burger" style={burgerStyle}/>
+          <div ref='innerScrollList' className="innerScrollList" style={listStyle}>
+            {this.renderElements(range)}
           </div>
         </div>
       </div>
     );
   }
 };
-
-ChopList.propTypes = {
-  rowCount: React.PropTypes.number.isRequired,
-  rowRenderer: React.PropTypes.func.isRequired,
-  direction: React.PropTypes.oneOf([HORIZONTAL_DIRECTION, VERTICAL_DIRECTION]),
-  overscan: React.PropTypes.number,
-};
-
-export default ChopList;

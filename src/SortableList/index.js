@@ -75,8 +75,8 @@ class SortableList extends PureComponent {
         <ChopList
           key={`chop-${listId}`}
           ref={(c) => (this._list = c)}
-          rowCount={list.rows.length}
-          rowRenderer={this.renderRow}
+          itemCount={list.rows.length}
+          itemRenderer={this.renderRow}
         />
       </DecoratedList>
     );

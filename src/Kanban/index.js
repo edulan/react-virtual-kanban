@@ -28,6 +28,8 @@ const getDndContext = ((dragDropManager = new DragDropManager(HTML5Backend)) => 
   context.dragDropManager || dragDropManager
 ))();
 
+const noop = () => {};
+
 class Kanban extends PureComponent {
   static propTypes = propTypes;
 
@@ -101,8 +103,8 @@ class Kanban extends PureComponent {
 
     this.setState(nextState, callback);
 
-    this._pendingUpdateFn = null;
-    this._pendingUpdateCallbackFn = null;
+    this._pendingUpdateFn = noop;
+    this._pendingUpdateCallbackFn = noop;
     this._requestedFrame = null;
   }
 
@@ -214,8 +216,8 @@ class Kanban extends PureComponent {
       <div>
         <ChopList
           ref={(c) => (this._grid = c)}
-          rowCount={lists.length}
-          rowRenderer={this.renderList}
+          itemCount={lists.length}
+          itemRenderer={this.renderList}
           direction='horizontal'
         />
         <DragLayer
