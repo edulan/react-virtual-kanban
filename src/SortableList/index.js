@@ -1,11 +1,9 @@
 import React from 'react';
-import { List as VirtualScroll, CellMeasurer, AutoSizer } from 'react-virtualized';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 
-import { ItemCache } from './itemCache';
 import SortableItem from '../SortableItem';
-import ChopList from './ChopList';
+import ChopList from '../ChopList';
 
 import { LIST_TYPE, ROW_TYPE } from '../types';
 import * as dragSpec from './dragSpec';
@@ -14,8 +12,6 @@ import * as propTypes from './propTypes';
 
 import PureComponent from '../PureComponent';
 
-const identity = (c) => c;
-
 class SortableList extends PureComponent {
   static propTypes = propTypes;
 
@@ -23,8 +19,6 @@ class SortableList extends PureComponent {
     super(props);
 
     this.renderRow = this.renderRow.bind(this);
-    this.renderItemForMeasure = this.renderItemForMeasure.bind(this);
-    this.renderList = this.renderList.bind(this);
   }
 
   componentDidMount() {
@@ -55,50 +49,6 @@ class SortableList extends PureComponent {
         dragEndRow={this.props.dragEndRow}
         findItemIndex={this.props.findItemIndex}
       />
-    );
-  }
-
-  renderItemForMeasure({ rowIndex }) {
-    const { itemComponent: DecoratedItem } = this.props;
-    const row = this.props.list.rows[rowIndex];
-
-    return (
-      <DecoratedItem
-        row={row}
-        rowId={row.id}
-        listId={this.props.listId}
-        rowStyle={{}}
-        isDragging={false}
-        connectDragSource={identity}
-        connectDropTarget={identity}
-      />
-    );
-  }
-
-  renderList({ width, height }) {
-    // TODO: Check whether scrollbar is visible or not :/
-
-    return (
-      <CellMeasurer
-        width={width}
-        columnCount={1}
-        rowCount={this.props.list.rows.length}
-        cellRenderer={this.renderItemForMeasure}
-        cellSizeCache={new ItemCache(this.props.list.rows, this.props.itemCacheKey)}
-      >
-        {({ getRowHeight }) => (
-          <VirtualScroll
-            ref={(c) => (this._list = c)}
-            className='KanbanList'
-            width={width}
-            height={height}
-            rowHeight={getRowHeight}
-            rowCount={this.props.list.rows.length}
-            rowRenderer={this.renderRow}
-            overscanRowCount={this.props.overscanRowCount}
-           />
-         )}
-      </CellMeasurer>
     );
   }
 

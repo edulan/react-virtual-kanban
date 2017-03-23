@@ -1,9 +1,6 @@
 import React from 'react';
 import HTML5Backend from 'react-dnd-html5-backend';
-import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
-import { Grid } from 'react-virtualized';
-import ChopList from '../SortableList/ChopList';
-import scrollbarSize from 'dom-helpers/util/scrollbarSize';
+import ChopList from '../ChopList';
 
 import {
   updateLists,
@@ -18,8 +15,6 @@ import * as decorators from '../decorators';
 import DragLayer from '../DragLayer';
 import SortableList from '../SortableList';
 
-const GridWithScrollZone = withScrolling(Grid);
-const horizontalStrength = createHorizontalStrength(200);
 import { DragDropManager } from 'dnd-core';
 
 import PureComponent from '../PureComponent';
@@ -214,14 +209,8 @@ class Kanban extends PureComponent {
   render() {
     const { lists } = this.state;
     const {
-      width,
-      height,
-      listWidth,
       itemPreviewComponent,
       listPreviewComponent,
-      overscanListCount,
-      scrollToList,
-      scrollToAlignment,
     } = this.props;
 
     return (
@@ -231,31 +220,7 @@ class Kanban extends PureComponent {
           rowCount={lists.length}
           rowRenderer={this.renderList}
           direction='horizontal'
-        >
-        </ChopList>
-
-        {/*
-        <GridWithScrollZone
-          lists={lists}
-          className='KanbanGrid'
-          // Needed for fixing disappearing items when scrolling
-          containerStyle={{pointerEvents: 'auto'}}
-          ref={(c) => (this._grid = c)}
-          width={width}
-          height={height}
-          columnWidth={listWidth}
-          rowHeight={height - scrollbarSize()}
-          columnCount={lists.length}
-          rowCount={1}
-          cellRenderer={this.renderList}
-          overscanColumnCount={overscanListCount}
-          horizontalStrength={horizontalStrength}
-          scrollToColumn={scrollToList}
-          scrollToAlignment={scrollToAlignment}
-          verticalStrength={() => {}}
-          speed={100}
         />
-          */}
         <DragLayer
           lists={lists}
           itemPreviewComponent={itemPreviewComponent}

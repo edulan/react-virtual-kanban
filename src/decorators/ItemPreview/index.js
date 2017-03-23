@@ -17,7 +17,7 @@ export default class ItemPreview extends PureComponent {
           <div className='ItemContent'>
             <p>{row.name}</p>
             {row.imageUrl &&
-              <img className='ItemImage' src={row.imageUrl} />}
+              <img className='ItemImage' role='presentation' src={row.imageUrl} />}
           </div>
         </div>
       </div>

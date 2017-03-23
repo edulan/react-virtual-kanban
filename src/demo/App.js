@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { AutoSizer } from 'react-virtualized';
 
-import { VirtualKanban } from '../../lib';
+import { VirtualKanban } from '../../src';
 
 import './App.css';
 
