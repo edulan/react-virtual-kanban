@@ -12,7 +12,6 @@ export default class List extends PureComponent {
     const {
       list,
       listId,
-      listStyle,
       connectDragSource,
       connectDropTarget,
       isDragging,
@@ -25,7 +24,7 @@ export default class List extends PureComponent {
     });
 
     return (
-      <div className='ListWrapper' style={listStyle}>
+      <div className='ListWrapper'>
         <div className={listContainerClass}>
           {connectDragSource(
             <div className='ListHeader'>

@@ -9,7 +9,7 @@ export default class Item extends PureComponent {
   static propTypes = propTypes;
 
   render() {
-    const { row, rowStyle, connectDragSource, connectDropTarget, isDragging } = this.props;
+    const { row, connectDragSource, connectDropTarget, isDragging } = this.props;
 
     const itemContainerClass = classnames({
       'ItemContainer': true,
@@ -17,7 +17,7 @@ export default class Item extends PureComponent {
     });
 
     return connectDragSource(connectDropTarget(
-      <div className='ItemWrapper' style={rowStyle}>
+      <div className='ItemWrapper'>
         <div className={itemContainerClass}>
           <div className='ItemContent'>
             <p>{row.name}</p>
