@@ -37,6 +37,10 @@ export default class ChopList extends Component {
     overscan: PropTypes.number,
   };
 
+  static defaultProps = {
+    overscan: 1,
+  };
+
   constructor(props) {
     super(props);
 
@@ -67,9 +71,8 @@ export default class ChopList extends Component {
     this.state = {
       offset: 0,
       burgerSize: 0,
-      windowSize: DEFAULT_INITIAL_ELEMENTS,
+      windowCount: DEFAULT_INITIAL_ELEMENTS,
       initializing: true,
-      debug: false,
     };
   }
 
@@ -78,7 +81,7 @@ export default class ChopList extends Component {
            this.state.scrollContainerSize !== nextState.scrollContainerSize ||
            this.state.offset !== nextState.offset ||
            this.state.burgerSize !== nextState.burgerSize ||
-           this.state.windowSize !== nextState.windowSize;
+           this.state.windowCount !== nextState.windowCount;
   }
 
   getRenderedItems() {
@@ -92,6 +95,10 @@ export default class ChopList extends Component {
     return renderedItems.reduce((totalSize, child) => {
       return totalSize + this.getOffset(child);
     }, 0);
+  }
+
+  shouldRenderItems(totalSize, renderedSize, totalItems, renderedItems) {
+    return renderedSize < totalSize && renderedItems < totalItems;
   }
 
   chechInitialization() {
@@ -108,23 +115,31 @@ export default class ChopList extends Component {
 
     const renderedItemsSize = this.getRenderedItemsSize();
     const renderedItemsCount = this.getRenderedItems().length;
-    const estimatedItemSize = renderedItemsSize / renderedItemsCount;
 
-    if (containerSize > renderedItemsSize && renderedItemsCount < this.props.itemCount) {
+    const shouldRenderItems = this.shouldRenderItems(
+      containerSize,
+      renderedItemsSize,
+      this.props.itemCount,
+      renderedItemsCount
+    );
+
+    if (shouldRenderItems) {
       this.setState((prevState) => ({
-        windowSize: prevState.windowSize + DEFAULT_INITIAL_ELEMENTS
+        windowCount: prevState.windowCount + DEFAULT_INITIAL_ELEMENTS
       }));
-
       return;
     }
 
-    const newWindowSize = Math.ceil(this.getOffset(this.refs.list) / estimatedItemSize);
+    const estimatedItemSize = renderedItemsSize / renderedItemsCount;
+    const newWindowCount = Math.ceil(containerSize / estimatedItemSize);
 
     this.setState({
       initializing: false,
-      windowSize: newWindowSize,
-      overscan: this.props.overscan || newWindowSize,
+      windowCount: newWindowCount,
+      // Derived, can be removed
+      overscan: this.props.overscan || newWindowCount,
       estimatedItemSize,
+      // Remove, it can be derived
       scrollContainerSize: this.props.itemCount * estimatedItemSize,
     });
   }
@@ -159,37 +174,35 @@ export default class ChopList extends Component {
 
   onScroll(event) {
     const { itemCount } = this.props;
-    const { windowSize, overscan, estimatedItemSize } = this.state;
+    const { windowCount, overscan, estimatedItemSize } = this.state;
 
-    const scrollRelative = this.getScroll(this.refs.list);
-    const offset = Math.min(Math.floor(scrollRelative / estimatedItemSize), Math.max(itemCount - windowSize - overscan, 0));
-    const burgerSize = Math.max(offset - overscan, 0) * estimatedItemSize;
+    const currentScrollPosition = this.getScroll(this.refs.list);
 
-    if (this.state.debug) {
-      console.group();
-      console.log('Offset', offset);
-      console.log('Element size', estimatedItemSize);
-      console.log('Elements', itemCount);
-      console.log('Overscan', overscan);
-      console.log('WindowSize', windowSize);
-      console.log('Total', itemCount * estimatedItemSize);
-      console.log('Burger', burgerSize);
-      console.groupEnd();
-    }
+    const startIndex = Math.floor(currentScrollPosition / estimatedItemSize);
+    const maxIndex = Math.max(0, itemCount - windowCount - overscan);
+    const offsetCount = Math.min(startIndex, maxIndex);
+    // const offsetCount = startIndex;
+
+    console.log(startIndex, maxIndex, offsetCount);
+
+    const burgerItemsCount = Math.max(0, offsetCount - overscan);
+    const burgerSize = Math.round(burgerItemsCount * estimatedItemSize);
 
     this.setState({
-      offset,
-      burgerSize: Math.round(burgerSize)
+      offset: offsetCount,
+      burgerSize
     });
   }
 
   getStyles() {
-    const containerStyle = { flexDirection: this.getFlex(), [this.getInverseDimension()]: '100%' };
-    const burgerStyle = { [this.getDimension()]: this.state.burgerSize };
-    const listStyle = { flexDirection: this.getFlex(), [this.getInverseDimension()]: '100%' };
+    const { scrollContainerSize, burgerSize } = this.state;
 
-    if (this.state.scrollContainerSize) {
-      containerStyle[this.getDimension()] = this.state.scrollContainerSize;
+    const containerStyle = { flexDirection: this.getFlex(), [this.getInverseDimension()]: '100%' };
+    const listStyle = { flexDirection: this.getFlex(), [this.getInverseDimension()]: '100%' };
+    const burgerStyle = { [this.getDimension()]: burgerSize };
+
+    if (scrollContainerSize) {
+      containerStyle[this.getDimension()] = scrollContainerSize;
     }
 
     return {
@@ -199,19 +212,21 @@ export default class ChopList extends Component {
     };
   }
 
-  // TODO: Extract me
+  // TODO: Extract me and review carefully
   getItemsRangeToRender(props, state) {
     const { itemCount } = props;
-    const { offset, overscan, windowSize, initializing } = state;
+    const { offset, overscan, windowCount, initializing } = state;
 
-    let itemsCountToRender = Math.min(windowSize, itemCount);
+    let itemsCountToRender = Math.min(windowCount, itemCount - offset);
     let renderOffset = 0;
+
+    console.log(`itemsCountToRender`, itemsCountToRender);
 
     if (!initializing) {
       const previousOverscanCount = Math.min(offset, overscan);
       const nextOverscanCount = Math.min(itemCount - (overscan + offset), overscan);
 
-      itemsCountToRender = Math.min(previousOverscanCount + windowSize + nextOverscanCount, itemCount);
+      itemsCountToRender = Math.min(previousOverscanCount + windowCount + nextOverscanCount, itemCount);
       renderOffset = Math.max(offset - overscan, 0);
     }
 
