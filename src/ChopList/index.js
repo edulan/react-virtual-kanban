@@ -1,254 +1,247 @@
-import React, { Component, PropTypes } from 'react';
-import { findDOMNode } from 'react-dom';
-import underscore from 'underscore';
+import React, { Component } from 'react';
+import Measure from 'react-measure';
+import { property } from 'lodash';
 
-import { addResizeListener, removeResizeListener } from  './resizeDetector';
+import { propTypes, defaultProps, HORIZONTAL_DIRECTION, VERTICAL_DIRECTION } from './propTypes';
+import { getItemsRangeToRender } from  './itemsChopper';
 
+// TODO: Move to a prop
 const DEFAULT_INITIAL_ELEMENTS = 1; // 10
 
-const HORIZONTAL_DIRECTION = 'horizontal';
-const VERTICAL_DIRECTION = 'vertical';
-
-const HORIZONTAL_KEYS = {
-  flex: 'row',
-  offset: 'offsetWidth',
-  dimension: 'width',
-  inverse_dimension: 'height',
-  scroll: 'scrollLeft',
-  before_margin: 'marginLeft',
-  after_margin: 'marginRight',
+const HORIZONTAL_LENSES = {
+  size: property('offsetWidth'),
+  scroll: property('scrollLeft'),
+  dimension: property('width'),
+  beforeMargin: property('marginLeft'),
+  afterMargin: property('marginRight'),
+  makeStyles: (width) => ({width}),
+  log: () => {},
 }
 
-const VERTICAL_KEYS = {
-  flex: 'column',
-  offset: 'offsetHeight',
-  dimension: 'height',
-  inverse_dimension: 'width',
-  scroll: 'scrollTop',
-  before_margin: 'marginTop',
-  after_margin: 'marginBottom',
+const VERTICAL_LENSES = {
+  size: property('offsetHeight'),
+  scroll: property('scrollTop'),
+  dimension: property('height'),
+  beforeMargin: property('marginTop'),
+  afterMargin: property('marginBottom'),
+  makeStyles: (height) => ({height}),
+  log: (...args) => console.log(...args),
 }
 
 export default class ChopList extends Component {
-  static propTypes = {
-    itemCount: PropTypes.number.isRequired,
-    itemRenderer: PropTypes.func.isRequired,
-    direction: PropTypes.oneOf([HORIZONTAL_DIRECTION, VERTICAL_DIRECTION]),
-    overscan: PropTypes.number,
-  };
-
-  static defaultProps = {
-    overscan: 1,
-  };
+  static propTypes = propTypes;
+  static defaultProps = defaultProps;
 
   constructor(props) {
     super(props);
 
-    this.handleResize = this.handleResize.bind(this);
+    this.onResize = this.onResize.bind(this);
     this.onScroll = this.onScroll.bind(this);
 
     // Review this
-    this.handleResize = underscore.throttle(this.handleResize, 150);
-    this.onScroll = underscore.throttle(this.onScroll, 50);
+    // this.onResize = debounce(this.onResize, 150);
+    // this.onScroll = throttle(this.onScroll, 50);
 
-    const direction = props.direction || VERTICAL_DIRECTION;
-    const keys = direction === HORIZONTAL_DIRECTION ? HORIZONTAL_KEYS : VERTICAL_KEYS;
+    this.lenses = props.direction === HORIZONTAL_DIRECTION ? HORIZONTAL_LENSES : VERTICAL_LENSES;
 
-    this.getOffset = (child) => {
+    this.getSize = (child) => {
+      if (!child) {
+        console.warn(`empty child`);
+        return 0;
+      }
+
+      // TODO: get-node-dimensions package for this
       const style = window.getComputedStyle ? getComputedStyle(child, null) : child.currentStyle;
 
-      // Ai parfavar :facepalm:
-      const beforeMargin = parseInt(style[keys.before_margin], 10) || 0;
-      const afterMargin = parseInt(style[keys.after_margin], 10) || 0;
+      const size = this.lenses.size(child);
+      const beforeMargin = parseInt(this.lenses.beforeMargin(style), 10) || 0;
+      const afterMargin = parseInt(this.lenses.afterMargin(style), 10) || 0;
 
-      return child[keys.offset] + beforeMargin + afterMargin;
+      return beforeMargin + size + afterMargin;
     }
-    this.getDimension = () => keys.dimension;
-    this.getInverseDimension = () => keys.inverse_dimension;
-    this.getScroll = (child) => child[keys.scroll];
-    this.getFlex = () => keys.flex;
 
     this.state = {
-      offset: 0,
-      burgerSize: 0,
-      windowCount: DEFAULT_INITIAL_ELEMENTS,
-      initializing: true,
+      offset: 0, // index
+      windowCount: DEFAULT_INITIAL_ELEMENTS, // amount
+      burgerCount: 0, // amount
+      estimatedItemSize: 0, // px
+      isBuffering: false,
     };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return this.props.itemCount !== nextProps.itemCount ||
-           this.state.scrollContainerSize !== nextState.scrollContainerSize ||
+           this.state.estimatedItemSize !== nextState.estimatedItemSize ||
            this.state.offset !== nextState.offset ||
-           this.state.burgerSize !== nextState.burgerSize ||
+           this.state.burgerCount !== nextState.burgerCount ||
            this.state.windowCount !== nextState.windowCount;
   }
 
   getRenderedItems() {
-    // Skip bacon item
-    return [...this.refs.innerScrollList.children].slice(0, -1);
+    return [...this.refs.innerScrollList.children];
   }
 
-  getRenderedItemsSize() {
-    const renderedItems = this.getRenderedItems();
-
-    return renderedItems.reduce((totalSize, child) => {
-      return totalSize + this.getOffset(child);
-    }, 0);
+  getRenderedItemsSizes() {
+    return this.getRenderedItems().map((child) => this.getSize(child));
   }
 
-  shouldRenderItems(totalSize, renderedSize, totalItems, renderedItems) {
+  getRenderedItemsTotalSize() {
+    return this.getRenderedItemsSizes().reduce((totalSize, size) => totalSize + size, 0);
+  }
+
+  shouldRenderMoreItems(totalSize, renderedSize, totalItems, renderedItems) {
     return renderedSize < totalSize && renderedItems < totalItems;
   }
 
-  chechInitialization() {
-    const containerSize = this.getOffset(this.refs.list);
+  startBuffering() {
+    this.lenses.log('buffering...');
+    const containerSize = this.getSize(this.refs.list);
 
     if (!containerSize) {
-      console.warn('Chop container has no size!!');
-
-      this.setState({
-        initializing: false,
-      });
+      this.lenses.log('Chop container has no size!!');
       return;
     }
 
-    const renderedItemsSize = this.getRenderedItemsSize();
+    const renderedItemsTotalSize = this.getRenderedItemsTotalSize();
     const renderedItemsCount = this.getRenderedItems().length;
 
-    const shouldRenderItems = this.shouldRenderItems(
+    // TODO: Watch out for 0 division
+    if (renderedItemsCount === 0) {
+      return;
+    }
+
+    if (renderedItemsTotalSize === 0) {
+      return;
+    }
+
+    const shouldRenderMoreItems = this.shouldRenderMoreItems(
       containerSize,
-      renderedItemsSize,
+      renderedItemsTotalSize,
       this.props.itemCount,
       renderedItemsCount
     );
 
-    if (shouldRenderItems) {
+    if (shouldRenderMoreItems) {
+      this.lenses.log(`need more items: rendered ${renderedItemsCount} items`);
       this.setState((prevState) => ({
-        windowCount: prevState.windowCount + DEFAULT_INITIAL_ELEMENTS
+        isBuffering: true,
+        windowCount: prevState.windowCount + DEFAULT_INITIAL_ELEMENTS,
       }));
       return;
     }
 
-    const estimatedItemSize = renderedItemsSize / renderedItemsCount;
+    const estimatedItemSize = renderedItemsTotalSize / renderedItemsCount;
     const newWindowCount = Math.ceil(containerSize / estimatedItemSize);
 
     this.setState({
-      initializing: false,
+      isBuffering: false,
       windowCount: newWindowCount,
-      // Derived, can be removed
-      overscan: this.props.overscan || newWindowCount,
       estimatedItemSize,
-      // Remove, it can be derived
-      scrollContainerSize: this.props.itemCount * estimatedItemSize,
     });
   }
 
-  handleResize() {
-    if (!this.state.initializing) {
+  getOverscan() {
+    return this.props.overscan || this.state.windowCount;
+  }
+
+  onResize() {
+    if (this.state.isBuffering) {
       return;
     }
 
-    this.chechInitialization();
+    this.lenses.log(`onResize`);
+    this.startBuffering();
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize);
-    removeResizeListener(findDOMNode(this.refs.innerScrollList), this.handleResize);
+    // window.removeEventListener('resize', this.onResize);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (!this.state.initializing) {
+    if (!this.state.isBuffering) {
       return;
     }
 
-    this.chechInitialization();
+    this.lenses.log(`didUpdate`);
+    this.startBuffering();
   }
 
   componentDidMount() {
-    this.chechInitialization();
-
-    window.addEventListener('resize', this.handleResize);
-    addResizeListener(findDOMNode(this.refs.innerScrollList), this.handleResize.bind(this));
+    this.startBuffering();
+    // window.addEventListener('resize', this.onResize);
   }
 
   onScroll(event) {
     const { itemCount } = this.props;
-    const { windowCount, overscan, estimatedItemSize } = this.state;
+    const { windowCount, estimatedItemSize } = this.state;
+    const overscan = this.getOverscan();
 
-    const currentScrollPosition = this.getScroll(this.refs.list);
+    // WARNING: Sometimes refs.list is undefined! Protect from that
+    const currentScrollPosition = this.lenses.scroll(this.refs.list);
 
     const startIndex = Math.floor(currentScrollPosition / estimatedItemSize);
     const maxIndex = Math.max(0, itemCount - windowCount - overscan);
     const offsetCount = Math.min(startIndex, maxIndex);
-    // const offsetCount = startIndex;
-
-    console.log(startIndex, maxIndex, offsetCount);
-
-    const burgerItemsCount = Math.max(0, offsetCount - overscan);
-    const burgerSize = Math.round(burgerItemsCount * estimatedItemSize);
+    const burgerCount = Math.max(0, offsetCount - overscan);
 
     this.setState({
       offset: offsetCount,
-      burgerSize
+      burgerCount
     });
   }
 
-  getStyles() {
-    const { scrollContainerSize, burgerSize } = this.state;
-
-    const containerStyle = { flexDirection: this.getFlex(), [this.getInverseDimension()]: '100%' };
-    const listStyle = { flexDirection: this.getFlex(), [this.getInverseDimension()]: '100%' };
-    const burgerStyle = { [this.getDimension()]: burgerSize };
-
-    if (scrollContainerSize) {
-      containerStyle[this.getDimension()] = scrollContainerSize;
+  getClasses() {
+    if (this.props.direction === HORIZONTAL_DIRECTION) {
+      return 'scrollHorizontal';
     }
+
+    if (this.props.direction === VERTICAL_DIRECTION) {
+      return 'scrollVertical';
+    }
+
+    return '';
+  }
+
+  getStyles() {
+    const { itemCount } = this.props;
+    const { estimatedItemSize, burgerCount } = this.state;
+
+    const containerSize = Math.round(itemCount * estimatedItemSize);
+    const burgerSize = Math.round(burgerCount * estimatedItemSize);
+
+    const containerStyle = this.lenses.makeStyles(containerSize);
+    const burgerStyle = this.lenses.makeStyles(burgerSize);
 
     return {
       containerStyle,
       burgerStyle,
-      listStyle,
     };
   }
 
-  // TODO: Extract me and review carefully
-  getItemsRangeToRender(props, state) {
-    const { itemCount } = props;
-    const { offset, overscan, windowCount, initializing } = state;
+  renderElements() {
+    const { itemCount } = this.props;
+    const { offset, windowCount } = this.state;
+    const overscan = this.getOverscan();
+    const range = getItemsRangeToRender({itemCount, windowCount, offset, overscan});
 
-    let itemsCountToRender = Math.min(windowCount, itemCount - offset);
-    let renderOffset = 0;
-
-    console.log(`itemsCountToRender`, itemsCountToRender);
-
-    if (!initializing) {
-      const previousOverscanCount = Math.min(offset, overscan);
-      const nextOverscanCount = Math.min(itemCount - (overscan + offset), overscan);
-
-      itemsCountToRender = Math.min(previousOverscanCount + windowCount + nextOverscanCount, itemCount);
-      renderOffset = Math.max(offset - overscan, 0);
-    }
-
-    return Array.from({length: itemsCountToRender}, (_, i) => renderOffset + i);
-  }
-
-  renderElements(range) {
     return range.map((i) => this.props.itemRenderer({key: `k${i}`, index: i}));
   }
 
   render() {
-    const { containerStyle, burgerStyle, listStyle } = this.getStyles();
-
-    const range = this.getItemsRangeToRender(this.props, this.state);
+    const scrollClassName = this.getClasses();
+    const { containerStyle, burgerStyle } = this.getStyles();
 
     return (
-      <div ref='list' className="List" onScroll={this.onScroll}>
-        <div ref='innerScrollContainer' className="innerScrollContainer" style={containerStyle}>
-          <div className="Burger" style={burgerStyle}/>
-          <div ref='innerScrollList' className="innerScrollList" style={listStyle}>
-            {this.renderElements(range)}
-          </div>
+      <div ref='list' className='ChopList' onScroll={this.onScroll}>
+        <div ref='innerScrollContainer' className={`innerScrollContainer ${scrollClassName}`} style={containerStyle}>
+          <div className='Burger' style={burgerStyle}/>
+          <Measure
+            onMeasure={this.onResize}
+          >
+            <div ref='innerScrollList' className={`innerScrollList ${scrollClassName}`}>
+              {this.renderElements()}
+            </div>
+          </Measure>
         </div>
       </div>
     );

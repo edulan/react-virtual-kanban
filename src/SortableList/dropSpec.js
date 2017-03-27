@@ -3,6 +3,7 @@ import { width, querySelectorAll } from 'dom-helpers/query';
 
 import { LIST_TYPE, ROW_TYPE } from '../types';
 
+// TODO: :fire:
 function calculateContainerWidth(component) {
   const innerScrollContainer = querySelectorAll(
     findDOMNode(component),
