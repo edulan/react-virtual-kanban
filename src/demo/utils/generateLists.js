@@ -26,7 +26,7 @@ function generateRandom(count) {
     return {
       id: i,
       name: generateWords(),
-      imageUrl: Math.random() > 0.5 && generateImageUrl(),
+      imageUrl: Math.random() > 0.8 && generateImageUrl(),
       lastModified: Date.now(),
     };
   });
