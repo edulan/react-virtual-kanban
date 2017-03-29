@@ -18,7 +18,7 @@ function generateWords() {
 }
 
 function generateImageUrl() {
-  return `http://lorempixel.com/180/${Math.round(Math.random() * 300)}/`;
+  return `https://unsplash.it/180/${Math.round(Math.random() * 300)}/?random`;
 }
 
 function generateRandom(count) {
