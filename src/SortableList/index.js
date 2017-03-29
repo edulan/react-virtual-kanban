@@ -3,7 +3,7 @@ import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 
 import SortableItem from '../SortableItem';
-import ChopList from '../ChopList';
+import ChopList from 'react-chop';
 
 import { LIST_TYPE, ROW_TYPE } from '../types';
 import * as dragSpec from './dragSpec';
