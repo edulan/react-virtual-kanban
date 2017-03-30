@@ -77,6 +77,7 @@ class SortableList extends PureComponent {
           ref={(c) => (this._list = c)}
           itemCount={list.rows.length}
           itemRenderer={this.renderRow}
+          shrink
         />
       </DecoratedList>
     );
