@@ -97,8 +97,10 @@ function build(previousSizeMap) {
   console.log('Creating an optimized production build...');
   webpack(config).run((err, stats) => {
     if (err) {
+      config;
       console.error('Failed to create a production build. Reason:');
       console.error(err.message || err);
+      debugger;
       process.exit(1);
     }
 
