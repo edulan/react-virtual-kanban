@@ -72,7 +72,6 @@ class Kanban extends PureComponent {
     this.onDropRow =this.onDropRow.bind(this);
     this.onDragEndRow = this.onDragEndRow.bind(this);
     this.renderList = this.renderList.bind(this);
-    this.drawFrame = this.drawFrame.bind(this);
     this.findItemIndex = this.findItemIndex.bind(this);
   }
 
@@ -83,35 +82,11 @@ class Kanban extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.scheduleUpdate(() => ({lists: nextProps.lists}));
-  }
-
-  componentWillUnmount() {
-    cancelAnimationFrame(this._requestedFrame);
-  }
-
-  scheduleUpdate(updateFn, callbackFn) {
-    this._pendingUpdateFn = updateFn;
-    this._pendingUpdateCallbackFn = callbackFn;
-
-    if (!this._requestedFrame) {
-      this._requestedFrame = requestAnimationFrame(this.drawFrame);
-    }
-  }
-
-  drawFrame() {
-    const nextState = this._pendingUpdateFn(this.state);
-    const callback = this._pendingUpdateCallbackFn;
-
-    this.setState(nextState, callback);
-
-    this._pendingUpdateFn = null;
-    this._pendingUpdateCallbackFn = null;
-    this._requestedFrame = null;
+    this.setState({lists: nextProps.lists});
   }
 
   onMoveList(from, to) {
-    this.scheduleUpdate(
+    this.setState(
       (prevState) => ({lists: updateLists(prevState.lists, {from, to})}),
       () => {
         const lists = this.state.lists;
@@ -126,7 +101,7 @@ class Kanban extends PureComponent {
   }
 
   onMoveRow(from, to) {
-    this.scheduleUpdate(
+    this.setState(
       (prevState) => ({lists: updateLists(prevState.lists, {from, to})}),
       () => {
           const lists = this.state.lists;
