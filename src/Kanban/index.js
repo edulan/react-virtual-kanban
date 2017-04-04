@@ -2,7 +2,6 @@ import React, { PropTypes, Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import HTML5Backend from 'react-dnd-html5-backend';
 import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
-import { Grid } from 'react-virtualized';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 
 import { updateLists } from './updateLists';
@@ -11,8 +10,6 @@ import * as decorators from '../decorators';
 import DragLayer from '../DragLayer';
 import SortableList from '../SortableList';
 
-const GridWithScrollZone = withScrolling(Grid);
-const horizontalStrength = createHorizontalStrength(200);
 import { DragDropManager } from 'dnd-core';
 
 /**
@@ -120,19 +117,17 @@ class Kanban extends Component {
 
   componentDidUpdate(_prevProps, prevState) {
     if (prevState.lists !== this.state.lists) {
-      this._grid.wrappedInstance.forceUpdate();
+      this._grid.forceUpdate();
     }
   }
 
-  renderList({ columnIndex, key, style }) {
-    const list = this.state.lists[columnIndex];
-
+  renderList(list, columnIndex) {
     return (
       <SortableList
         key={list.id}
         listId={list.id}
         listIndex={columnIndex}
-        listStyle={style}
+        listStyle={{}}
         listComponent={this.props.listComponent}
         itemComponent={this.props.itemComponent}
         list={list}
@@ -161,26 +156,13 @@ class Kanban extends Component {
 
     return (
       <div>
-        <GridWithScrollZone
-          lists={lists}
+        <div
           className='KanbanGrid'
-          // Needed for fixing disappearing items when scrolling
-          containerStyle={{pointerEvents: 'auto'}}
           ref={(c) => (this._grid = c)}
-          width={width}
-          height={height}
-          columnWidth={listWidth}
-          rowHeight={height - scrollbarSize()}
-          columnCount={lists.length}
-          rowCount={1}
-          cellRenderer={this.renderList}
-          overscanColumnCount={overscanListCount}
-          horizontalStrength={horizontalStrength}
-          scrollToColumn={scrollToList}
-          scrollToAlignment={scrollToAlignment}
-          verticalStrength={() => {}}
-          speed={100}
-        />
+          style={{pointerEvents: 'auto'}}
+        >
+          {lists.map(this.renderList)}
+        </div>
         <DragLayer
           itemPreviewComponent={itemPreviewComponent}
           listPreviewComponent={listPreviewComponent}
