@@ -6,7 +6,7 @@ node_modules
 # production
 build
 dist
-lib
+#lib
 
 # misc
 .DS_Store
