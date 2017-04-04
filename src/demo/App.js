@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { AutoSizer } from 'react-virtualized';
+import shuffle from 'lodash.shuffle';
 
 import { VirtualKanban } from '../';
 
@@ -19,12 +20,15 @@ class App extends Component {
       this.setState((prevState) => {
         if (prevState.lists[0].rows.length > 0) {
           this._initialLists = prevState.lists;
-          return {lists: prevState.lists.map((list) => ({...list, rows: []}))};
+          return {lists: prevState.lists.map((list) => ({
+            ...list,
+            rows: shuffle(list.rows),
+          }))};
         } else {
           return {lists: this._initialLists.concat()};
         }
       });
-    }, 3000);
+    }, 5000);
   }
 
   render() {
