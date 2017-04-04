@@ -1,6 +1,5 @@
 import React, { PropTypes, Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import { List as VirtualScroll, CellMeasurer, AutoSizer } from 'react-virtualized';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 
@@ -60,9 +59,7 @@ class SortableList extends Component {
     return shallowCompare(this, nextProps, nextState);
   }
 
-  renderRow({ index, key, style }) {
-    const row = this.props.list.rows[index];
-
+  renderRow(row, index) {
     return (
       <SortableItem
         key={row.id}
@@ -71,7 +68,7 @@ class SortableList extends Component {
         listId={this.props.listId}
         rowIndex={index}
         listIndex={this.props.listIndex}
-        rowStyle={style}
+        rowStyle={{}}
         itemComponent={this.props.itemComponent}
         moveRow={this.props.moveRow}
         dropRow={this.props.dropRow}
@@ -98,33 +95,8 @@ class SortableList extends Component {
     );
   }
 
-  renderList({ width, height }) {
-    // TODO: Check whether scrollbar is visible or not :/
-
-    return (
-      <CellMeasurer
-        width={width}
-        columnCount={1}
-        rowCount={this.props.list.rows.length}
-        cellRenderer={this.renderItemForMeasure}
-        cellSizeCache={new ItemCache(this.props.list.rows, this.props.itemCacheKey)}
-      >
-        {({ getRowHeight }) => (
-          <VirtualScroll
-            ref={(c) => (this._list = c)}
-            className='KanbanList'
-            width={width}
-            height={height}
-            rowHeight={getRowHeight}
-            rowCount={this.props.list.rows.length}
-            rowRenderer={this.renderRow}
-            overscanRowCount={this.props.overscanRowCount}
-            // Hack way of forcing list re-rendering when listIndex changes
-            listIndex={this.props.listIndex}
-           />
-         )}
-      </CellMeasurer>
-    );
+  renderList() {
+    return this.props.list.rows.map(this.renderRow);
   }
 
   render() {
@@ -150,9 +122,7 @@ class SortableList extends Component {
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}
       >
-        <AutoSizer>
-          {(dimensions) => this.renderList(dimensions)}
-        </AutoSizer>
+        {this.renderList()}
       </DecoratedList>
     );
   }
