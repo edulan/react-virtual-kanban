@@ -44,10 +44,12 @@ class App extends Component {
               itemCacheKey={keyGenerator}
               onMoveRow={({ lists, itemId, listId, itemIndex, listIndex }) => this.setState(() => ({lists, lastMovedRow: {itemId, listId, itemIndex, listIndex}}))}
               onMoveList={({ lists }) => this.setState(() => ({lists}))}
-              onDragBeginRow={() => console.log('onDragBeginRow')}
-              onDragEndRow={() => console.log(this.state.lastMovedRow) }
-              onDragBeginList={() => console.log('onDragBeginList')}
-              onDragEndList={() => console.log('onDragEndList')}
+              onDragBeginRow={(data) => console.log(data, 'onDragBeginRow')}
+              onDragEndRow={(data) => console.log(data, 'onDragEndRow') }
+              onDropRow={(data) => console.log(data, 'onDropRow') }
+              onDropList={(data) => console.log(data, 'onDropList') }
+              onDragBeginList={(data) => console.log(data, 'onDragBeginList')}
+              onDragEndList={(data) => console.log(data, 'onDragEndList')}
             />
           )}
         </AutoSizer>
