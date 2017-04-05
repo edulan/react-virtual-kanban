@@ -115,8 +115,6 @@ class SortableList extends PureComponent {
       listStyle,
     } = this.props;
 
-    // console.log(`SortableList render ${listId}`);
-
     return (
       <DecoratedList
         list={list}

@@ -69,15 +69,17 @@ class Kanban extends PureComponent {
       lists: props.lists
     };
 
-    this.onMoveList =this.onMoveList.bind(this);
-    this.onMoveRow =this.onMoveRow.bind(this);
-    this.onDropList =this.onDropList.bind(this);
-    this.onDropRow =this.onDropRow.bind(this);
+    this.onMoveList = this.onMoveList.bind(this);
+    this.onMoveRow = this.onMoveRow.bind(this);
+
+    this.onDropList = this.onDropList.bind(this);
+    this.onDropRow = this.onDropRow.bind(this);
 
     this.onDragBeginRow = this.onDragBeginRow.bind(this);
     this.onDragEndRow = this.onDragEndRow.bind(this);
     this.onDragBeginList = this.onDragBeginList.bind(this);
     this.onDragEndList = this.onDragEndList.bind(this);
+
     this.renderList = this.renderList.bind(this);
     this.findItemIndex = this.findItemIndex.bind(this);
   }
@@ -125,19 +127,13 @@ class Kanban extends PureComponent {
   }
 
   onDropList({ listId }) {
-    const lists = this.state.lists;
-
-    this.props.onDropList({
-      listId,
-      listIndex: findListIndex(lists, listId),
-      lists,
-    });
+    this.props.onDropList(this.listEndData({ listId }));
   }
 
-  onDropRow({ itemId }) {
+  itemEndData({ itemId }) {
     const lists = this.state.lists;
 
-    this.props.onDropRow({
+    return {
       itemId,
       get rowId() {
         console.warn('onDropRow: `rowId` is deprecated. Use `itemId` instead');
@@ -147,28 +143,37 @@ class Kanban extends PureComponent {
       rowIndex: findItemIndex(lists, itemId),
       listIndex: findItemListIndex(lists, itemId),
       lists,
-    });
+    }
   }
 
-  onDragBeginRow() {
-    this.props.onDragBeginRow();
+  listEndData({ listId }) {
+    const lists = this.state.lists;
+
+    return {
+      listId,
+      listIndex: findListIndex(lists, listId),
+      lists,
+    };
+  }
+
+  onDropRow({ itemId }) {
+    this.props.onDropRow(this.itemEndData({ itemId }));
+  }
+
+  onDragBeginRow(data) {
+    this.props.onDragBeginRow(data);
   }
 
   onDragEndRow({ itemId }) {
-    const lists = this.state.lists;
-
-    this.props.onDragEndRow({
-      itemId,
-      lists,
-    });
+    this.props.onDragEndRow(this.itemEndData({ itemId }));
   }
 
-  onDragBeginList() {
-    this.props.onDragBeginList();
+  onDragBeginList(data) {
+    this.props.onDragBeginList(data);
   }
 
-  onDragEndList() {
-    this.props.onDragEndList();
+  onDragEndList({ listId }) {
+    this.props.onDragEndList(this.listEndData({ listId }));
   }
 
   componentDidUpdate(_prevProps, prevState) {

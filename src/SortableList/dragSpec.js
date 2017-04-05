@@ -10,6 +10,12 @@ export function beginDrag(props) {
   return data;
 }
 
+export function endDrag(props, monitor) {
+  const { listId } = props;
+
+  props.dragEndRow({listId});
+}
+
 export function isDragging({ listId }, monitor) {
   const draggingListId = monitor.getItem().listId;
 
