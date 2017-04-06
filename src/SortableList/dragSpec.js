@@ -13,7 +13,7 @@ export function beginDrag(props) {
 export function endDrag(props, monitor) {
   const { listId } = props;
 
-  props.dragEndRow({listId});
+  props.dragEndList({listId});
 }
 
 export function isDragging({ listId }, monitor) {
