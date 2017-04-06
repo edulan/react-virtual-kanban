@@ -1,12 +1,18 @@
-import React, { PropTypes, Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React from 'react';
 import HTML5Backend from 'react-dnd-html5-backend';
 import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
 import { Grid } from 'react-virtualized';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 
-import { updateLists } from './updateLists';
+import {
+  updateLists,
+  findListIndex,
+  findItemIndex,
+  findItemListIndex,
+  findItemListId,
+} from './updateLists';
 
+import * as propTypes from './propTypes';
 import * as decorators from '../decorators';
 import DragLayer from '../DragLayer';
 import SortableList from '../SortableList';
@@ -14,6 +20,8 @@ import SortableList from '../SortableList';
 const GridWithScrollZone = withScrolling(Grid);
 const horizontalStrength = createHorizontalStrength(200);
 import { DragDropManager } from 'dnd-core';
+
+import PureComponent from '../PureComponent';
 
 /**
  * Grab dragDropManager from context
@@ -24,26 +32,8 @@ const getDndContext = ((dragDropManager = new DragDropManager(HTML5Backend)) => 
   context.dragDropManager || dragDropManager
 ))();
 
-class Kanban extends Component {
-  static propTypes = {
-    lists: PropTypes.array,
-    width: PropTypes.number,
-    listWidth: PropTypes.number,
-    height: PropTypes.number,
-    listComponent: PropTypes.func,
-    itemComponent: PropTypes.func,
-    itemPreviewComponent: PropTypes.func,
-    listPreviewComponent: PropTypes.func,
-    onMoveRow: PropTypes.func,
-    onMoveList: PropTypes.func,
-    onDropRow: PropTypes.func,
-    onDropList: PropTypes.func,
-    overscanListCount: PropTypes.number,
-    overscanRowCount: PropTypes.number,
-    scrollToList: PropTypes.number,
-    scrollToAlignment: PropTypes.string,
-    itemCacheKey: PropTypes.func,
-  }
+class Kanban extends PureComponent {
+  static propTypes = propTypes;
 
   static defaultProps = {
     lists: [],
@@ -55,6 +45,10 @@ class Kanban extends Component {
     onMoveList: () => {},
     onDropRow: () => {},
     onDropList: () => {},
+    onDragBeginList: () => {},
+    onDragEndList: () => {},
+    onDragBeginRow: () => {},
+    onDragEndRow: () => {},
     overscanListCount: 2,
     overscanRowCount: 2,
     itemCacheKey: ({ id }) => `${id}`,
@@ -75,11 +69,19 @@ class Kanban extends Component {
       lists: props.lists
     };
 
-    this.onMoveList =this.onMoveList.bind(this);
-    this.onMoveRow =this.onMoveRow.bind(this);
-    this.onDropList =this.onDropList.bind(this);
-    this.onDropRow =this.onDropRow.bind(this);
+    this.onMoveList = this.onMoveList.bind(this);
+    this.onMoveRow = this.onMoveRow.bind(this);
+
+    this.onDropList = this.onDropList.bind(this);
+    this.onDropRow = this.onDropRow.bind(this);
+
+    this.onDragBeginRow = this.onDragBeginRow.bind(this);
+    this.onDragEndRow = this.onDragEndRow.bind(this);
+    this.onDragBeginList = this.onDragBeginList.bind(this);
+    this.onDragEndList = this.onDragEndList.bind(this);
+
     this.renderList = this.renderList.bind(this);
+    this.findItemIndex = this.findItemIndex.bind(this);
   }
 
   getChildContext() {
@@ -95,33 +97,93 @@ class Kanban extends Component {
   onMoveList(from, to) {
     this.setState(
       (prevState) => ({lists: updateLists(prevState.lists, {from, to})}),
-      () => this.props.onMoveList(from, to)
+      () => {
+        const lists = this.state.lists;
+
+        this.props.onMoveList({
+          listId: from.listId,
+          listIndex: findListIndex(lists, from.listId),
+          lists,
+        });
+      }
     );
   }
 
   onMoveRow(from, to) {
     this.setState(
       (prevState) => ({lists: updateLists(prevState.lists, {from, to})}),
-      () => this.props.onMoveRow(from, to)
+      () => {
+          const lists = this.state.lists;
+
+          this.props.onMoveRow({
+            itemId: from.itemId,
+            listId: findItemListId(lists, from.itemId),
+            itemIndex: findItemIndex(lists, from.itemId),
+            listIndex: findItemListIndex(lists, from.itemId),
+            lists: lists,
+        });
+      }
     );
   }
 
-  onDropList({ listId, listIndex }) {
-    this.props.onDropList({listId, listIndex, lists: this.state.lists});
+  onDropList({ listId }) {
+    this.props.onDropList(this.listEndData({ listId }));
   }
 
-  onDropRow({ rowId, listId, rowIndex, listIndex }) {
-    this.props.onDropRow({rowId, listId, rowIndex, listIndex, lists: this.state.lists});
+  itemEndData({ itemId }) {
+    const lists = this.state.lists;
+
+    return {
+      itemId,
+      get rowId() {
+        console.warn('onDropRow: `rowId` is deprecated. Use `itemId` instead');
+        return itemId;
+      },
+      listId: findItemListId(lists, itemId),
+      rowIndex: findItemIndex(lists, itemId),
+      listIndex: findItemListIndex(lists, itemId),
+      lists,
+    }
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
+  listEndData({ listId }) {
+    const lists = this.state.lists;
+
+    return {
+      listId,
+      listIndex: findListIndex(lists, listId),
+      lists,
+    };
+  }
+
+  onDropRow({ itemId }) {
+    this.props.onDropRow(this.itemEndData({ itemId }));
+  }
+
+  onDragBeginRow(data) {
+    this.props.onDragBeginRow(data);
+  }
+
+  onDragEndRow({ itemId }) {
+    this.props.onDragEndRow(this.itemEndData({ itemId }));
+  }
+
+  onDragBeginList(data) {
+    this.props.onDragBeginList(data);
+  }
+
+  onDragEndList({ listId }) {
+    this.props.onDragEndList(this.listEndData({ listId }));
   }
 
   componentDidUpdate(_prevProps, prevState) {
     if (prevState.lists !== this.state.lists) {
       this._grid.wrappedInstance.forceUpdate();
     }
+  }
+
+  findItemIndex(itemId) {
+    return findItemIndex(this.state.lists, itemId);
   }
 
   renderList({ columnIndex, key, style }) {
@@ -131,7 +193,6 @@ class Kanban extends Component {
       <SortableList
         key={list.id}
         listId={list.id}
-        listIndex={columnIndex}
         listStyle={style}
         listComponent={this.props.listComponent}
         itemComponent={this.props.itemComponent}
@@ -140,8 +201,13 @@ class Kanban extends Component {
         moveList={this.onMoveList}
         dropRow={this.onDropRow}
         dropList={this.onDropList}
+        dragEndRow={this.onDragEndRow}
+        dragBeginRow={this.onDragBeginRow}
+        dragEndList={this.onDragEndList}
+        dragBeginList={this.onDragBeginList}
         overscanRowCount={this.props.overscanRowCount}
         itemCacheKey={this.props.itemCacheKey}
+        findItemIndex={this.findItemIndex}
       />
     );
   }
@@ -182,6 +248,7 @@ class Kanban extends Component {
           speed={100}
         />
         <DragLayer
+          lists={lists}
           itemPreviewComponent={itemPreviewComponent}
           listPreviewComponent={listPreviewComponent}
         />
