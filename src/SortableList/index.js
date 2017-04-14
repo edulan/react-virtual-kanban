@@ -1,5 +1,4 @@
 import React from 'react';
-import { List as VirtualScroll, CellMeasurer, AutoSizer } from 'react-virtualized';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 
@@ -22,7 +21,6 @@ class SortableList extends PureComponent {
     super(props);
 
     this.renderRow = this.renderRow.bind(this);
-    this.renderItemForMeasure = this.renderItemForMeasure.bind(this);
     this.renderList = this.renderList.bind(this);
   }
 
@@ -38,16 +36,14 @@ class SortableList extends PureComponent {
     }
   }
 
-  renderRow({ index, key, style }) {
-    const row = this.props.list.rows[index];
-
+  renderRow(row, index) {
     return (
       <SortableItem
         key={row.id}
         row={row}
         rowId={row.id}
         listId={this.props.listId}
-        rowStyle={style}
+        rowStyle={{}}
         itemComponent={this.props.itemComponent}
         moveRow={this.props.moveRow}
         dropRow={this.props.dropRow}
@@ -58,50 +54,8 @@ class SortableList extends PureComponent {
     );
   }
 
-  renderItemForMeasure({ rowIndex }) {
-    const { itemComponent: DecoratedItem } = this.props;
-    const row = this.props.list.rows[rowIndex];
-
-    return (
-      <DecoratedItem
-        row={row}
-        rowId={row.id}
-        listId={this.props.listId}
-        rowStyle={{}}
-        isDragging={false}
-        connectDragSource={identity}
-        connectDropTarget={identity}
-      />
-    );
-  }
-
-  renderList({ width, height }) {
-    // TODO: Check whether scrollbar is visible or not :/
-
-    return (
-      <CellMeasurer
-        width={width}
-        columnCount={1}
-        rowCount={this.props.list.rows.length}
-        cellRenderer={this.renderItemForMeasure}
-        cellSizeCache={new ItemCache(this.props.list.rows, this.props.itemCacheKey)}
-      >
-        {({ getRowHeight }) => (
-          <VirtualScroll
-            ref={(c) => (this._list = c)}
-            className='KanbanList'
-            width={width}
-            height={height}
-            rowHeight={getRowHeight}
-            rowCount={this.props.list.rows.length}
-            rowRenderer={this.renderRow}
-            overscanRowCount={this.props.overscanRowCount}
-            // Hack way of forcing list re-rendering when listIndex changes
-            listIndex={this.props.listIndex}
-           />
-         )}
-      </CellMeasurer>
-    );
+  renderList() {
+    return this.props.list.rows.map(this.renderRow);
   }
 
   render() {
@@ -125,9 +79,7 @@ class SortableList extends PureComponent {
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}
       >
-        <AutoSizer>
-          {(dimensions) => this.renderList(dimensions)}
-        </AutoSizer>
+        {this.renderList()}
       </DecoratedList>
     );
   }

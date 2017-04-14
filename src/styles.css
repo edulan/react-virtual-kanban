@@ -1,5 +1,3 @@
-@import 'react-virtualized/styles.css';
-
 .KanbanDragLayer {
   position: fixed;
   pointer-events: none;
@@ -12,6 +10,7 @@
 
 .KanbanGrid {
   outline: none;
+  display: flex;
 }
 
 .KanbanList {
@@ -28,7 +27,8 @@
   padding: 8px 4px 8px 4px;
   margin: 0 4px;
   box-sizing: border-box;
-  position: relative;
+  min-width: 200px;
+  width: 200px;
 }
 
 .ListContainer {
