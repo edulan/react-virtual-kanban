@@ -17,10 +17,9 @@ class App extends Component {
       <div className='KanbanWrapper'>
         <VirtualKanban
           lists={this.state.lists}
-          width={width}
-          height={height}
           listWidth={200}
           itemCacheKey={({ id, lastModified }) => `${id}-${lastModified}`}
+          scrollToList={7}
         />
       </div>
     );

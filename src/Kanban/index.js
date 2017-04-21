@@ -1,4 +1,5 @@
 import React, { PropTypes, Component } from 'react';
+import ReactDOM from 'react-dom';
 import shallowCompare from 'react-addons-shallow-compare';
 import HTML5Backend from 'react-dnd-html5-backend';
 import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
@@ -11,6 +12,8 @@ import DragLayer from '../DragLayer';
 import SortableList from '../SortableList';
 
 import { DragDropManager } from 'dnd-core';
+
+console.log('wtf??????????????????????????????????/');
 
 /**
  * Grab dragDropManager from context
@@ -77,12 +80,23 @@ class Kanban extends Component {
     this.onDropList =this.onDropList.bind(this);
     this.onDropRow =this.onDropRow.bind(this);
     this.renderList = this.renderList.bind(this);
+
+    this.refsByIndex = {};
   }
 
   getChildContext() {
     return {
       dragDropManager: getDndContext(this.context),
     };
+  }
+
+  componentDidMount() {
+    if (this.props.scrollToList === undefined) {
+      return;
+    }
+
+    const scrollToComponent = this.refsByIndex[this.props.scrollToList];
+    const scrollToNode = ReactDOM.findDOMNode(scrollToComponent);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -115,15 +129,10 @@ class Kanban extends Component {
     return shallowCompare(this, nextProps, nextState);
   }
 
-  componentDidUpdate(_prevProps, prevState) {
-    if (prevState.lists !== this.state.lists) {
-      this._grid.forceUpdate();
-    }
-  }
-
   renderList(list, columnIndex) {
     return (
       <SortableList
+        ref={ref => this.refsByIndex[columnIndex] = ref}
         key={list.id}
         listId={list.id}
         listIndex={columnIndex}

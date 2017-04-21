@@ -10,6 +10,7 @@
 
 .KanbanGrid {
   outline: none;
+  display: flex;
 }
 
 .KanbanList {
@@ -27,6 +28,7 @@
   margin: 0 4px;
   box-sizing: border-box;
   position: relative;
+  min-width: 200px;
 }
 
 .ListContainer {
