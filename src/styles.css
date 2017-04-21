@@ -12,6 +12,7 @@
 
 .KanbanGrid {
   outline: none;
+  display: flex;
 }
 
 .KanbanList {
