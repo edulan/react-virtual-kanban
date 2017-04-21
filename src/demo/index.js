@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Perf from 'react-addons-perf';
 
-import '../../src/styles.css';
+import '../../lib/styles.css';
 
 import { generateLists } from './utils/generateLists';
 

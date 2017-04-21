@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { AutoSizer } from 'react-virtualized';
 import shuffle from 'lodash.shuffle';
 
-import { VirtualKanban } from '../../src';
+import { VirtualKanban } from '../';
 
 import './App.css';
 
@@ -28,23 +28,31 @@ class App extends Component {
           return {lists: this._initialLists.concat()};
         }
       });
-    }, 5000000);
+    }, 5000);
   }
 
   render() {
     return (
       <div className='KanbanWrapper'>
-        <VirtualKanban
-          lists={this.state.lists}
-          listWidth={200}
-          itemCacheKey={keyGenerator}
-          onDragBeginRow={(data) => console.log(data, 'onDragBeginRow')}
-          onDragEndRow={(data) => console.log(data, 'onDragEndRow') }
-          onDropRow={(data) => console.log(data, 'onDropRow') }
-          onDropList={(data) => console.log(data, 'onDropList') }
-          onDragBeginList={(data) => console.log(data, 'onDragBeginList')}
-          onDragEndList={(data) => console.log(data, 'onDragEndList')}
-        />
+        <AutoSizer>
+          {({ width, height }) => (
+            <VirtualKanban
+              lists={this.state.lists}
+              width={width}
+              height={height}
+              listWidth={200}
+              itemCacheKey={keyGenerator}
+              onMoveRow={({ lists, itemId, listId, itemIndex, listIndex }) => this.setState(() => ({lists, lastMovedRow: {itemId, listId, itemIndex, listIndex}}))}
+              onMoveList={({ lists }) => this.setState(() => ({lists}))}
+              onDragBeginRow={(data) => console.log(data, 'onDragBeginRow')}
+              onDragEndRow={(data) => console.log(data, 'onDragEndRow') }
+              onDropRow={(data) => console.log(data, 'onDropRow') }
+              onDropList={(data) => console.log(data, 'onDropList') }
+              onDragBeginList={(data) => console.log(data, 'onDragBeginList')}
+              onDragEndList={(data) => console.log(data, 'onDragEndList')}
+            />
+          )}
+        </AutoSizer>
       </div>
     );
   }

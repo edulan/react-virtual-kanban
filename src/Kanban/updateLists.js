@@ -180,8 +180,6 @@ function moveItemToList(lists, { fromId, toId }) {
 }
 
 export function updateLists(lists, { from, to }) {
-  console.log('updatetLists');
-
   const { itemId: fromItemId, listId: fromListId } = from;
   const { itemId: toItemId, listId: toListId } = to;
 
