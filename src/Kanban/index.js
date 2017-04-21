@@ -87,6 +87,15 @@ class Kanban extends PureComponent {
     };
   }
 
+  componentDidMount() {
+    if (this.props.scrollToList === undefined) {
+      return;
+    }
+
+    const scrollToComponent = this.refsByIndex[this.props.scrollToList];
+    const scrollToNode = ReactDOM.findDOMNode(scrollToComponent);
+  }
+
   componentWillReceiveProps(nextProps) {
     this.setState({lists: nextProps.lists});
   }
@@ -180,14 +189,8 @@ class Kanban extends PureComponent {
     this.props.onDragEndList(this.listEndData({ listId }));
   }
 
-  componentDidUpdate(_prevProps, prevState) {
-    if (prevState.lists !== this.state.lists) {
-      //this._grid.forceUpdate();
-    }
-  }
-
-  findItemIndex(itemId) {
-    return findItemIndex(this.state.lists, itemId);
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
   }
 
   renderList(list, columnIndex) {
