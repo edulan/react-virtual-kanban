@@ -159,12 +159,13 @@ class Kanban extends Component {
     });
   }
 
-  onDragEndRow({ rowId, listId, rowIndex, listIndex }) {
-    this.props.onDragEndRow({ rowId, listId, rowIndex, listIndex });
-  }
+  onDragEndRow({ itemId }) {
+    const lists = this.state.lists;
 
-  onDragEnd({ rowId, listId, rowIndex, listIndex }) {
-    this.props.onDropRow({rowId, listId, rowIndex, listIndex, lists: this.state.lists});
+    this.props.onDragEndRow({
+      itemId,
+      lists,
+    });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
