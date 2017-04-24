@@ -4,6 +4,7 @@ import shallowCompare from 'react-addons-shallow-compare';
 import HTML5Backend from 'react-dnd-html5-backend';
 import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
+import scrollIntoView from 'scroll-into-view';
 
 import { updateLists } from './updateLists';
 
@@ -12,8 +13,6 @@ import DragLayer from '../DragLayer';
 import SortableList from '../SortableList';
 
 import { DragDropManager } from 'dnd-core';
-
-console.log('wtf??????????????????????????????????/');
 
 /**
  * Grab dragDropManager from context
@@ -91,12 +90,24 @@ class Kanban extends Component {
   }
 
   componentDidMount() {
+    this.updateScroll();
+  }
+
+  componentDidUpdate(prevProps) {
+    this.updateScroll(prevProps);
+  }
+
+  updateScroll(prevProps = {}) {
     if (this.props.scrollToList === undefined) {
       return;
     }
 
-    const scrollToComponent = this.refsByIndex[this.props.scrollToList];
-    const scrollToNode = ReactDOM.findDOMNode(scrollToComponent);
+    if (this.props.scrollToList === prevProps.scrollToList) {
+      return;
+    }
+
+    const targetNode = ReactDOM.findDOMNode(this.refsByIndex[this.props.scrollToList]);
+    scrollIntoView(targetNode);
   }
 
   componentWillReceiveProps(nextProps) {
