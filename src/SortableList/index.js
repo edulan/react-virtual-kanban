@@ -51,6 +51,7 @@ class SortableList extends PureComponent {
         itemComponent={this.props.itemComponent}
         moveRow={this.props.moveRow}
         dropRow={this.props.dropRow}
+        dragBeginRow={this.props.dragBeginRow}
         dragEndRow={this.props.dragEndRow}
         findItemIndex={this.props.findItemIndex}
       />
@@ -111,8 +112,6 @@ class SortableList extends PureComponent {
       connectDropTarget,
       listStyle,
     } = this.props;
-
-    // console.log(`SortableList render ${listId}`);
 
     return (
       <DecoratedList

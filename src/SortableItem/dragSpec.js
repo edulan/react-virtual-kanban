@@ -5,13 +5,17 @@ export function beginDrag(props, _, component) {
   const node = findDOMNode(component);
   const containerWidth = node ? width(node) : 0;
 
-  return {
+  const data = {
     lists: props.lists,
     row: props.row,
     rowId: props.rowId,
     rowStyle: props.rowStyle,
     containerWidth,
   };
+
+  props.dragBeginRow(data);
+
+  return data;
 }
 
 export function endDrag(props, monitor) {

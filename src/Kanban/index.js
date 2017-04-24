@@ -45,6 +45,9 @@ class Kanban extends PureComponent {
     onMoveList: () => {},
     onDropRow: () => {},
     onDropList: () => {},
+    onDragBeginList: () => {},
+    onDragEndList: () => {},
+    onDragBeginRow: () => {},
     onDragEndRow: () => {},
     overscanListCount: 2,
     overscanRowCount: 2,
@@ -66,11 +69,17 @@ class Kanban extends PureComponent {
       lists: props.lists
     };
 
-    this.onMoveList =this.onMoveList.bind(this);
-    this.onMoveRow =this.onMoveRow.bind(this);
-    this.onDropList =this.onDropList.bind(this);
-    this.onDropRow =this.onDropRow.bind(this);
+    this.onMoveList = this.onMoveList.bind(this);
+    this.onMoveRow = this.onMoveRow.bind(this);
+
+    this.onDropList = this.onDropList.bind(this);
+    this.onDropRow = this.onDropRow.bind(this);
+
+    this.onDragBeginRow = this.onDragBeginRow.bind(this);
     this.onDragEndRow = this.onDragEndRow.bind(this);
+    this.onDragBeginList = this.onDragBeginList.bind(this);
+    this.onDragEndList = this.onDragEndList.bind(this);
+
     this.renderList = this.renderList.bind(this);
     this.drawFrame = this.drawFrame.bind(this);
     this.findItemIndex = this.findItemIndex.bind(this);
@@ -143,19 +152,13 @@ class Kanban extends PureComponent {
   }
 
   onDropList({ listId }) {
-    const lists = this.state.lists;
-
-    this.props.onDropList({
-      listId,
-      listIndex: findListIndex(lists, listId),
-      lists,
-    });
+    this.props.onDropList(this.listEndData({ listId }));
   }
 
-  onDropRow({ itemId }) {
+  itemEndData({ itemId }) {
     const lists = this.state.lists;
 
-    this.props.onDropRow({
+    return {
       itemId,
       get rowId() {
         console.warn('onDropRow: `rowId` is deprecated. Use `itemId` instead');
@@ -165,16 +168,37 @@ class Kanban extends PureComponent {
       rowIndex: findItemIndex(lists, itemId),
       listIndex: findItemListIndex(lists, itemId),
       lists,
-    });
+    }
+  }
+
+  listEndData({ listId }) {
+    const lists = this.state.lists;
+
+    return {
+      listId,
+      listIndex: findListIndex(lists, listId),
+      lists,
+    };
+  }
+
+  onDropRow({ itemId }) {
+    this.props.onDropRow(this.itemEndData({ itemId }));
+  }
+
+  onDragBeginRow(data) {
+    this.props.onDragBeginRow(data);
   }
 
   onDragEndRow({ itemId }) {
-    const lists = this.state.lists;
+    this.props.onDragEndRow(this.itemEndData({ itemId }));
+  }
 
-    this.props.onDragEndRow({
-      itemId,
-      lists,
-    });
+  onDragBeginList(data) {
+    this.props.onDragBeginList(data);
+  }
+
+  onDragEndList({ listId }) {
+    this.props.onDragEndList(this.listEndData({ listId }));
   }
 
   componentDidUpdate(_prevProps, prevState) {
@@ -203,6 +227,9 @@ class Kanban extends PureComponent {
         dropRow={this.onDropRow}
         dropList={this.onDropList}
         dragEndRow={this.onDragEndRow}
+        dragBeginRow={this.onDragBeginRow}
+        dragEndList={this.onDragEndList}
+        dragBeginList={this.onDragBeginList}
         overscanRowCount={this.props.overscanRowCount}
         itemCacheKey={this.props.itemCacheKey}
         findItemIndex={this.findItemIndex}
