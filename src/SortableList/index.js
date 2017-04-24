@@ -27,6 +27,7 @@ class SortableList extends Component {
     moveList: PropTypes.func,
     dropRow: PropTypes.func,
     dropList: PropTypes.func,
+    dragEndRow: PropTypes.func,
     overscanRowCount: PropTypes.number,
     itemCacheKey: PropTypes.func,
     // React DnD
@@ -75,6 +76,7 @@ class SortableList extends Component {
         itemComponent={this.props.itemComponent}
         moveRow={this.props.moveRow}
         dropRow={this.props.dropRow}
+        dragEndRow={this.props.dragEndRow}
       />
     );
   }
