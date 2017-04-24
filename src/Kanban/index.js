@@ -38,6 +38,7 @@ class Kanban extends Component {
     onMoveList: PropTypes.func,
     onDropRow: PropTypes.func,
     onDropList: PropTypes.func,
+    onDragEndRow: PropTypes.func,
     overscanListCount: PropTypes.number,
     overscanRowCount: PropTypes.number,
     scrollToList: PropTypes.number,
@@ -55,6 +56,7 @@ class Kanban extends Component {
     onMoveList: () => {},
     onDropRow: () => {},
     onDropList: () => {},
+    onDragEndRow: () => {},
     overscanListCount: 2,
     overscanRowCount: 2,
     itemCacheKey: ({ id }) => `${id}`,
@@ -79,6 +81,7 @@ class Kanban extends Component {
     this.onMoveRow =this.onMoveRow.bind(this);
     this.onDropList =this.onDropList.bind(this);
     this.onDropRow =this.onDropRow.bind(this);
+    this.onDragEndRow = this.onDragEndRow.bind(this);
     this.renderList = this.renderList.bind(this);
   }
 
@@ -114,6 +117,14 @@ class Kanban extends Component {
     this.props.onDropRow({rowId, listId, rowIndex, listIndex, lists: this.state.lists});
   }
 
+  onDragEndRow({ rowId, listId, rowIndex, listIndex }) {
+    this.props.onDragEndRow({ rowId, listId, rowIndex, listIndex });
+  }
+
+  onDragEnd({ rowId, listId, rowIndex, listIndex }) {
+    this.props.onDropRow({rowId, listId, rowIndex, listIndex, lists: this.state.lists});
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     return shallowCompare(this, nextProps, nextState);
   }
@@ -140,6 +151,7 @@ class Kanban extends Component {
         moveList={this.onMoveList}
         dropRow={this.onDropRow}
         dropList={this.onDropList}
+        dragEndRow={this.onDragEndRow}
         overscanRowCount={this.props.overscanRowCount}
         itemCacheKey={this.props.itemCacheKey}
       />
