@@ -20,29 +20,27 @@ export function hover(props, monitor, component) {
 
   const item = monitor.getItem();
   const itemType = monitor.getItemType();
-  const dragListIndex = item.listIndex;
-  const hoverListIndex = props.listIndex;
+  const { listId: dragListId } = item;
+  const { listId: hoverListId } = props;
 
-  if (dragListIndex === hoverListIndex) {
+  if (dragListId === hoverListId) {
     return;
   }
 
   if (itemType === LIST_TYPE) {
-    item.listIndex = hoverListIndex;
-
-    props.moveList({listIndex: dragListIndex}, {listIndex: hoverListIndex});
+    props.moveList({listId: dragListId}, {listId: hoverListId});
     return;
   }
 
   if (itemType === ROW_TYPE) {
-    const dragIndex = item.rowIndex;
-    const hoverIndex = 0;
+    const dragItemId = item.rowId;
 
-    item.rowIndex = hoverIndex;
-    item.listIndex = hoverListIndex;
     item.containerWidth = calculateContainerWidth(component) || item.containerWidth;
 
-    props.moveRow({rowIndex: dragIndex, listIndex: dragListIndex}, {rowIndex: hoverIndex, listIndex: hoverListIndex});
+    props.moveRow(
+      {itemId: dragItemId},
+      {listId: hoverListId}
+    );
     return;
   }
 }
@@ -56,12 +54,14 @@ export function canDrop(props, monitor) {
   }
 
   if (itemType === ROW_TYPE) {
-    return item.listIndex !== props.listIndex;
+    return item.listId !== props.listId;
   }
 }
 
-export function drop(props) {
-  const { listId, listIndex } = props;
+export function drop(props, monitor) {
+  if (!monitor.isOver({shallow: true})) return;
 
-  props.dropList({listId, listIndex});
+  const { listId } = props;
+
+  props.dropList({listId});
 }

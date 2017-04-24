@@ -1,36 +1,16 @@
-import React, { PropTypes, Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
-
-import { PropTypes as CustomPropTypes } from '../propTypes';
 
 import { ROW_TYPE } from '../types';
 import * as dragSpec from './dragSpec';
 import * as dropSpec from './dropSpec';
+import * as propTypes from './propTypes';
 
-class SortableItem extends Component {
-  static propTypes = {
-    row: PropTypes.object,
-    rowId: CustomPropTypes.id.isRequired,
-    listId: CustomPropTypes.id.isRequired,
-    rowIndex: PropTypes.number,
-    listIndex: PropTypes.number,
-    rowStyle: PropTypes.object,
-    itemComponent: PropTypes.func,
-    moveRow: PropTypes.func,
-    dropRow: PropTypes.func,
-    // React DnD
-    isDragging: PropTypes.bool,
-    connectDropTarget: PropTypes.func,
-    connectDragSource: PropTypes.func,
-    connectDragPreview: PropTypes.func,
-  };
+import PureComponent from '../PureComponent';
 
-  shouldComponentUpdate(nextProps, nextState) {
-    // NOTE: rowStyle is causing unnecessary renders
-    return shallowCompare(this, nextProps, nextState);
-  }
+class SortableItem extends PureComponent {
+  static propTypes = propTypes;
 
   componentDidMount() {
     this.props.connectDragPreview(getEmptyImage(), {
@@ -43,8 +23,6 @@ class SortableItem extends Component {
       row,
       rowId,
       listId,
-      rowIndex,
-      listIndex,
       itemComponent: DecoratedItem,
       isDragging,
       connectDragSource,
@@ -57,8 +35,6 @@ class SortableItem extends Component {
         row={row}
         rowId={rowId}
         listId={listId}
-        rowIndex={rowIndex}
-        listIndex={listIndex}
         rowStyle={rowStyle}
         isDragging={isDragging}
         connectDragSource={connectDragSource}

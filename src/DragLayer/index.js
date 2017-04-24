@@ -1,8 +1,13 @@
-import React, { PropTypes, Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React from 'react';
 import { DragLayer } from 'react-dnd';
 
 import * as ItemTypes from '../types';
+import * as propTypes from './propTypes';
+
+// TODO: Extract to utils dir
+import { findItemIndex, findListIndex } from '../Kanban/updateLists';
+
+import PureComponent from '../PureComponent';
 
 function getStyles({ currentOffset }) {
   if (!currentOffset) {
@@ -19,18 +24,8 @@ function getStyles({ currentOffset }) {
   };
 }
 
-class KanbanDragLayer extends Component {
-  static propTypes = {
-    item: PropTypes.object,
-    itemType: PropTypes.string,
-    currentOffset: PropTypes.shape({
-      x: PropTypes.number.isRequired,
-      y: PropTypes.number.isRequired
-    }),
-    isDragging: PropTypes.bool.isRequired,
-    itemPreviewComponent: PropTypes.func.isRequired,
-    listPreviewComponent: PropTypes.func.isRequired,
-  }
+class KanbanDragLayer extends PureComponent {
+  static propTypes = propTypes;
 
   constructor(props) {
     super(props);
@@ -38,22 +33,33 @@ class KanbanDragLayer extends Component {
     this.renderItem = this.renderItem.bind(this);
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
-  }
-
   renderItem(type, item) {
-    let Preview;
+    const {
+      lists,
+      itemPreviewComponent: ItemPreview,
+      listPreviewComponent: ListPreview,
+    } = this.props;
 
     switch (type) {
     case ItemTypes.ROW_TYPE:
-      Preview = this.props.itemPreviewComponent;
-
-      return <Preview row={item.row} rowId={item.rowId} rowStyle={item.rowStyle} containerWidth={item.containerWidth} />;
+      return (
+        <ItemPreview
+          row={item.row}
+          rowId={item.rowId}
+          rowStyle={item.rowStyle}
+          containerWidth={item.containerWidth}
+          isGhost={findItemIndex(lists, item.rowId) === -1}
+        />
+      );
     case ItemTypes.LIST_TYPE:
-      Preview = this.props.listPreviewComponent;
-
-      return <Preview list={item.list} listId={item.listId} listStyle={item.listStyle} />;
+      return (
+        <ListPreview
+          list={item.list}
+          listId={item.listId}
+          listStyle={item.listStyle}
+          isGhost={findListIndex(lists, item.listId) === -1}
+        />
+      );
     default:
       return null;
     }
