@@ -18,8 +18,6 @@ import SortableList from '../SortableList';
 
 import { DragDropManager } from 'dnd-core';
 
-import PureComponent from '../PureComponent';
-
 /**
  * Grab dragDropManager from context
  *
@@ -88,12 +86,24 @@ class Kanban extends PureComponent {
   }
 
   componentDidMount() {
+    this.updateScroll();
+  }
+
+  componentDidUpdate(prevProps) {
+    this.updateScroll(prevProps);
+  }
+
+  updateScroll(prevProps = {}) {
     if (this.props.scrollToList === undefined) {
       return;
     }
 
-    const scrollToComponent = this.refsByIndex[this.props.scrollToList];
-    const scrollToNode = ReactDOM.findDOMNode(scrollToComponent);
+    if (this.props.scrollToList === prevProps.scrollToList) {
+      return;
+    }
+
+    const targetNode = ReactDOM.findDOMNode(this.refsByIndex[this.props.scrollToList]);
+    scrollIntoView(targetNode);
   }
 
   componentWillReceiveProps(nextProps) {
