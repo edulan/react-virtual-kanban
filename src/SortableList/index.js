@@ -1,10 +1,7 @@
-import React, { PropTypes, Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React from 'react';
 import { List as VirtualScroll, CellMeasurer, AutoSizer } from 'react-virtualized';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
-
-import { PropTypes as CustomPropTypes } from '../propTypes';
 
 import { ItemCache } from './itemCache';
 import SortableItem from '../SortableItem';
@@ -12,30 +9,14 @@ import SortableItem from '../SortableItem';
 import { LIST_TYPE, ROW_TYPE } from '../types';
 import * as dragSpec from './dragSpec';
 import * as dropSpec from './dropSpec';
+import * as propTypes from './propTypes';
+
+import PureComponent from '../PureComponent';
 
 const identity = (c) => c;
 
-class SortableList extends Component {
-  static propTypes = {
-    list: PropTypes.object,
-    listId: CustomPropTypes.id.isRequired,
-    listIndex: PropTypes.number,
-    listStyle: PropTypes.object,
-    listComponent: PropTypes.func,
-    itemComponent: PropTypes.func,
-    moveRow: PropTypes.func,
-    moveList: PropTypes.func,
-    dropRow: PropTypes.func,
-    dropList: PropTypes.func,
-    dragEndRow: PropTypes.func,
-    overscanRowCount: PropTypes.number,
-    itemCacheKey: PropTypes.func,
-    // React DnD
-    isDragging: PropTypes.bool,
-    connectDropTarget: PropTypes.func,
-    connectDragSource: PropTypes.func,
-    connectDragPreview: PropTypes.func,
-  };
+class SortableList extends PureComponent {
+  static propTypes = propTypes;
 
   constructor(props) {
     super(props);
@@ -57,10 +38,6 @@ class SortableList extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
-  }
-
   renderRow({ index, key, style }) {
     const row = this.props.list.rows[index];
 
@@ -70,13 +47,12 @@ class SortableList extends Component {
         row={row}
         rowId={row.id}
         listId={this.props.listId}
-        rowIndex={index}
-        listIndex={this.props.listIndex}
         rowStyle={style}
         itemComponent={this.props.itemComponent}
         moveRow={this.props.moveRow}
         dropRow={this.props.dropRow}
         dragEndRow={this.props.dragEndRow}
+        findItemIndex={this.props.findItemIndex}
       />
     );
   }
@@ -90,8 +66,6 @@ class SortableList extends Component {
         row={row}
         rowId={row.id}
         listId={this.props.listId}
-        rowIndex={rowIndex}
-        listIndex={this.props.listIndex}
         rowStyle={{}}
         isDragging={false}
         connectDragSource={identity}
@@ -121,8 +95,6 @@ class SortableList extends Component {
             rowCount={this.props.list.rows.length}
             rowRenderer={this.renderRow}
             overscanRowCount={this.props.overscanRowCount}
-            // Hack way of forcing list re-rendering when listIndex changes
-            listIndex={this.props.listIndex}
            />
          )}
       </CellMeasurer>
@@ -133,7 +105,6 @@ class SortableList extends Component {
     const {
       list,
       listId,
-      listIndex,
       listComponent: DecoratedList,
       isDragging,
       connectDragSource,
@@ -141,11 +112,12 @@ class SortableList extends Component {
       listStyle,
     } = this.props;
 
+    // console.log(`SortableList render ${listId}`);
+
     return (
       <DecoratedList
         list={list}
         listId={listId}
-        listIndex={listIndex}
         rows={list.rows}
         listStyle={listStyle}
         isDragging={isDragging}

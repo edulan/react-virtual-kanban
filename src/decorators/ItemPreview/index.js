@@ -1,19 +1,11 @@
-import React, { PropTypes, Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React from 'react';
 
-import { PropTypes as CustomPropTypes } from '../../propTypes';
+import * as propTypes from './propTypes';
 
-export default class ItemPreview extends Component {
-  static propTypes = {
-    row: PropTypes.object.isRequired,
-    rowId: CustomPropTypes.id.isRequired,
-    rowStyle: PropTypes.object.isRequired,
-    isGhost: PropTypes.bool.isRequired,
-  };
+import PureComponent from '../../PureComponent';
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
-  }
+export default class ItemPreview extends PureComponent {
+  static propTypes = propTypes;
 
   render() {
     // TODO: Grab a proper item width
