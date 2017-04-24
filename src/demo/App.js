@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { AutoSizer } from 'react-virtualized';
 
-import { VirtualKanban } from '../../lib';
+import { VirtualKanban } from '../';
 
 import './App.css';
 
@@ -12,6 +12,17 @@ class App extends Component {
     this.state = {
       lists: props.getLists(),
     };
+
+    setInterval(() => {
+      this.setState((prevState) => {
+        if (prevState.lists[0].rows.length > 0) {
+          this._initialLists = prevState.lists;
+          return {lists: prevState.lists.map((list) => ({...list, rows: []}))};
+        } else {
+          return {lists: this._initialLists.concat()};
+        }
+      });
+    }, 1500);
   }
 
   render() {
@@ -25,6 +36,8 @@ class App extends Component {
               height={height}
               listWidth={200}
               itemCacheKey={({ id, lastModified }) => `${id}-${lastModified}`}
+              onMoveRow={({ lists }) => this.setState(() => ({lists}))}
+              onMoveList={({ lists }) => this.setState(() => ({lists}))}
             />
           )}
         </AutoSizer>

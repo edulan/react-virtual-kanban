@@ -1,9 +1,11 @@
-exports[`test move between lists 1`] = `"[{\"id\":1,\"rows\":[{\"id\":1}]},{\"id\":2,\"rows\":[{\"id\":2},{\"id\":3},{\"id\":4}]}]"`;
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`test move item from a list with a single element 1`] = `"[{\"id\":1,\"rows\":[{\"id\":1},{\"id\":2},{\"id\":3}]},{\"id\":2,\"rows\":[]}]"`;
+exports[`move between lists 1`] = `"[{\\"id\\":1,\\"rows\\":[{\\"id\\":1}]},{\\"id\\":2,\\"rows\\":[{\\"id\\":2},{\\"id\\":3},{\\"id\\":4}]}]"`;
 
-exports[`test move item inside same list 1`] = `"[{\"id\":1,\"rows\":[{\"id\":2},{\"id\":1}]},{\"id\":2,\"rows\":[{\"id\":3},{\"id\":4}]}]"`;
+exports[`move item from a list with a single element 1`] = `"[{\\"id\\":1,\\"rows\\":[{\\"id\\":1},{\\"id\\":3},{\\"id\\":2}]},{\\"id\\":2,\\"rows\\":[]}]"`;
 
-exports[`test move item to an empty list 1`] = `"[{\"id\":1,\"rows\":[{\"id\":2}]},{\"id\":2,\"rows\":[{\"id\":1}]}]"`;
+exports[`move item inside same list 1`] = `"[{\\"id\\":1,\\"rows\\":[{\\"id\\":2},{\\"id\\":1}]},{\\"id\\":2,\\"rows\\":[{\\"id\\":3},{\\"id\\":4}]}]"`;
 
-exports[`test move lists 1`] = `"[{\"id\":2,\"rows\":[{\"id\":3},{\"id\":4}]},{\"id\":1,\"rows\":[{\"id\":1},{\"id\":2}]}]"`;
+exports[`move item to an empty list 1`] = `"[{\\"id\\":1,\\"rows\\":[{\\"id\\":2}]},{\\"id\\":2,\\"rows\\":[{\\"id\\":1}]}]"`;
+
+exports[`move lists 1`] = `"[{\\"id\\":2,\\"rows\\":[{\\"id\\":3},{\\"id\\":4}]},{\\"id\\":1,\\"rows\\":[{\\"id\\":1},{\\"id\\":2}]}]"`;

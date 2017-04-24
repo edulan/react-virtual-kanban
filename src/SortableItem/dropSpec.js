@@ -3,67 +3,28 @@ import { width } from 'dom-helpers/query';
 
 export function hover(props, monitor, component) {
   const item = monitor.getItem();
-  const dragIndex = item.rowIndex;
-  const dragListIndex = item.listIndex;
-  const hoverIndex = props.rowIndex;
-  const hoverListIndex = props.listIndex;
+  const { rowId: dragItemId } = item;
+  const { rowId: hoverItemId } = props;
 
   // Hovering over the same item
-  if (dragIndex === hoverIndex && dragListIndex === hoverListIndex) {
+  if (dragItemId === hoverItemId) {
     return;
   }
 
-  // Sometimes component may be null (probably is being unmounted?)
+  // Sometimes component may be null when it's been unmounted
   if (!component) {
-    console.warn(`null component for #${item.rowId}`);
+    console.warn(`null component for #${dragItemId}`);
     return;
   }
 
   // Determine rectangle on screen
   const node = findDOMNode(component);
-  const hoverBoundingRect = node.getBoundingClientRect();
 
-  // Get vertical middle
-  const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-
-  // Determine mouse position
-  const clientOffset = monitor.getClientOffset();
-
-  // Get pixels to the top
-  const hoverClientY = clientOffset.y - hoverBoundingRect.top;
-
-  // Dragging horizontaly between lists
-  if (hoverBoundingRect.left < clientOffset.x &&
-      clientOffset.x < hoverBoundingRect.right &&
-      dragListIndex !== hoverListIndex) {
-    item.rowIndex = hoverIndex;
-    item.listIndex = hoverListIndex;
-    item.containerWidth = width(node);
-
-    props.moveRow(
-      {rowIndex: dragIndex, listIndex: dragListIndex},
-      {rowIndex: hoverIndex, listIndex: hoverListIndex}
-    );
-    return;
-  }
-
-  // Dragging downwards
-  if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-    return;
-  }
-
-  // Dragging upwards
-  if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-    return;
-  }
-
-  item.rowIndex = hoverIndex;
-  item.listIndex = hoverListIndex;
   item.containerWidth = width(node);
 
   props.moveRow(
-    {rowIndex: dragIndex, listIndex: dragListIndex},
-    {rowIndex: hoverIndex, listIndex: hoverListIndex}
+    {itemId: dragItemId},
+    {itemId: hoverItemId}
   );
 }
 
@@ -74,7 +35,7 @@ export function canDrop(props, monitor) {
 }
 
 export function drop(props) {
-  const { rowId, listId, rowIndex, listIndex } = props;
+  const { rowId: itemId } = props;
 
-  props.dropRow({rowId, listId, rowIndex, listIndex});
+  props.dropRow({itemId});
 }

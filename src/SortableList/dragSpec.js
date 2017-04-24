@@ -2,7 +2,6 @@ export function beginDrag(props) {
   return {
     list: props.list,
     listId: props.listId,
-    listIndex: props.listIndex,
     listStyle: props.listStyle
   };
 }

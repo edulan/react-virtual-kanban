@@ -5,7 +5,13 @@ import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
 import { Grid } from 'react-virtualized';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 
-import { updateLists } from './updateLists';
+import {
+  updateLists,
+  findListIndex,
+  findItemIndex,
+  findItemListIndex,
+  findItemListId,
+} from './updateLists';
 
 import * as decorators from '../decorators';
 import DragLayer from '../DragLayer';
@@ -98,23 +104,59 @@ class Kanban extends Component {
   onMoveList(from, to) {
     this.setState(
       (prevState) => ({lists: updateLists(prevState.lists, {from, to})}),
-      () => this.props.onMoveList(from, to)
+      () => {
+        const lists = this.state.lists;
+
+        this.props.onMoveList({
+          listId: from.listId,
+          listIndex: findListIndex(lists, from.listId),
+          lists,
+        });
+      }
     );
   }
 
   onMoveRow(from, to) {
     this.setState(
       (prevState) => ({lists: updateLists(prevState.lists, {from, to})}),
-      () => this.props.onMoveRow(from, to)
+      () => {
+          const lists = this.state.lists;
+
+          this.props.onMoveRow({
+            itemId: from.itemId,
+            listId: findItemListId(lists, from.itemId),
+            itemIndex: findItemIndex(lists, from.itemId),
+            listIndex: findItemListIndex(lists, from.itemId),
+            lists: lists,
+        });
+      }
     );
   }
 
-  onDropList({ listId, listIndex }) {
-    this.props.onDropList({listId, listIndex, lists: this.state.lists});
+  onDropList({ listId }) {
+    const lists = this.state.lists;
+
+    this.props.onDropList({
+      listId,
+      listIndex: findListIndex(lists, listId),
+      lists,
+    });
   }
 
-  onDropRow({ rowId, listId, rowIndex, listIndex }) {
-    this.props.onDropRow({rowId, listId, rowIndex, listIndex, lists: this.state.lists});
+  onDropRow({ itemId }) {
+    const lists = this.state.lists;
+
+    this.props.onDropRow({
+      itemId,
+      get rowId() {
+        console.warn('onDropRow: `rowId` is deprecated. Use `itemId` instead');
+        return itemId;
+      },
+      listId: findItemListId(lists, itemId),
+      rowIndex: findItemIndex(lists, itemId),
+      listIndex: findItemListIndex(lists, itemId),
+      lists,
+    });
   }
 
   onDragEndRow({ rowId, listId, rowIndex, listIndex }) {
@@ -194,6 +236,7 @@ class Kanban extends Component {
           speed={100}
         />
         <DragLayer
+          lists={lists}
           itemPreviewComponent={itemPreviewComponent}
           listPreviewComponent={listPreviewComponent}
         />

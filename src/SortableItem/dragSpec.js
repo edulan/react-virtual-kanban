@@ -8,13 +8,16 @@ export function beginDrag(props, _, component) {
   return {
     row: props.row,
     rowId: props.rowId,
-    rowIndex: props.rowIndex,
-    listIndex: props.listIndex,
     rowStyle: props.rowStyle,
     containerWidth,
   };
 }
 
+/**
+ * Determines whether current item is being dragged or not.
+ *
+ * This is the logic used to display the gaps (gray items) in the list.
+ */
 export function isDragging({ rowId }, monitor) {
    const draggingRowId = monitor.getItem().rowId;
 
