@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import HTML5Backend from 'react-dnd-html5-backend';
 import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
