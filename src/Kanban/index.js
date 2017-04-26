@@ -4,6 +4,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 import PureComponent from '../PureComponent';
+import scrollIntoView from 'scroll-into-view';
 
 import {
   updateLists,
@@ -80,6 +81,8 @@ class Kanban extends PureComponent {
 
     this.renderList = this.renderList.bind(this);
     this.findItemIndex = this.findItemIndex.bind(this);
+
+    this.refsByIndex = {};
   }
 
   getChildContext() {
@@ -201,6 +204,7 @@ class Kanban extends PureComponent {
   renderList(list, columnIndex) {
     return (
       <SortableList
+        ref={ref => this.refsByIndex[columnIndex] = ref}
         key={list.id}
         listId={list.id}
         listStyle={{}}

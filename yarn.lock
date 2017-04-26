@@ -4440,7 +4440,7 @@ querystringify@0.0.x:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-0.0.4.tgz#0cf7f84f9463ff0ae51c4c4b142d95be37724d9c"
 
-raf@^3.2.0:
+raf@^3.1.0, raf@^3.2.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/raf/-/raf-3.3.0.tgz#93845eeffc773f8129039f677f80a36044eee2c3"
   dependencies:
@@ -4832,6 +4832,12 @@ sane@~1.5.0:
 sax@^1.2.1, sax@~1.2.1:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.2.tgz#fd8631a23bc7826bef5d871bdb87378c95647828"
+
+scroll-into-view@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/scroll-into-view/-/scroll-into-view-1.8.0.tgz#47e8c64aba25c80d1123cf1a2144c68eb0069110"
+  dependencies:
+    raf "^3.1.0"
 
 "semver@2 || 3 || 4 || 5", semver@^5.3.0, semver@~5.3.0:
   version "5.3.0"
