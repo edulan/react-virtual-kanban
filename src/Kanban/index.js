@@ -2,6 +2,7 @@ import React from 'react';
 import HTML5Backend from 'react-dnd-html5-backend';
 import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
+import PureComponent from '../PureComponent';
 
 import {
   updateLists,
@@ -13,6 +14,7 @@ import {
 
 import * as propTypes from './propTypes';
 import * as decorators from '../decorators';
+import shallowCompare from 'react-addons-shallow-compare';
 import DragLayer from '../DragLayer';
 import SortableList from '../SortableList';
 
@@ -85,12 +87,24 @@ class Kanban extends PureComponent {
     };
   }
 
-  scrollToList(index) {
-    if (index === undefined) {
+  componentDidMount() {
+    this.updateScroll();
+  }
+
+  componentDidUpdate(prevProps) {
+    this.updateScroll(prevProps);
+  }
+
+  updateScroll(prevProps = {}) {
+    if (this.props.scrollToList === undefined) {
       return;
     }
 
-    const targetNode = ReactDOM.findDOMNode(this.refsByIndex[index]);
+    if (this.props.scrollToList === prevProps.scrollToList) {
+      return;
+    }
+
+    const targetNode = ReactDOM.findDOMNode(this.refsByIndex[this.props.scrollToList]);
     scrollIntoView(targetNode);
   }
 
@@ -189,6 +203,10 @@ class Kanban extends PureComponent {
 
   shouldComponentUpdate(nextProps, nextState) {
     return shallowCompare(this, nextProps, nextState);
+  }
+
+  findItemIndex(itemId) {
+    return findItemIndex(this.state.lists, itemId);
   }
 
   renderList(list, columnIndex) {
