@@ -1866,6 +1866,15 @@ dnd-core@^2.0.1, dnd-core@^2.2.3:
     lodash "^4.2.0"
     redux "^3.2.0"
 
+dnd-core@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/dnd-core/-/dnd-core-2.3.0.tgz#f7b29ac37e2c78efe89e911ca5a534f280390450"
+  dependencies:
+    asap "^2.0.3"
+    invariant "^2.0.0"
+    lodash "^4.2.0"
+    redux "^3.2.0"
+
 doctrine@1.2.x:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/doctrine/-/doctrine-1.2.3.tgz#6aec6bbd62cf89dd498cae70c0ed9f49da873a6a"
@@ -4762,6 +4771,12 @@ react-dnd-scrollzone@3.1.0:
     lodash.throttle "^4.0.1"
     raf "^3.2.0"
     react-display-name "^0.2.0"
+
+react-dnd-test-backend@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/react-dnd-test-backend/-/react-dnd-test-backend-2.3.0.tgz#37b10cd267c6743b4f6723a24f3cec2b58954d71"
+  dependencies:
+    dnd-core "^2.3.0"
 
 react-dnd@2.1.4:
   version "2.1.4"

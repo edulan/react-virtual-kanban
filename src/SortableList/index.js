@@ -141,4 +141,4 @@ const connectDrag = DragSource(LIST_TYPE, dragSpec, (connect, monitor) => ({
   isDragging: monitor.isDragging(),
 }))
 
-export default connectDrop(connectDrag(SortableList));
+export default connectDrag(connectDrop(SortableList));

@@ -80,6 +80,7 @@
     "react-addons-perf": "15.4.1",
     "react-addons-shallow-compare": "15.4.1",
     "react-addons-test-utils": "^15.5.1",
+    "react-dnd-test-backend": "^2.3.0",
     "react-dom": "15.4.1",
     "react-test-renderer": "^15.5.4",
     "recursive-readdir": "2.0.0",
