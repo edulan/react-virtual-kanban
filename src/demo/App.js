@@ -14,17 +14,6 @@ class App extends Component {
     this.state = {
       lists: props.getLists(),
     };
-
-    setInterval(() => {
-      this.setState((prevState) => {
-        if (prevState.lists[0].rows.length > 0) {
-          this._initialLists = prevState.lists;
-          return {lists: prevState.lists.map((list) => ({...list, rows: []}))};
-        } else {
-          return {lists: this._initialLists.concat()};
-        }
-      });
-    }, 3000);
   }
 
   render() {
