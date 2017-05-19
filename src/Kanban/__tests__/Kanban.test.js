@@ -20,28 +20,28 @@ const lists = [
   {
     id: 1,
     rows: [
-      {id: 1, name: 'Uno'},
-      {id: 2},
-      {id: 3},
-      {id: 4}
+      {id: 1, name: 'one'},
+      {id: 2, name: 'two'},
+      {id: 3, name: 'three'},
+      {id: 4, name: 'four'}
     ]
   },
   {
     id: 2,
     rows: [
-      {id: 5},
-      {id: 6},
-      {id: 7},
-      {id: 8}
+      {id: 5, name: 'five'},
+      {id: 6, name: 'six'},
+      {id: 7, name: 'seven'},
+      {id: 8, name: 'eight'}
     ]
   },
   {
     id: 3,
     rows: [
-      {id: 9},
-      {id: 10},
-      {id: 11},
-      {id: 12}
+      {id: 9, name: 'nine'},
+      {id: 10, name: 'ten'},
+      {id: 11, name: 'eleven'},
+      {id: 12, name: 'twelve'}
     ]
   }
 ];
@@ -142,5 +142,33 @@ describe('Kanban interaction', () => {
     backend.simulateHover([targetId]);
 
     expect(component.find('KanbanDragLayer').length).toBe(1);
+  })
+
+  test('Kanban onDragEndRow', () => {
+    const DecoratedKanban = wrapInTestContext(Kanban)
+
+    const onDragEndRow = jest.fn()
+    const onDropRow = jest.fn()
+
+    const component = mount(
+      <DecoratedKanban
+        width={1440}
+        height={900}
+        listWidth={200}
+        lists={lists}
+        onDragEndRow={onDragEndRow}
+        onDropRow={onDropRow}
+      />
+    );
+
+    const backend = component.get(0).getManager().getBackend();
+    const sourceItem = component.find(SortableItem).get(0)
+    const sourceId = sourceItem.getHandlerId();
+
+    backend.simulateBeginDrag([sourceId], {clientOffset: {x: 9999, y: 9999}, getSourceClientOffset: () => ({x: 100, y: 100})});
+    backend.simulateEndDrag();
+
+    expect(onDragEndRow).toHaveBeenCalled();
+    expect(onDropRow).not.toHaveBeenCalled();
   })
 });
