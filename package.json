@@ -126,7 +126,7 @@
     "prepublish": "yarn run build",
     "postpublish": "yarn run deploy",
     "start": "yarn run build:lib && yarn run build:css && node ./scripts/start.js",
-    "test": "yarn run test:unit && yarn run test:e2e",
+    "test": "yarn run test:unit",
     "test:unit": "jest",
     "test:e2e": "wdio"
   },
