@@ -1,4 +1,5 @@
 const fs = require('fs')
+const browserstack = require('browserstack-local')
 
 exports.config = {
     specs: [
@@ -9,18 +10,34 @@ exports.config = {
 
     capabilities: [
       {
-        browserName: 'chrome'
+        'os': 'Windows',
+        'os_version': '7',
+        'browser': 'chrome',
+        'browser_version': '58.0',
+        'resolution': '1366x768',
+        'browserstack.local': true
       },
       {
-        browserName: 'firefox'
+        'os': 'OS X',
+        'os_version': 'Sierra',
+        'browser': 'safari',
+        'browser_version': '10.1',
+        'resolution': '1280x1024',
+        'browserstack.local': true
+      },
+      {
+        'os': 'OS X',
+        'os_version': 'Sierra',
+        'browser': 'firefox',
+        'browser_version': '53.0',
+        'resolution': '1920x1080',
+        'browserstack.local': true
       }
     ],
 
     sync: true,
 
-    // Level of logging verbosity: silent | verbose | command | data | result | error
     logLevel: 'silent',
-
     coloredLogs: true,
 
     bail: 0,
@@ -30,12 +47,17 @@ exports.config = {
     baseUrl: 'http://localhost:3000',
 
     waitforTimeout: 10000,
-
     connectionRetryTimeout: 90000,
-
     connectionRetryCount: 3,
 
-    services: ['selenium-standalone'],
+    services: [
+      // 'selenium-standalone',
+      'browserstack'
+    ],
+
+    // BrowserStack config
+    user: process.env.BROWSERSTACK_USERNAME,
+    key: process.env.BROWSERSTACK_ACCESS_KEY,
 
     framework: 'mocha',
     reporters: ['spec'],
@@ -49,7 +71,7 @@ exports.config = {
     },
 
     before: function (capabilities, specs) {
-      browser.addCommand('customDragDrop', function (dragSource, dropTarget) {
+      browser.addCommand('customDragDrop', (dragSource, dropTarget) => {
        const dragMockScript = fs.readFileSync('node_modules/drag-mock/dist/drag-mock.min.js', 'utf8');
 
        browser.timeouts('script', 500);
@@ -72,5 +94,27 @@ exports.config = {
            .then(done);
        }, dragMockScript.toString(), dragSource, dropTarget);
       });
-   }
+   },
+
+   // Code to start browserstack local before start of test
+  onPrepare: function (config, capabilities) {
+    console.log("Connecting local");
+
+    return new Promise((resolve, reject) => {
+      exports.bs_local = new browserstack.Local();
+      exports.bs_local.start({'key': exports.config.key}, (error) => {
+        if (error) {
+          return reject(error);
+        }
+
+        console.log('Connected. Now testing...');
+        resolve();
+      });
+    });
+  },
+
+  // Code to stop browserstack local after end of test
+  onComplete: function (capabilties, specs) {
+    exports.bs_local.stop(() => {});
+  }
 }
