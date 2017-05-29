@@ -51,7 +51,7 @@ exports.config = {
     connectionRetryCount: 3,
 
     services: [
-      'selenium-standalone',
+      // 'selenium-standalone',
       'static-server',
       'browserstack'
     ],
