@@ -51,9 +51,16 @@ exports.config = {
     connectionRetryCount: 3,
 
     services: [
-      // 'selenium-standalone',
+      'selenium-standalone',
+      'static-server',
       'browserstack'
     ],
+
+    // Static Server config
+    staticServerFolders: [
+      {mount: '/react-virtual-kanban', path: './build'},
+    ],
+    staticServerPort: 3000,
 
     // BrowserStack config
     user: process.env.BROWSERSTACK_USERNAME,
