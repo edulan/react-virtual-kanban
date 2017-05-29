@@ -19,5 +19,4 @@ jobs:
       script: yarn run lint
     - stage: test
       script: yarn run test:unit
-    - # stage name not required, will continue to use `test`
-      script: yarn run test:e2e
+    - script: yarn run test:e2e
