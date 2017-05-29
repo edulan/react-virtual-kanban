@@ -130,7 +130,8 @@
     "start": "yarn run build:lib && yarn run build:css && node ./scripts/start.js",
     "test": "yarn run test:unit",
     "test:unit": "jest",
-    "test:e2e": "wdio"
+    "test:e2e": "wdio",
+    "lint": "eslint ./src ./test"
   },
   "eslintConfig": {
     "extends": "./config/eslint.js"
