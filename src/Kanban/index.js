@@ -1,4 +1,5 @@
 import React from 'react';
+import { DragDropManager } from 'dnd-core';
 import HTML5Backend from 'react-dnd-html5-backend';
 import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
 import { Grid } from 'react-virtualized';
@@ -19,7 +20,6 @@ import SortableList from '../SortableList';
 
 const GridWithScrollZone = withScrolling(Grid);
 const horizontalStrength = createHorizontalStrength(200);
-import { DragDropManager } from 'dnd-core';
 
 import PureComponent from '../PureComponent';
 
@@ -32,6 +32,8 @@ const getDndContext = ((dragDropManager = new DragDropManager(HTML5Backend)) => 
   context.dragDropManager || dragDropManager
 ))();
 
+const noop = () => {};
+
 class Kanban extends PureComponent {
   static propTypes = propTypes;
 
@@ -41,14 +43,14 @@ class Kanban extends PureComponent {
     listComponent: decorators.List,
     itemPreviewComponent: decorators.ItemPreview,
     listPreviewComponent: decorators.ListPreview,
-    onMoveRow: () => {},
-    onMoveList: () => {},
-    onDropRow: () => {},
-    onDropList: () => {},
-    onDragBeginList: () => {},
-    onDragEndList: () => {},
-    onDragBeginRow: () => {},
-    onDragEndRow: () => {},
+    onMoveRow: noop,
+    onMoveList: noop,
+    onDropRow: noop,
+    onDropList: noop,
+    onDragBeginList: noop,
+    onDragEndList: noop,
+    onDragBeginRow: noop,
+    onDragEndRow: noop,
     overscanListCount: 2,
     overscanRowCount: 2,
     itemCacheKey: ({ id }) => `${id}`,
