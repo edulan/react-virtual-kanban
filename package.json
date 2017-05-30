@@ -142,7 +142,9 @@
       "src/**/*.js"
     ],
     "testPathIgnorePatterns": [
-      "(lib|build|docs|node_modules)[/\\\\]"
+      "<rootDir>/lib/",
+      "<rootDir>/build/",
+      "<rootDir>/node_modules/"
     ]
   }
 }
