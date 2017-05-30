@@ -1,5 +1,17 @@
-const fs = require('fs')
-const browserstack = require('browserstack-local')
+const browserstack = require('browserstack-local');
+
+const dragDropCommand = require('./test/support/commands/dragDrop');
+
+const build = `build-${process.env.TRAVIS_BUILD_NUMBER || 'local'}`;
+const branch = process.env.TRAVIS_BRANCH || 'local';
+const user = process.env.BROWSERSTACK_USERNAME;
+const key = process.env.BROWSERSTACK_ACCESS_KEY;
+
+const commonCapabilities = {
+  'project': branch,
+  'build': build,
+  'browserstack.local': true
+};
 
 exports.config = {
     specs: [
@@ -9,30 +21,27 @@ exports.config = {
     maxInstances: 10,
 
     capabilities: [
-      {
+      Object.assign({}, commonCapabilities, {
         'os': 'Windows',
         'os_version': '7',
         'browser': 'chrome',
         'browser_version': '58.0',
-        'resolution': '1366x768',
-        'browserstack.local': true
-      },
-      {
+        'resolution': '1366x768'
+      }),
+      Object.assign({}, commonCapabilities, {
         'os': 'OS X',
         'os_version': 'Sierra',
         'browser': 'safari',
         'browser_version': '10.1',
-        'resolution': '1280x1024',
-        'browserstack.local': true
-      },
-      {
+        'resolution': '1280x1024'
+      }),
+      Object.assign({}, commonCapabilities, {
         'os': 'OS X',
         'os_version': 'Sierra',
         'browser': 'firefox',
         'browser_version': '53.0',
-        'resolution': '1920x1080',
-        'browserstack.local': true
-      }
+        'resolution': '1920x1080'
+      })
     ],
 
     sync: true,
@@ -63,8 +72,8 @@ exports.config = {
     staticServerPort: 3000,
 
     // BrowserStack config
-    user: process.env.BROWSERSTACK_USERNAME,
-    key: process.env.BROWSERSTACK_ACCESS_KEY,
+    user,
+    key,
 
     framework: 'mocha',
     reporters: ['spec'],
@@ -78,29 +87,7 @@ exports.config = {
     },
 
     before: function (capabilities, specs) {
-      browser.addCommand('customDragDrop', (dragSource, dropTarget) => {
-       const dragMockScript = fs.readFileSync('node_modules/drag-mock/dist/drag-mock.min.js', 'utf8');
-
-       browser.timeouts('script', 500);
-
-       return browser.executeAsync((text, source, target, done) => {
-         const script = document.createElement('script');
-
-         script.text = text;
-         document.getElementsByTagName('head')[0].appendChild(script);
-
-         const dragElement = document.querySelector(source);
-         const dropElement = document.querySelector(target);
-
-         window.dragMock
-           .dragStart(dragElement)
-           .dragEnter(dropElement)
-           .dragOver(dropElement)
-           .delay(250)
-           .drop(dropElement)
-           .then(done);
-       }, dragMockScript.toString(), dragSource, dropTarget);
-      });
+      browser.addCommand('customDragDrop', dragDropCommand);
    },
 
    // Code to start browserstack local before start of test
