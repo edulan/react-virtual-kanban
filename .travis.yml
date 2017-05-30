@@ -1,8 +1,7 @@
 language: node_js
 node_js:
+  - "7"
   - "6"
-  - "5"
-  - "4"
 
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 0.24.6
@@ -19,4 +18,5 @@ jobs:
       script: yarn run lint
     - stage: test
       script: yarn run test:unit
-    - script: yarn run test:e2e
+    - stage: test
+      script: yarn run test:e2e
