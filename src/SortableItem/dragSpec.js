@@ -34,3 +34,7 @@ export function isDragging({ rowId }, monitor) {
 
    return rowId === draggingRowId;
 }
+
+export function canDrag(props, monitor) {
+  return !props.dndDisabled;
+}
