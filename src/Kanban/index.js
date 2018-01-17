@@ -52,6 +52,7 @@ class Kanban extends PureComponent {
     overscanListCount: 2,
     overscanRowCount: 2,
     itemCacheKey: ({ id }) => `${id}`,
+    dndDisabled: false,
   }
 
   static childContextTypes = {
@@ -68,7 +69,7 @@ class Kanban extends PureComponent {
     this.state = {
       lists: props.lists
     };
-
+    
     this.onMoveList = this.onMoveList.bind(this);
     this.onMoveRow = this.onMoveRow.bind(this);
 
@@ -233,6 +234,7 @@ class Kanban extends PureComponent {
         overscanRowCount={this.props.overscanRowCount}
         itemCacheKey={this.props.itemCacheKey}
         findItemIndex={this.findItemIndex}
+        dndDisabled={this.props.dndDisabled}
       />
     );
   }
@@ -248,6 +250,7 @@ class Kanban extends PureComponent {
       overscanListCount,
       scrollToList,
       scrollToAlignment,
+      dndDisabled,
     } = this.props;
 
     return (

@@ -40,6 +40,7 @@ class App extends Component {
               itemCacheKey={keyGenerator}
               onMoveRow={({ lists }) => this.setState(() => ({lists}))}
               onMoveList={({ lists }) => this.setState(() => ({lists}))}
+              dndDisabled={false}
             />
           )}
         </AutoSizer>
