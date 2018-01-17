@@ -9,6 +9,7 @@ export const itemComponent = PropTypes.func;
 export const moveRow = PropTypes.func;
 export const dragEndRow = PropTypes.func;
 export const dropRow = PropTypes.func;
+export const dndDisabled = PropTypes.bool.isRequired;
   // React DnD
 export const isDragging = PropTypes.bool;
 export const connectDropTarget = PropTypes.func;
