@@ -22,8 +22,8 @@ class SortableList extends PureComponent {
     super(props);
 
     this.renderRow = this.renderRow.bind(this);
-    this.renderItemForMeasure = this.renderItemForMeasure.bind(this);
     this.renderList = this.renderList.bind(this);
+    this.renderItemForMeasure = this.renderItemForMeasure.bind(this);
   }
 
   componentDidMount() {
