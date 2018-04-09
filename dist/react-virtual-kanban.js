@@ -323,8 +323,11 @@
             }, {
                 key: "renderList",
                 value: function(_ref7) {
-                    var columnIndex = _ref7.columnIndex, style = (_ref7.key, _ref7.style), list = this.state.lists[columnIndex];
+                    var _this4 = this, columnIndex = _ref7.columnIndex, style = (_ref7.key, _ref7.style), list = this.state.lists[columnIndex];
                     return _react2["default"].createElement(_SortableList2["default"], {
+                        ref: function(_ref8) {
+                            return _this4.refsByIndex[columnIndex] = _ref8;
+                        },
                         key: list.id,
                         listId: list.id,
                         listStyle: style,
@@ -348,7 +351,7 @@
             }, {
                 key: "render",
                 value: function() {
-                    var _this4 = this, lists = this.state.lists, _props = this.props, width = _props.width, height = _props.height, listWidth = _props.listWidth, itemPreviewComponent = _props.itemPreviewComponent, listPreviewComponent = _props.listPreviewComponent, overscanListCount = _props.overscanListCount, scrollToList = _props.scrollToList, scrollToAlignment = _props.scrollToAlignment;
+                    var _this5 = this, lists = this.state.lists, _props = this.props, width = _props.width, height = _props.height, listWidth = _props.listWidth, itemPreviewComponent = _props.itemPreviewComponent, listPreviewComponent = _props.listPreviewComponent, overscanListCount = _props.overscanListCount, scrollToList = _props.scrollToList, scrollToAlignment = _props.scrollToAlignment;
                     return _react2["default"].createElement("div", null, _react2["default"].createElement(GridWithScrollZone, {
                         lists: lists,
                         className: "KanbanGrid",
@@ -356,7 +359,7 @@
                             pointerEvents: "auto"
                         },
                         ref: function(c) {
-                            return _this4._grid = c;
+                            return _this5._grid = c;
                         },
                         width: width,
                         height: height,
@@ -395,8 +398,8 @@
             onDragEndRow: function() {},
             overscanListCount: 2,
             overscanRowCount: 2,
-            itemCacheKey: function(_ref8) {
-                var id = _ref8.id;
+            itemCacheKey: function(_ref9) {
+                var id = _ref9.id;
                 return "" + id;
             },
             dndDisabled: !1
