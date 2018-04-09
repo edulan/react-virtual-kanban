@@ -1,8 +1,10 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import HTML5Backend from 'react-dnd-html5-backend';
 import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
-import { Grid } from 'react-virtualized';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
+import { Grid } from 'react-virtualized';
+import scrollIntoView from 'scroll-into-view';
 
 import {
   updateLists,
@@ -14,6 +16,7 @@ import {
 
 import * as propTypes from './propTypes';
 import * as decorators from '../decorators';
+import shallowCompare from 'react-addons-shallow-compare';
 import DragLayer from '../DragLayer';
 import SortableList from '../SortableList';
 
@@ -52,6 +55,7 @@ class Kanban extends PureComponent {
     overscanListCount: 2,
     overscanRowCount: 2,
     itemCacheKey: ({ id }) => `${id}`,
+    dndDisabled: false,
   }
 
   static childContextTypes = {
@@ -81,8 +85,11 @@ class Kanban extends PureComponent {
     this.onDragEndList = this.onDragEndList.bind(this);
 
     this.renderList = this.renderList.bind(this);
+    this.findItemIndex = this.findItemIndex.bind(this);
     this.drawFrame = this.drawFrame.bind(this);
     this.findItemIndex = this.findItemIndex.bind(this);
+
+    this.refsByIndex = {};
   }
 
   getChildContext() {
@@ -97,6 +104,15 @@ class Kanban extends PureComponent {
 
   componentWillUnmount() {
     cancelAnimationFrame(this._requestedFrame);
+  }
+
+  scrollToList(index) {
+    if (index === undefined) {
+      return;
+    }
+
+    const targetNode = ReactDOM.findDOMNode(this.refsByIndex[index]);
+    scrollIntoView(targetNode);
   }
 
   scheduleUpdate(updateFn, callbackFn) {
@@ -201,6 +217,10 @@ class Kanban extends PureComponent {
     this.props.onDragEndList(this.listEndData({ listId }));
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
+  }
+
   componentDidUpdate(_prevProps, prevState) {
     if (prevState.lists !== this.state.lists) {
       this._grid.wrappedInstance.forceUpdate();
@@ -216,6 +236,7 @@ class Kanban extends PureComponent {
 
     return (
       <SortableList
+        ref={ref => this.refsByIndex[columnIndex] = ref}
         key={list.id}
         listId={list.id}
         listStyle={style}
@@ -233,6 +254,7 @@ class Kanban extends PureComponent {
         overscanRowCount={this.props.overscanRowCount}
         itemCacheKey={this.props.itemCacheKey}
         findItemIndex={this.findItemIndex}
+        dndDisabled={this.props.dndDisabled}
       />
     );
   }
@@ -249,7 +271,6 @@ class Kanban extends PureComponent {
       scrollToList,
       scrollToAlignment,
     } = this.props;
-
     return (
       <div>
         <GridWithScrollZone

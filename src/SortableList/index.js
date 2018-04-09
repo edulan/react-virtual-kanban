@@ -22,8 +22,8 @@ class SortableList extends PureComponent {
     super(props);
 
     this.renderRow = this.renderRow.bind(this);
-    this.renderItemForMeasure = this.renderItemForMeasure.bind(this);
     this.renderList = this.renderList.bind(this);
+    this.renderItemForMeasure = this.renderItemForMeasure.bind(this);
   }
 
   componentDidMount() {
@@ -54,6 +54,7 @@ class SortableList extends PureComponent {
         dragBeginRow={this.props.dragBeginRow}
         dragEndRow={this.props.dragEndRow}
         findItemIndex={this.props.findItemIndex}
+        dndDisabled={this.props.dndDisabled}
       />
     );
   }
