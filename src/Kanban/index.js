@@ -21,7 +21,9 @@ import DragLayer from '../DragLayer';
 import SortableList from '../SortableList';
 
 const GridWithScrollZone = withScrolling(Grid);
-const horizontalStrength = createHorizontalStrength(200);
+const HORIZONTAL_SCROLL_SPEED = 50;
+const HORIZONTAL_SCROLL_STRENGTH = 200;
+const horizontalStrength = createHorizontalStrength(HORIZONTAL_SCROLL_STRENGTH);
 import { DragDropManager } from 'dnd-core';
 
 import PureComponent from '../PureComponent';
@@ -291,7 +293,7 @@ class Kanban extends PureComponent {
           scrollToColumn={scrollToList}
           scrollToAlignment={scrollToAlignment}
           verticalStrength={() => {}}
-          speed={100}
+          speed={HORIZONTAL_SCROLL_SPEED}
         />
         <DragLayer
           lists={lists}

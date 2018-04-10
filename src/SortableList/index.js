@@ -1,5 +1,6 @@
 import React from 'react';
-import { List as VirtualScroll, CellMeasurer, AutoSizer } from 'react-virtualized';
+import { List as VirtualList, CellMeasurer, AutoSizer } from 'react-virtualized';
+import withScrolling, { createVerticalStrength } from 'react-dnd-scrollzone';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 
@@ -14,7 +15,10 @@ import * as propTypes from './propTypes';
 import PureComponent from '../PureComponent';
 
 const identity = (c) => c;
-
+const VERTICAL_SCROLL_SPEED = 20;
+const VERTICAL_SCROLL_STRENGTH = 50;
+const ListWithScrollZone = withScrolling(VirtualList);
+const verticalStrength = createVerticalStrength(VERTICAL_SCROLL_STRENGTH);
 class SortableList extends PureComponent {
   static propTypes = propTypes;
 
@@ -34,7 +38,7 @@ class SortableList extends PureComponent {
 
   componentDidUpdate(prevProps) {
     if (prevProps.list.rows !== this.props.list.rows && !!this._list) {
-      this._list.recomputeRowHeights();
+      this._list.wrappedInstance.recomputeRowHeights();
     }
   }
 
@@ -88,7 +92,7 @@ class SortableList extends PureComponent {
         cellSizeCache={new ItemCache(this.props.list.rows, this.props.itemCacheKey)}
       >
         {({ getRowHeight }) => (
-          <VirtualScroll
+          <ListWithScrollZone
             ref={(c) => (this._list = c)}
             className='KanbanList'
             width={width}
@@ -97,6 +101,8 @@ class SortableList extends PureComponent {
             rowCount={this.props.list.rows.length}
             rowRenderer={this.renderRow}
             overscanRowCount={this.props.overscanRowCount}
+            verticalStrength={verticalStrength}
+            speed={VERTICAL_SCROLL_SPEED}
            />
          )}
       </CellMeasurer>
