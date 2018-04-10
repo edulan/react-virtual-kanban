@@ -236,7 +236,7 @@ class Kanban extends PureComponent {
 
     return (
       <SortableList
-        ref={ref => this.refsByIndex[columnIndex] = ref}
+        ref={(ref) => {this.refsByIndex[columnIndex] = ref;}}
         key={list.id}
         listId={list.id}
         listStyle={style}

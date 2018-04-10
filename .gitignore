@@ -4,8 +4,8 @@
 node_modules
 
 # production
-# build
-# dist
+build
+dist
 # lib
 
 # misc
