@@ -1,10 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import HTML5Backend from 'react-dnd-html5-backend';
 import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 import { Grid, CellMeasurerCache } from 'react-virtualized';
-import scrollIntoView from 'scroll-into-view';
 
 import {
   updateLists,
@@ -109,15 +107,6 @@ class Kanban extends React.PureComponent {
 
   componentWillUnmount() {
     cancelAnimationFrame(this._requestedFrame);
-  }
-
-  scrollToList(index) {
-    if (index === undefined) {
-      return;
-    }
-
-    const targetNode = ReactDOM.findDOMNode(this.refsByIndex[index]);
-    scrollIntoView(targetNode);
   }
 
   scheduleUpdate(updateFn, callbackFn) {
@@ -273,11 +262,10 @@ class Kanban extends React.PureComponent {
     const {
       width,
       height,
-      listWidth,
       itemPreviewComponent,
       listPreviewComponent,
       overscanListCount,
-      scrollToList,
+      scrollToColumn,
       scrollToAlignment,
     } = this.props;
     return (
@@ -297,7 +285,7 @@ class Kanban extends React.PureComponent {
           cellRenderer={this.renderList}
           overscanColumnCount={overscanListCount}
           horizontalStrength={horizontalStrength}
-          scrollToColumn={scrollToList}
+          scrollToColumn={scrollToColumn}
           scrollToAlignment={scrollToAlignment}
           verticalStrength={() => {}}
           speed={HORIZONTAL_SCROLL_SPEED}
