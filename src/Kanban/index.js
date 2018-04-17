@@ -225,11 +225,11 @@ class Kanban extends React.PureComponent {
     return shallowCompare(this, nextProps, nextState);
   }
 
-  // componentDidUpdate(_prevProps, prevState) {
-  //   if (prevState.lists !== this.state.lists) {
-  //     this._grid.wrappedInstance.forceUpdate();
-  //   }
-  // }
+  componentDidUpdate(_prevProps, prevState) {
+    if (prevState.lists !== this.state.lists) {
+      this._grid.wrappedInstance.forceUpdate();
+    }
+  }
 
   findItemIndex(itemId) {
     return findItemIndex(this.state.lists, itemId);

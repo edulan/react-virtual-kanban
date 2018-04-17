@@ -4,7 +4,6 @@ import withScrolling, { createVerticalStrength } from 'react-dnd-scrollzone';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 
-// import { ItemCache } from './itemCache';
 import SortableItem from '../SortableItem';
 
 import { LIST_TYPE, ROW_TYPE } from '../types';
@@ -35,11 +34,11 @@ class SortableList extends React.PureComponent {
     });
   }
 
-  // componentDidUpdate(prevProps) {
-  //   if (prevProps.list.rows !== this.props.list.rows && !!this._list) {
-  //     this._list.wrappedInstance.recomputeRowHeights();
-  //   }
-  // }
+  componentDidUpdate(prevProps) {
+    if (prevProps.list.rows !== this.props.list.rows && !!this._list) {
+      this._list.wrappedInstance.recomputeRowHeights();
+    }
+  }
 
   renderRow({ index, key, style }) {
     const row = this.props.list.rows[index];
