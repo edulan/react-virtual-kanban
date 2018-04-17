@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import HTML5Backend from 'react-dnd-html5-backend';
 import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
-import { Grid } from 'react-virtualized';
+import { Grid, CellMeasurerCache } from 'react-virtualized';
 import scrollIntoView from 'scroll-into-view';
 
 import {
@@ -56,7 +56,6 @@ class Kanban extends PureComponent {
     onDragEndRow: () => {},
     overscanListCount: 2,
     overscanRowCount: 2,
-    itemCacheKey: ({ id }) => `${id}`,
     dndDisabled: false,
   }
 
@@ -72,8 +71,13 @@ class Kanban extends PureComponent {
     super(props);
 
     this.state = {
-      lists: props.lists
+      lists: props.lists,
     };
+
+    this.cache = new CellMeasurerCache({
+      fixedWidth: true,
+      fixedHeight: true,
+    })
 
     this.onMoveList = this.onMoveList.bind(this);
     this.onMoveRow = this.onMoveRow.bind(this);
@@ -223,17 +227,17 @@ class Kanban extends PureComponent {
     return shallowCompare(this, nextProps, nextState);
   }
 
-  componentDidUpdate(_prevProps, prevState) {
-    if (prevState.lists !== this.state.lists) {
-      this._grid.wrappedInstance.forceUpdate();
-    }
-  }
+  // componentDidUpdate(_prevProps, prevState) {
+  //   if (prevState.lists !== this.state.lists) {
+  //     this._grid.wrappedInstance.forceUpdate();
+  //   }
+  // }
 
   findItemIndex(itemId) {
     return findItemIndex(this.state.lists, itemId);
   }
 
-  renderList({ columnIndex, key, style }) {
+  renderList({ columnIndex, rowIndex, key, style, parent }) {
     const list = this.state.lists[columnIndex];
 
     return (
@@ -254,9 +258,12 @@ class Kanban extends PureComponent {
         dragEndList={this.onDragEndList}
         dragBeginList={this.onDragBeginList}
         overscanRowCount={this.props.overscanRowCount}
-        itemCacheKey={this.props.itemCacheKey}
         findItemIndex={this.findItemIndex}
         dndDisabled={this.props.dndDisabled}
+        parent={parent}
+        columnIndex={columnIndex}
+        rowIndex={rowIndex}
+        cache={this.cache}
       />
     );
   }
@@ -294,6 +301,7 @@ class Kanban extends PureComponent {
           scrollToAlignment={scrollToAlignment}
           verticalStrength={() => {}}
           speed={HORIZONTAL_SCROLL_SPEED}
+          deferredMeasurementCache={this.cache}
         />
         <DragLayer
           lists={lists}

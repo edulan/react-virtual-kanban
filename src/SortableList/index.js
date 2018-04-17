@@ -4,7 +4,7 @@ import withScrolling, { createVerticalStrength } from 'react-dnd-scrollzone';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 
-import { ItemCache } from './itemCache';
+// import { ItemCache } from './itemCache';
 import SortableItem from '../SortableItem';
 
 import { LIST_TYPE, ROW_TYPE } from '../types';
@@ -19,6 +19,8 @@ const VERTICAL_SCROLL_SPEED = 20;
 const VERTICAL_SCROLL_STRENGTH = 50;
 const ListWithScrollZone = withScrolling(VirtualList);
 const verticalStrength = createVerticalStrength(VERTICAL_SCROLL_STRENGTH);
+
+
 class SortableList extends PureComponent {
   static propTypes = propTypes;
 
@@ -27,7 +29,6 @@ class SortableList extends PureComponent {
 
     this.renderRow = this.renderRow.bind(this);
     this.renderList = this.renderList.bind(this);
-    this.renderItemForMeasure = this.renderItemForMeasure.bind(this);
   }
 
   componentDidMount() {
@@ -36,11 +37,11 @@ class SortableList extends PureComponent {
     });
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.list.rows !== this.props.list.rows && !!this._list) {
-      this._list.wrappedInstance.recomputeRowHeights();
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   if (prevProps.list.rows !== this.props.list.rows && !!this._list) {
+  //     this._list.wrappedInstance.recomputeRowHeights();
+  //   }
+  // }
 
   renderRow({ index, key, style }) {
     const row = this.props.list.rows[index];
@@ -63,48 +64,34 @@ class SortableList extends PureComponent {
     );
   }
 
-  renderItemForMeasure({ rowIndex }) {
-    const { itemComponent: DecoratedItem } = this.props;
-    const row = this.props.list.rows[rowIndex];
-
-    return (
-      <DecoratedItem
-        row={row}
-        rowId={row.id}
-        listId={this.props.listId}
-        rowStyle={{}}
-        isDragging={false}
-        connectDragSource={identity}
-        connectDropTarget={identity}
-      />
-    );
-  }
-
   renderList({ width, height }) {
     // TODO: Check whether scrollbar is visible or not :/
 
     return (
       <CellMeasurer
-        width={width}
-        columnCount={1}
-        rowCount={this.props.list.rows.length}
-        cellRenderer={this.renderItemForMeasure}
-        cellSizeCache={new ItemCache(this.props.list.rows, this.props.itemCacheKey)}
+        cache={this.props.cache}
+        columnIndex={this.props.columnIndex}
+        rowIndex={this.props.rowIndex}
+        parent={this.props.parent}
       >
-        {({ getRowHeight }) => (
-          <ListWithScrollZone
-            ref={(c) => (this._list = c)}
-            className='KanbanList'
-            width={width}
-            height={height}
-            rowHeight={getRowHeight}
-            rowCount={this.props.list.rows.length}
-            rowRenderer={this.renderRow}
-            overscanRowCount={this.props.overscanRowCount}
-            verticalStrength={verticalStrength}
-            speed={VERTICAL_SCROLL_SPEED}
-           />
-         )}
+        {
+          ({ measure }) => {
+            return (
+              <ListWithScrollZone
+                ref={(c) => (this._list = c)}
+                className='KanbanList'
+                width={width}
+                height={height}
+                rowHeight={50}
+                rowCount={this.props.list.rows.length}
+                rowRenderer={this.renderRow}
+                overscanRowCount={this.props.overscanRowCount}
+                verticalStrength={verticalStrength}
+                speed={VERTICAL_SCROLL_SPEED}
+              />
+            );
+          }
+        }
       </CellMeasurer>
     );
   }
