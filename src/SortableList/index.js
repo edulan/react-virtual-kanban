@@ -11,7 +11,7 @@ import * as dragSpec from './dragSpec';
 import * as dropSpec from './dropSpec';
 import * as propTypes from './propTypes';
 
-const identity = (c) => c;
+// const identity = (c) => c;
 const VERTICAL_SCROLL_SPEED = 20;
 const VERTICAL_SCROLL_STRENGTH = 50;
 const ListWithScrollZone = withScrolling(VirtualList);

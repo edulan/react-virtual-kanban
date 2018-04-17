@@ -74,7 +74,7 @@ class Kanban extends React.PureComponent {
 
     this.cache = new CellMeasurerCache({
       fixedWidth: true,
-      fixedHeight: true,
+      // fixedHeight: true,
     })
 
     this.onMoveList = this.onMoveList.bind(this);
