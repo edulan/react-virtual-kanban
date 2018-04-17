@@ -1,5 +1,5 @@
 import React from 'react';
-import { List as VirtualList, CellMeasurer, AutoSizer } from 'react-virtualized';
+import { List as VirtualList, CellMeasurer, CellMeasurerCache, AutoSizer } from 'react-virtualized';
 import withScrolling, { createVerticalStrength } from 'react-dnd-scrollzone';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
@@ -24,6 +24,10 @@ class SortableList extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    this.cache = new CellMeasurerCache({
+      defaultHeight: 50,
+      fixedWidth: true
+    });
     this.renderRow = this.renderRow.bind(this);
     this.renderList = this.renderList.bind(this);
   }
@@ -40,56 +44,50 @@ class SortableList extends React.PureComponent {
     }
   }
 
-  renderRow({ index, key, style }) {
+  renderRow({ index, key, style, parent}) {
     const row = this.props.list.rows[index];
 
     return (
-      <SortableItem
-        key={row.id}
-        row={row}
-        rowId={row.id}
-        listId={this.props.listId}
-        rowStyle={style}
-        itemComponent={this.props.itemComponent}
-        moveRow={this.props.moveRow}
-        dropRow={this.props.dropRow}
-        dragBeginRow={this.props.dragBeginRow}
-        dragEndRow={this.props.dragEndRow}
-        findItemIndex={this.props.findItemIndex}
-        dndDisabled={this.props.dndDisabled}
-      />
+      <CellMeasurer
+        cache={this.cache}
+        parent={parent}
+        key={key}
+        columnIndex={0}
+        rowIndex={index}
+      >
+        <SortableItem
+          key={row.id}
+          row={row}
+          rowId={row.id}
+          listId={this.props.listId}
+          rowStyle={style}
+          itemComponent={this.props.itemComponent}
+          moveRow={this.props.moveRow}
+          dropRow={this.props.dropRow}
+          dragBeginRow={this.props.dragBeginRow}
+          dragEndRow={this.props.dragEndRow}
+          findItemIndex={this.props.findItemIndex}
+          dndDisabled={this.props.dndDisabled}
+        />
+      </CellMeasurer>
     );
   }
 
   renderList({ width, height }) {
     // TODO: Check whether scrollbar is visible or not :/
-
     return (
-      <CellMeasurer
-        cache={this.props.cache}
-        columnIndex={this.props.columnIndex}
-        rowIndex={this.props.rowIndex}
-        parent={this.props.parent}
-      >
-        {
-          ({ measure }) => {
-            return (
-              <ListWithScrollZone
-                ref={(c) => (this._list = c)}
-                className='KanbanList'
-                width={width}
-                height={height}
-                rowHeight={50}
-                rowCount={this.props.list.rows.length}
-                rowRenderer={this.renderRow}
-                overscanRowCount={this.props.overscanRowCount}
-                verticalStrength={verticalStrength}
-                speed={VERTICAL_SCROLL_SPEED}
-              />
-            );
-          }
-        }
-      </CellMeasurer>
+      <ListWithScrollZone
+        ref={(c) => (this._list = c)}
+        className='KanbanList'
+        width={width}
+        height={height}
+        rowHeight={this.cache.rowHeight}
+        rowCount={this.props.list.rows.length}
+        rowRenderer={this.renderRow}
+        overscanRowCount={this.props.overscanRowCount}
+        verticalStrength={verticalStrength}
+        speed={VERTICAL_SCROLL_SPEED}
+      />
     );
   }
 
