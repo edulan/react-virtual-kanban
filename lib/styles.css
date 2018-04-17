@@ -122,8 +122,7 @@
 /* ListPreview */
 
 .ListPreviewWrapper {
-  -webkit-transform: rotate(4deg);
-          transform: rotate(4deg);
+  transform: rotate(4deg);
 }
 
 /* List */
@@ -137,19 +136,15 @@
 
 .ListContainer {
   border-radius: 3px;
-  display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  -ms-flex-direction: column;
+      flex-direction: column;
   color: #4d4d4d;
   background-color: #e6e6e6;
   height: 100%;
-  -webkit-box-align: stretch;
-      -ms-flex-align: stretch;
-          align-items: stretch;
+  -ms-flex-align: stretch;
+      align-items: stretch;
 }
 
 .ListPlaceholder {
@@ -164,17 +159,15 @@
 
 .ListHeader {
   padding: 8px 10px;
-  -webkit-box-flex: 0;
-      -ms-flex: 0 1 10px;
-          flex: 0 1 10px;
+  -ms-flex: 0 1 10px;
+      flex: 0 1 10px;
   /*flex-shrink: 0;
   flex-basis: auto;*/
 }
 
 .ListContent {
-  -webkit-box-flex: 1;
-      -ms-flex-positive: 1;
-          flex-grow: 1;
+  -ms-flex-positive: 1;
+      flex-grow: 1;
   -ms-flex-negative: 1;
       flex-shrink: 1;
   -ms-flex-preferred-size: auto;
@@ -184,9 +177,8 @@
 }
 
 .ListFooter {
-  -webkit-box-flex: 0;
-      -ms-flex: 0 1 auto;
-          flex: 0 1 auto;
+  -ms-flex: 0 1 auto;
+      flex: 0 1 auto;
   /*flex-grow: 1;
   flex-shrink: 0;
   flex-basis: auto;*/
@@ -199,12 +191,10 @@
 
 .ListActions {
   padding: 8px 10px;
-  display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+      align-items: center;
 }
 
 .ListActionItem {
@@ -218,20 +208,16 @@
 /* ItemPreview */
 
 .ItemPreviewWrapper {
-  -webkit-transform: rotate(4deg);
-          transform: rotate(4deg);
+  transform: rotate(4deg);
 }
 
 /* Item */
 
 .ItemWrapper {
-  display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  -ms-flex-direction: column;
+      flex-direction: column;
   height: 100%;
   width: 100%;
   padding: 5px;
@@ -245,9 +231,8 @@
   border-color: darkgray;
   border-radius: 3px;
   background-color: white;
-  -webkit-box-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
+  -ms-flex: 1;
+      flex: 1;
   box-shadow: 1px 1px 0px 0px #ccc;
   box-sizing: border-box;
 }

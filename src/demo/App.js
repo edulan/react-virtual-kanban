@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { AutoSizer } from 'react-virtualized';
-import shuffle from 'lodash.shuffle';
+import _ from 'lodash';
 
 import { VirtualKanban } from '../';
 
@@ -23,7 +23,7 @@ class App extends Component {
           return {
             lists: prevState.lists.map((list) => ({
               ...list,
-              rows: shuffle(list.rows),
+              rows: _.shuffle(list.rows),
             }))
           };
         } else {
