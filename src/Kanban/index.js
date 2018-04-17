@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import HTML5Backend from 'react-dnd-html5-backend';
 import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
-import { Grid } from 'react-virtualized';
+import { Grid, CellMeasurerCache } from 'react-virtualized';
 import scrollIntoView from 'scroll-into-view';
 
 import {
@@ -71,6 +71,12 @@ class Kanban extends React.PureComponent {
     this.state = {
       lists: props.lists,
     };
+
+    this.kanbanCache = new CellMeasurerCache({
+      fixedWidth: true,
+      fixedHeight: true,
+      minWidth: this.props.listWidth,
+    });
 
     this.onMoveList = this.onMoveList.bind(this);
     this.onMoveRow = this.onMoveRow.bind(this);
@@ -253,6 +259,11 @@ class Kanban extends React.PureComponent {
         overscanRowCount={this.props.overscanRowCount}
         findItemIndex={this.findItemIndex}
         dndDisabled={this.props.dndDisabled}
+        kanbanParent={parent}
+        kanbanCache={this.kanbanCache}
+        kanbanKey={key}
+        columnIndex={columnIndex}
+        rowIndex={rowIndex}
       />
     );
   }
@@ -279,7 +290,7 @@ class Kanban extends React.PureComponent {
           ref={(c) => (this._grid = c)}
           width={width}
           height={height}
-          columnWidth={listWidth}
+          columnWidth={this.kanbanCache.columnWidth}
           rowHeight={height - scrollbarSize()}
           columnCount={lists.length}
           rowCount={1}
@@ -290,6 +301,7 @@ class Kanban extends React.PureComponent {
           scrollToAlignment={scrollToAlignment}
           verticalStrength={() => {}}
           speed={HORIZONTAL_SCROLL_SPEED}
+          deferredMeasurementCache={this.kanbanCache}
         />
         <DragLayer
           lists={lists}

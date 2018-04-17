@@ -46,7 +46,6 @@ class SortableList extends React.PureComponent {
 
   renderRow({ index, key, style, parent}) {
     const row = this.props.list.rows[index];
-
     return (
       <CellMeasurer
         cache={this.cache}
@@ -76,18 +75,27 @@ class SortableList extends React.PureComponent {
   renderList({ width, height }) {
     // TODO: Check whether scrollbar is visible or not :/
     return (
-      <ListWithScrollZone
-        ref={(c) => (this._list = c)}
-        className='KanbanList'
-        width={width}
-        height={height}
-        rowHeight={this.cache.rowHeight}
-        rowCount={this.props.list.rows.length}
-        rowRenderer={this.renderRow}
-        overscanRowCount={this.props.overscanRowCount}
-        verticalStrength={verticalStrength}
-        speed={VERTICAL_SCROLL_SPEED}
-      />
+      <CellMeasurer
+        cache={this.props.kanbanCache}
+        parent={this.props.kanbanParent}
+        key={this.props.kanbanKey}
+        columnIndex={this.props.columnIndex}
+        rowIndex={this.props.rowIndex}
+      >
+        <ListWithScrollZone
+          ref={(c) => (this._list = c)}
+          className='KanbanList'
+          width={width}
+          height={height}
+          rowHeight={this.cache.rowHeight}
+          rowCount={this.props.list.rows.length}
+          rowRenderer={this.renderRow}
+          overscanRowCount={this.props.overscanRowCount}
+          verticalStrength={verticalStrength}
+          speed={VERTICAL_SCROLL_SPEED}
+          deferredMeasurementCache={this.cache}
+        />
+      </CellMeasurer>
     );
   }
 
@@ -106,7 +114,6 @@ class SortableList extends React.PureComponent {
       <DecoratedList
         list={list}
         listId={listId}
-        rows={list.rows}
         listStyle={listStyle}
         isDragging={isDragging}
         connectDragSource={connectDragSource}
