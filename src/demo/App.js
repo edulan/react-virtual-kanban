@@ -43,7 +43,6 @@ class App extends Component {
               width={width}
               height={height}
               listWidth={200}
-              itemCacheKey={keyGenerator}
               onMoveRow={({ lists }) => this.setState(() => ({lists}))}
               onMoveList={({ lists }) => this.setState(() => ({lists}))}
               onDragBeginRow={(data) => console.log(data, 'onDragBeginRow')}

@@ -26,8 +26,6 @@ const HORIZONTAL_SCROLL_STRENGTH = 200;
 const horizontalStrength = createHorizontalStrength(HORIZONTAL_SCROLL_STRENGTH);
 import { DragDropManager } from 'dnd-core';
 
-import PureComponent from '../PureComponent';
-
 /**
  * Grab dragDropManager from context
  *
@@ -37,7 +35,7 @@ const getDndContext = ((dragDropManager = new DragDropManager(HTML5Backend)) => 
   context.dragDropManager || dragDropManager
 ))();
 
-class Kanban extends PureComponent {
+class Kanban extends React.PureComponent {
   static propTypes = propTypes;
 
   static defaultProps = {

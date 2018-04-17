@@ -12,8 +12,6 @@ import * as dragSpec from './dragSpec';
 import * as dropSpec from './dropSpec';
 import * as propTypes from './propTypes';
 
-import PureComponent from '../PureComponent';
-
 const identity = (c) => c;
 const VERTICAL_SCROLL_SPEED = 20;
 const VERTICAL_SCROLL_STRENGTH = 50;
@@ -21,7 +19,7 @@ const ListWithScrollZone = withScrolling(VirtualList);
 const verticalStrength = createVerticalStrength(VERTICAL_SCROLL_STRENGTH);
 
 
-class SortableList extends PureComponent {
+class SortableList extends React.PureComponent {
   static propTypes = propTypes;
 
   constructor(props) {

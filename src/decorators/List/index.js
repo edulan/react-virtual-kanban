@@ -3,9 +3,7 @@ import classnames from 'classnames';
 
 import * as propTypes from './propTypes';
 
-import PureComponent from '../../PureComponent';
-
-export default class List extends PureComponent {
+export default class List extends React.PureComponent {
   static propTypes = propTypes;
 
   render() {
