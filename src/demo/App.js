@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { AutoSizer } from 'react-virtualized';
-import shuffle from 'lodash.shuffle';
+import _ from 'lodash';
 
 import { VirtualKanban } from '../';
 
 import './App.css';
 
-const keyGenerator = ({ id, lastModified }) => `${id}-${lastModified}`;
+// const keyGenerator = ({ id, lastModified }) => `${id}-${lastModified}`;
 
 class App extends Component {
   constructor(props) {
@@ -23,7 +23,7 @@ class App extends Component {
           return {
             lists: prevState.lists.map((list) => ({
               ...list,
-              rows: shuffle(list.rows),
+              rows: _.shuffle(list.rows),
             }))
           };
         } else {
@@ -42,8 +42,7 @@ class App extends Component {
               lists={this.state.lists}
               width={width}
               height={height}
-              listWidth={200}
-              itemCacheKey={keyGenerator}
+              listWidth={400}
               onMoveRow={({ lists }) => this.setState(() => ({lists}))}
               onMoveList={({ lists }) => this.setState(() => ({lists}))}
               onDragBeginRow={(data) => console.log(data, 'onDragBeginRow')}
