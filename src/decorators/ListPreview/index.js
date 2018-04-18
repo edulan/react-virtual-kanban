@@ -2,9 +2,7 @@ import React from 'react';
 
 import * as propTypes from './propTypes';
 
-import PureComponent from '../../PureComponent';
-
-export default class ListPreview extends PureComponent {
+export default class ListPreview extends React.PureComponent {
   static propTypes = propTypes;
 
   render() {

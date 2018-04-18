@@ -7,8 +7,6 @@ import * as propTypes from './propTypes';
 // TODO: Extract to utils dir
 import { findItemIndex, findListIndex } from '../Kanban/updateLists';
 
-import PureComponent from '../PureComponent';
-
 function getStyles({ currentOffset }) {
   if (!currentOffset) {
     return {
@@ -24,7 +22,7 @@ function getStyles({ currentOffset }) {
   };
 }
 
-class KanbanDragLayer extends PureComponent {
+class KanbanDragLayer extends React.PureComponent {
   static propTypes = propTypes;
 
   constructor(props) {

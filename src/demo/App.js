@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { AutoSizer } from 'react-virtualized';
+import _ from 'lodash';
 
 import { VirtualKanban } from '../';
 
 import './App.css';
 
-const keyGenerator = ({ id, lastModified }) => `${id}-${lastModified}`;
+// const keyGenerator = ({ id, lastModified }) => `${id}-${lastModified}`;
 
 class App extends Component {
   constructor(props) {
@@ -19,12 +20,17 @@ class App extends Component {
       this.setState((prevState) => {
         if (prevState.lists[0].rows.length > 0) {
           this._initialLists = prevState.lists;
-          return {lists: prevState.lists.map((list) => ({...list, rows: []}))};
+          return {
+            lists: prevState.lists.map((list) => ({
+              ...list,
+              rows: _.shuffle(list.rows),
+            }))
+          };
         } else {
           return {lists: this._initialLists.concat()};
         }
       });
-    }, 3000);
+    }, 30000);
   }
 
   render() {
@@ -36,10 +42,16 @@ class App extends Component {
               lists={this.state.lists}
               width={width}
               height={height}
-              listWidth={200}
-              itemCacheKey={keyGenerator}
+              listWidth={400}
               onMoveRow={({ lists }) => this.setState(() => ({lists}))}
               onMoveList={({ lists }) => this.setState(() => ({lists}))}
+              onDragBeginRow={(data) => console.log(data, 'onDragBeginRow')}
+              onDragEndRow={(data) => console.log(data, 'onDragEndRow') }
+              onDropRow={(data) => console.log(data, 'onDropRow') }
+              onDropList={(data) => console.log(data, 'onDropList') }
+              onDragBeginList={(data) => console.log(data, 'onDragBeginList')}
+              onDragEndList={(data) => console.log(data, 'onDragEndList')}
+              dndDisabled={false}
             />
           )}
         </AutoSizer>
