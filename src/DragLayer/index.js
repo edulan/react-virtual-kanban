@@ -44,7 +44,7 @@ class KanbanDragLayer extends React.PureComponent {
         <ItemPreview
           row={item.row}
           rowId={item.rowId}
-          rowStyle={item.rowStyle}
+          rowStyle={item.style}
           containerWidth={item.containerWidth}
           isGhost={findItemIndex(lists, item.rowId) === -1}
         />

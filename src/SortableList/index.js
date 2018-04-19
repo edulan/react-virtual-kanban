@@ -59,7 +59,7 @@ class SortableList extends React.PureComponent {
           row={row}
           rowId={row.id}
           listId={this.props.listId}
-          rowStyle={style}
+          style={style}
           itemComponent={this.props.itemComponent}
           moveRow={this.props.moveRow}
           dropRow={this.props.dropRow}
@@ -75,27 +75,19 @@ class SortableList extends React.PureComponent {
   renderList({ width, height }) {
     // TODO: Check whether scrollbar is visible or not :/
     return (
-      <CellMeasurer
-        cache={this.props.kanbanCache}
-        parent={this.props.kanbanParent}
-        key={this.props.kanbanKey}
-        columnIndex={this.props.columnIndex}
-        rowIndex={this.props.rowIndex}
-      >
-        <ListWithScrollZone
-          ref={(c) => (this._list = c)}
-          className='KanbanList'
-          width={width}
-          height={height}
-          rowHeight={this.cache.rowHeight}
-          rowCount={this.props.list.rows.length}
-          rowRenderer={this.renderRow}
-          overscanRowCount={this.props.overscanRowCount}
-          verticalStrength={verticalStrength}
-          speed={VERTICAL_SCROLL_SPEED}
-          deferredMeasurementCache={this.cache}
-        />
-      </CellMeasurer>
+      <ListWithScrollZone
+        ref={(c) => (this._list = c)}
+        className='KanbanList'
+        width={width}
+        height={height}
+        rowHeight={this.cache.rowHeight}
+        rowCount={this.props.list.rows.length}
+        rowRenderer={this.renderRow}
+        overscanRowCount={this.props.overscanRowCount}
+        verticalStrength={verticalStrength}
+        speed={VERTICAL_SCROLL_SPEED}
+        deferredMeasurementCache={this.cache}
+      />
     );
   }
 
@@ -107,14 +99,14 @@ class SortableList extends React.PureComponent {
       isDragging,
       connectDragSource,
       connectDropTarget,
-      listStyle,
+      style,
     } = this.props;
 
     return (
       <DecoratedList
         list={list}
         listId={listId}
-        listStyle={listStyle}
+        listStyle={style}
         isDragging={isDragging}
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}

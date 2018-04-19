@@ -6,8 +6,6 @@ import { VirtualKanban } from '../';
 
 import './App.css';
 
-// const keyGenerator = ({ id, lastModified }) => `${id}-${lastModified}`;
-
 class App extends Component {
   constructor(props) {
     super(props);
