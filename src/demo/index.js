@@ -13,7 +13,7 @@ window.Perf = Perf;
 function getLists() {
   const lists = window.localStorage.getItem('lists');
 
-  return JSON.parse(lists) || generateLists(20, 50);
+  return JSON.parse(lists) || generateLists(100, 10);
 }
 
 function setLists(lists) {

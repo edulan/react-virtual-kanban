@@ -7,9 +7,7 @@ import * as dragSpec from './dragSpec';
 import * as dropSpec from './dropSpec';
 import * as propTypes from './propTypes';
 
-import PureComponent from '../PureComponent';
-
-class SortableItem extends PureComponent {
+class SortableItem extends React.PureComponent {
   static propTypes = propTypes;
 
   componentDidMount() {
@@ -27,15 +25,13 @@ class SortableItem extends PureComponent {
       isDragging,
       connectDragSource,
       connectDropTarget,
-      rowStyle,
     } = this.props;
-
     return (
       <DecoratedItem
         row={row}
         rowId={rowId}
         listId={listId}
-        rowStyle={rowStyle}
+        rowStyle={this.props.style}
         isDragging={isDragging}
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}

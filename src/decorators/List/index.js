@@ -3,9 +3,7 @@ import classnames from 'classnames';
 
 import * as propTypes from './propTypes';
 
-import PureComponent from '../../PureComponent';
-
-export default class List extends PureComponent {
+export default class List extends React.PureComponent {
   static propTypes = propTypes;
 
   render() {
@@ -24,7 +22,7 @@ export default class List extends PureComponent {
       'ListPlaceholder': isDragging
     });
 
-    return (
+    return connectDropTarget(
       <div className='ListWrapper' style={listStyle}>
         <div className={listContainerClass}>
           {connectDragSource(
@@ -32,7 +30,7 @@ export default class List extends PureComponent {
               <span className='ListTitle'>List {listId} ({list.rows.length})</span>
             </div>
           )}
-          {connectDropTarget(
+          {(
             <div className='ListContent'>
               {children}
             </div>

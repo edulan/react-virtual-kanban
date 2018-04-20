@@ -152,12 +152,15 @@ function moveItemToList(lists, { fromId, toId }) {
     return lists;
   }
 
-  // Only move when list is empty
-  if (toList.rows.length > 0) {
+  const fromItem = fromList.rows[fromIndex];
+
+  if (fromListIndex === toListIndex ||
+      toList.rows.find(row => row.id === fromItem.id)) {
+    // If we allow moving the item even when the list is not empty
+    // we need to prevent duplication of the item in different lists
     return lists;
   }
 
-  const fromItem = fromList.rows[fromIndex];
 
   return update(lists, {
     // Remove item from source list
