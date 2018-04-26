@@ -25,6 +25,7 @@ class SortableItem extends React.PureComponent {
       isDragging,
       connectDragSource,
       connectDropTarget,
+      recalculateRowHeights,
     } = this.props;
     return (
       <DecoratedItem
@@ -35,6 +36,7 @@ class SortableItem extends React.PureComponent {
         isDragging={isDragging}
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}
+        recalculateRowHeights={recalculateRowHeights}
       />
     );
   }
