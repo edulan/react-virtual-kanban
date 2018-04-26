@@ -15,3 +15,4 @@ export const isDragging = PropTypes.bool;
 export const connectDropTarget = PropTypes.func;
 export const connectDragSource = PropTypes.func;
 export const connectDragPreview = PropTypes.func;
+export const recalculateRowHeights = PropTypes.func;
