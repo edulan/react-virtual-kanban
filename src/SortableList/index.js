@@ -38,13 +38,6 @@ class SortableList extends React.PureComponent {
     });
   }
 
-  componentDidUpdate(prevProps) {
-    if (window._ && window._.isEqual(prevProps.list.rows, this.props.list.rows)) return;
-
-    this.cache.clearAll();
-    if (this._list) this._list.wrappedInstance.recomputeRowHeights();
-  }
-
   recalculateRowHeights(index) {
     this.cache.clear(index);
     if (this._list) this._list.wrappedInstance.recomputeRowHeights(index + 1);

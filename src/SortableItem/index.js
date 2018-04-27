@@ -21,6 +21,11 @@ class SortableItem extends React.PureComponent {
     });
   }
 
+  componentDidUpdate(prevProps) {
+    if (window._ && window._.isEqual(prevProps, this.props)) return;
+    this.recalculateRowHeights();
+  }
+
   recalculateRowHeights() {
     const { recalculateRowHeights, rowIndex} = this.props;
     recalculateRowHeights(rowIndex);
