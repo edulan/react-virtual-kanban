@@ -29,6 +29,7 @@ class SortableList extends React.PureComponent {
     });
     this.renderRow = this.renderRow.bind(this);
     this.renderList = this.renderList.bind(this);
+    this.recalculateRowHeights = this.recalculateRowHeights.bind(this);
   }
 
   componentDidMount() {
@@ -39,9 +40,13 @@ class SortableList extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     if (prevProps.list.rows !== this.props.list.rows && !!this._list) {
-      this.cache.clearAll();
-      this._list.wrappedInstance.recomputeRowHeights();
+      this.recalculateRowHeights();
     }
+  }
+
+  recalculateRowHeights() {
+    this.cache.clearAll();
+    this._list.wrappedInstance.recomputeRowHeights();
   }
 
   renderRow({ index, key, style, parent}) {
@@ -67,6 +72,7 @@ class SortableList extends React.PureComponent {
           dragEndRow={this.props.dragEndRow}
           findItemIndex={this.props.findItemIndex}
           dndDisabled={this.props.dndDisabled}
+          recalculateRowHeights={this.recalculateRowHeights}
         />
       </CellMeasurer>
     );
