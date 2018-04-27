@@ -40,13 +40,14 @@ class SortableList extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     if (prevProps.list.rows !== this.props.list.rows && !!this._list) {
-      this.recalculateRowHeights();
+      this.cache.clearAll();
+      this._list.wrappedInstance.recomputeRowHeights();
     }
   }
 
-  recalculateRowHeights() {
-    this.cache.clearAll();
-    this._list.wrappedInstance.recomputeRowHeights();
+  recalculateRowHeights(index) {
+    this.cache.clear(index);
+    if (this._list) this._list.wrappedInstance.recomputeRowHeights(index + 1);
   }
 
   renderRow({ index, key, style, parent}) {
@@ -73,6 +74,7 @@ class SortableList extends React.PureComponent {
           findItemIndex={this.props.findItemIndex}
           dndDisabled={this.props.dndDisabled}
           recalculateRowHeights={this.recalculateRowHeights}
+          rowIndex={index}
         />
       </CellMeasurer>
     );
