@@ -44,6 +44,10 @@ class SortableList extends React.PureComponent {
       this.cache.clearAll();
       if (this._list) this._list.wrappedInstance.recomputeRowHeights(rowIndex + 1);
     }
+
+    if (prevProps.scrollToCell !== this.props.scrollToCell) {
+      this._list.forceUpdate();
+    }
   }
 
   findHighestUpdatedRow(rows, prevRows) {

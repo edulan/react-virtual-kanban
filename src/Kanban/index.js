@@ -213,6 +213,9 @@ class Kanban extends React.PureComponent {
     if (prevState.lists !== this.state.lists) {
       this._grid.wrappedInstance.forceUpdate();
     }
+    if (_prevProps.scrollToCell !== this.props.scrollToCell) {
+      this._grid.forceUpdate();
+    }
   }
 
   findItemIndex(itemId) {
