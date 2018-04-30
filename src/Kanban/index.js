@@ -210,11 +210,11 @@ class Kanban extends React.PureComponent {
   }
 
   componentDidUpdate(_prevProps, prevState) {
-    if (prevState.lists !== this.state.lists) {
+    if (prevState.lists !== this.state.lists
+      || _prevProps.scrollToColumn !== this.props.scrollToColumn
+      || _prevProps.scrollToRow !== this.props.scrollToRow
+    ) {
       this._grid.wrappedInstance.forceUpdate();
-    }
-    if (_prevProps.scrollToCell !== this.props.scrollToCell) {
-      this._grid.forceUpdate();
     }
   }
 
@@ -245,8 +245,7 @@ class Kanban extends React.PureComponent {
         overscanRowCount={this.props.overscanRowCount}
         findItemIndex={this.findItemIndex}
         dndDisabled={this.props.dndDisabled}
-        scrollToCell={this.props.scrollToCell}
-        scrollToAlignment={this.props.scrollToAlignment}
+        scrollToRow={this.props.scrollToRow}
       />
     );
   }
@@ -260,7 +259,7 @@ class Kanban extends React.PureComponent {
       itemPreviewComponent,
       listPreviewComponent,
       overscanListCount,
-      scrollToCell,
+      scrollToColumn,
       scrollToAlignment,
     } = this.props;
     return (
@@ -280,7 +279,7 @@ class Kanban extends React.PureComponent {
           cellRenderer={this.renderList}
           overscanColumnCount={overscanListCount}
           horizontalStrength={horizontalStrength}
-          scrollToColumn={scrollToCell.columnIndex}
+          scrollToColumn={scrollToColumn}
           scrollToAlignment={scrollToAlignment}
           verticalStrength={() => {}}
           speed={HORIZONTAL_SCROLL_SPEED}

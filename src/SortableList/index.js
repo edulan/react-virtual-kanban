@@ -45,8 +45,8 @@ class SortableList extends React.PureComponent {
       if (this._list) this._list.wrappedInstance.recomputeRowHeights(rowIndex + 1);
     }
 
-    if (prevProps.scrollToCell !== this.props.scrollToCell) {
-      this._list.forceUpdate();
+    if (prevProps.scrollToRow !== this.props.scrollToRow) {
+      this._list.wrappedInstance.forceUpdate();
     }
   }
 
@@ -111,8 +111,7 @@ class SortableList extends React.PureComponent {
         verticalStrength={verticalStrength}
         speed={VERTICAL_SCROLL_SPEED}
         deferredMeasurementCache={this.cache}
-        scrollToIndex={this.props.scrollToCell.rowIndex}
-        scrollToAlignment={this.props.scrollToAlignment}
+        scrollToIndex={this.props.scrollToRow}
       />
     );
   }
