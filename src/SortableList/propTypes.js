@@ -13,7 +13,10 @@ export const dropList = PropTypes.func;
 export const dragEndRow = PropTypes.func;
 export const overscanRowCount = PropTypes.number;
 export const dndDisabled = PropTypes.bool.isRequired;
-export const scrollToRow = PropTypes.number;
+export const scrollToCell = PropTypes.shape({
+  columnIndex: PropTypes.number,
+  rowIndex: PropTypes.number
+}).isRequired;
   // React DnD
 export const isDragging = PropTypes.bool;
 export const connectDropTarget = PropTypes.func;

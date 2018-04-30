@@ -107,7 +107,7 @@ class SortableList extends React.PureComponent {
         verticalStrength={verticalStrength}
         speed={VERTICAL_SCROLL_SPEED}
         deferredMeasurementCache={this.cache}
-        scrollToIndex={this.props.scrollToRow}
+        scrollToIndex={this.props.scrollToCell.rowIndex}
         scrollToAlignment={this.props.scrollToAlignment}
       />
     );
