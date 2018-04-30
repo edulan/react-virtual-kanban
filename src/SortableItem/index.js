@@ -10,10 +10,20 @@ import * as propTypes from './propTypes';
 class SortableItem extends React.PureComponent {
   static propTypes = propTypes;
 
+  constructor(props) {
+    super(props);
+    this.recalculateRowHeights = this.recalculateRowHeights.bind(this);
+  }
+
   componentDidMount() {
     this.props.connectDragPreview(getEmptyImage(), {
       captureDraggingState: true
     });
+  }
+
+  recalculateRowHeights() {
+    const { recalculateRowHeights, rowIndex} = this.props;
+    recalculateRowHeights(rowIndex);
   }
 
   render() {
@@ -25,7 +35,6 @@ class SortableItem extends React.PureComponent {
       isDragging,
       connectDragSource,
       connectDropTarget,
-      recalculateRowHeights,
     } = this.props;
     return (
       <DecoratedItem
@@ -36,7 +45,7 @@ class SortableItem extends React.PureComponent {
         isDragging={isDragging}
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}
-        recalculateRowHeights={recalculateRowHeights}
+        recalculateRowHeights={this.recalculateRowHeights}
       />
     );
   }
