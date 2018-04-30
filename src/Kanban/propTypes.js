@@ -17,5 +17,4 @@ export const overscanListCount = PropTypes.number;
 export const overscanRowCount = PropTypes.number;
 export const scrollToColumn = PropTypes.number;
 export const scrollToRow = PropTypes.number;
-export const scrollToAlignment = PropTypes.string;
 export const dndDisabled = PropTypes.bool;

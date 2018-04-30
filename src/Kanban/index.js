@@ -210,10 +210,7 @@ class Kanban extends React.PureComponent {
   }
 
   componentDidUpdate(_prevProps, prevState) {
-    if (prevState.lists !== this.state.lists
-      || _prevProps.scrollToColumn !== this.props.scrollToColumn
-      || _prevProps.scrollToRow !== this.props.scrollToRow
-    ) {
+    if (prevState.lists !== this.state.lists) {
       this._grid.wrappedInstance.forceUpdate();
     }
   }
@@ -260,7 +257,6 @@ class Kanban extends React.PureComponent {
       listPreviewComponent,
       overscanListCount,
       scrollToColumn,
-      scrollToAlignment,
     } = this.props;
     return (
       <div>
@@ -280,7 +276,6 @@ class Kanban extends React.PureComponent {
           overscanColumnCount={overscanListCount}
           horizontalStrength={horizontalStrength}
           scrollToColumn={scrollToColumn}
-          scrollToAlignment={scrollToAlignment}
           verticalStrength={() => {}}
           speed={HORIZONTAL_SCROLL_SPEED}
         />
