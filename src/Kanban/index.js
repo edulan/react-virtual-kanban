@@ -242,6 +242,8 @@ class Kanban extends React.PureComponent {
         overscanRowCount={this.props.overscanRowCount}
         findItemIndex={this.findItemIndex}
         dndDisabled={this.props.dndDisabled}
+        scrollToRow={this.props.scrollToRow}
+        scrollToAlignment={this.props.scrollToAlignment}
       />
     );
   }
