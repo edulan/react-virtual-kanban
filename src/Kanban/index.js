@@ -1,8 +1,8 @@
 import React from 'react';
 import HTML5Backend from 'react-dnd-html5-backend';
 import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
-import { Grid } from 'react-virtualized';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
+import { Grid } from 'react-virtualized';
 
 import {
   updateLists,
@@ -14,14 +14,15 @@ import {
 
 import * as propTypes from './propTypes';
 import * as decorators from '../decorators';
+import shallowCompare from 'react-addons-shallow-compare';
 import DragLayer from '../DragLayer';
 import SortableList from '../SortableList';
 
 const GridWithScrollZone = withScrolling(Grid);
-const horizontalStrength = createHorizontalStrength(200);
+const HORIZONTAL_SCROLL_SPEED = 50;
+const HORIZONTAL_SCROLL_STRENGTH = 200;
+const horizontalStrength = createHorizontalStrength(HORIZONTAL_SCROLL_STRENGTH);
 import { DragDropManager } from 'dnd-core';
-
-import PureComponent from '../PureComponent';
 
 /**
  * Grab dragDropManager from context
@@ -32,7 +33,7 @@ const getDndContext = ((dragDropManager = new DragDropManager(HTML5Backend)) => 
   context.dragDropManager || dragDropManager
 ))();
 
-class Kanban extends PureComponent {
+class Kanban extends React.PureComponent {
   static propTypes = propTypes;
 
   static defaultProps = {
@@ -51,7 +52,7 @@ class Kanban extends PureComponent {
     onDragEndRow: () => {},
     overscanListCount: 2,
     overscanRowCount: 2,
-    itemCacheKey: ({ id }) => `${id}`,
+    dndDisabled: false,
   }
 
   static childContextTypes = {
@@ -66,7 +67,7 @@ class Kanban extends PureComponent {
     super(props);
 
     this.state = {
-      lists: props.lists
+      lists: props.lists,
     };
 
     this.onMoveList = this.onMoveList.bind(this);
@@ -81,8 +82,11 @@ class Kanban extends PureComponent {
     this.onDragEndList = this.onDragEndList.bind(this);
 
     this.renderList = this.renderList.bind(this);
+    this.findItemIndex = this.findItemIndex.bind(this);
     this.drawFrame = this.drawFrame.bind(this);
     this.findItemIndex = this.findItemIndex.bind(this);
+
+    this.refsByIndex = {};
   }
 
   getChildContext() {
@@ -201,9 +205,16 @@ class Kanban extends PureComponent {
     this.props.onDragEndList(this.listEndData({ listId }));
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
+  }
+
   componentDidUpdate(_prevProps, prevState) {
     if (prevState.lists !== this.state.lists) {
       this._grid.wrappedInstance.forceUpdate();
+    }
+    if (_prevProps.scrollToCell !== this.props.scrollToCell) {
+      this._grid.forceUpdate();
     }
   }
 
@@ -211,14 +222,15 @@ class Kanban extends PureComponent {
     return findItemIndex(this.state.lists, itemId);
   }
 
-  renderList({ columnIndex, key, style }) {
+  renderList({ columnIndex, rowIndex, key, style, parent }) {
     const list = this.state.lists[columnIndex];
 
     return (
       <SortableList
+        ref={(ref) => {this.refsByIndex[columnIndex] = ref;}}
         key={list.id}
         listId={list.id}
-        listStyle={style}
+        style={style}
         listComponent={this.props.listComponent}
         itemComponent={this.props.itemComponent}
         list={list}
@@ -231,8 +243,10 @@ class Kanban extends PureComponent {
         dragEndList={this.onDragEndList}
         dragBeginList={this.onDragBeginList}
         overscanRowCount={this.props.overscanRowCount}
-        itemCacheKey={this.props.itemCacheKey}
         findItemIndex={this.findItemIndex}
+        dndDisabled={this.props.dndDisabled}
+        scrollToCell={this.props.scrollToCell}
+        scrollToAlignment={this.props.scrollToAlignment}
       />
     );
   }
@@ -246,10 +260,9 @@ class Kanban extends PureComponent {
       itemPreviewComponent,
       listPreviewComponent,
       overscanListCount,
-      scrollToList,
+      scrollToCell,
       scrollToAlignment,
     } = this.props;
-
     return (
       <div>
         <GridWithScrollZone
@@ -267,10 +280,10 @@ class Kanban extends PureComponent {
           cellRenderer={this.renderList}
           overscanColumnCount={overscanListCount}
           horizontalStrength={horizontalStrength}
-          scrollToColumn={scrollToList}
+          scrollToColumn={scrollToCell.columnIndex}
           scrollToAlignment={scrollToAlignment}
           verticalStrength={() => {}}
-          speed={100}
+          speed={HORIZONTAL_SCROLL_SPEED}
         />
         <DragLayer
           lists={lists}

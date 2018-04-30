@@ -9,7 +9,7 @@ export function beginDrag(props, _, component) {
     lists: props.lists,
     row: props.row,
     rowId: props.rowId,
-    rowStyle: props.rowStyle,
+    style: props.style,
     containerWidth,
   };
 
@@ -33,4 +33,8 @@ export function isDragging({ rowId }, monitor) {
    const draggingRowId = monitor.getItem().rowId;
 
    return rowId === draggingRowId;
+}
+
+export function canDrag(props, monitor) {
+  return !props.dndDisabled;
 }

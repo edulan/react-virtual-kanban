@@ -15,6 +15,9 @@ export const onDropList = PropTypes.func;
 export const onDragEndRow = PropTypes.func;
 export const overscanListCount = PropTypes.number;
 export const overscanRowCount = PropTypes.number;
-export const scrollToList = PropTypes.number;
+export const scrollToCell = PropTypes.shape({
+  columnIndex: PropTypes.number,
+  rowIndex: PropTypes.number
+}).isRequired;
 export const scrollToAlignment = PropTypes.string;
-export const itemCacheKey = PropTypes.func;
+export const dndDisabled = PropTypes.bool;
