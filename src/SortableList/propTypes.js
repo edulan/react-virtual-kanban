@@ -13,7 +13,9 @@ export const dropList = PropTypes.func;
 export const dragEndRow = PropTypes.func;
 export const overscanRowCount = PropTypes.number;
 export const dndDisabled = PropTypes.bool.isRequired;
-export const scrollToRow = PropTypes.number;
+export const initialRowIndex = PropTypes.number;
+export const listComponentProps = PropTypes.object;
+export const itemComponentProps = PropTypes.object;
   // React DnD
 export const isDragging = PropTypes.bool;
 export const connectDropTarget = PropTypes.func;

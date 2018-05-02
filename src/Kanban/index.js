@@ -242,7 +242,9 @@ class Kanban extends React.PureComponent {
         overscanRowCount={this.props.overscanRowCount}
         findItemIndex={this.findItemIndex}
         dndDisabled={this.props.dndDisabled}
-        scrollToRow={this.props.scrollToRow}
+        initialRowIndex={this.props.initialRowIndex}
+        listComponentProps={this.props.listComponentProps}
+        itemComponentProps={this.props.itemComponentProps}
       />
     );
   }
@@ -256,7 +258,7 @@ class Kanban extends React.PureComponent {
       itemPreviewComponent,
       listPreviewComponent,
       overscanListCount,
-      scrollToColumn,
+      initialColumnIndex,
     } = this.props;
     return (
       <div>
@@ -275,7 +277,7 @@ class Kanban extends React.PureComponent {
           cellRenderer={this.renderList}
           overscanColumnCount={overscanListCount}
           horizontalStrength={horizontalStrength}
-          scrollToColumn={scrollToColumn}
+          scrollToColumn={initialColumnIndex}
           verticalStrength={() => {}}
           speed={HORIZONTAL_SCROLL_SPEED}
         />

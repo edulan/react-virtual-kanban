@@ -87,6 +87,7 @@ class SortableList extends React.PureComponent {
           dndDisabled={this.props.dndDisabled}
           recalculateRowHeights={this.recalculateRowHeights}
           rowIndex={index}
+          itemComponentProps={this.props.itemComponentProps}
         />
       </CellMeasurer>
     );
@@ -107,7 +108,7 @@ class SortableList extends React.PureComponent {
         verticalStrength={verticalStrength}
         speed={VERTICAL_SCROLL_SPEED}
         deferredMeasurementCache={this.cache}
-        scrollToIndex={this.props.scrollToRow}
+        scrollToIndex={this.props.initialRowIndex}
       />
     );
   }
@@ -121,6 +122,7 @@ class SortableList extends React.PureComponent {
       connectDragSource,
       connectDropTarget,
       style,
+      listComponentProps,
     } = this.props;
 
     return (
@@ -131,6 +133,7 @@ class SortableList extends React.PureComponent {
         isDragging={isDragging}
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}
+        {...listComponentProps}
       >
         <AutoSizer>
           {(dimensions) => this.renderList(dimensions)}
