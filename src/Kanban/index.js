@@ -53,6 +53,7 @@ class Kanban extends React.PureComponent {
     overscanListCount: 2,
     overscanRowCount: 2,
     dndDisabled: false,
+    isPrinting: false,
   }
 
   static childContextTypes = {
@@ -85,6 +86,8 @@ class Kanban extends React.PureComponent {
     this.findItemIndex = this.findItemIndex.bind(this);
     this.drawFrame = this.drawFrame.bind(this);
     this.findItemIndex = this.findItemIndex.bind(this);
+
+    this.overscanIndicesGetter = this.overscanIndicesGetter.bind(this);
 
     this.refsByIndex = {};
   }
@@ -219,6 +222,16 @@ class Kanban extends React.PureComponent {
     return findItemIndex(this.state.lists, itemId);
   }
 
+  /**
+   * Allows us to render the entire virtualized component for printing.
+   */
+  overscanIndicesGetter({ cellCount }) {
+    return ({
+      overscanStartIndex: 0,
+      overscanStopIndex: cellCount - 1,
+    });
+  }
+
   renderList({ columnIndex, rowIndex, key, style, parent }) {
     const list = this.state.lists[columnIndex];
 
@@ -259,7 +272,16 @@ class Kanban extends React.PureComponent {
       listPreviewComponent,
       overscanListCount,
       initialColumnIndex,
+      isPrinting,
     } = this.props;
+    // Conditionally override the default 'overscanIndicesGetter' function in
+    // react-virtual-grid, which normally tells us to render only enough items
+    // to fill the viewport. If we're not printing the component, then we pass
+    // in 'undefined' so react-virtual-grid uses its defaultOverscanIndicesGetter.
+    const overscanIndicesGetter = isPrinting
+      ? this.overscanIndicesGetter
+      : undefined;
+
     return (
       <div>
         <GridWithScrollZone
@@ -280,6 +302,7 @@ class Kanban extends React.PureComponent {
           scrollToColumn={initialColumnIndex}
           verticalStrength={() => {}}
           speed={HORIZONTAL_SCROLL_SPEED}
+          overscanIndicesGetter={overscanIndicesGetter}
         />
         <DragLayer
           lists={lists}
