@@ -9,3 +9,11 @@ body {
   width: 100vw;
   height: 100vh;
 }
+
+button {
+  height: 50px;
+  width: 250px;
+  border-radius: 20px;
+  font-size: 14px;
+  margin: 5px;
+}

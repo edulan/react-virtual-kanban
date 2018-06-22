@@ -12,6 +12,7 @@ class App extends Component {
 
     this.state = {
       lists: props.getLists(),
+      isPrinting: false,
     };
 
     setInterval(() => {
@@ -29,11 +30,32 @@ class App extends Component {
         }
       });
     }, 30000);
+
+    this.print = this.print.bind(this);
+  }
+
+  /**
+   * This is how we tell the React VirtualKanban component that it needs to render
+   * its entire contents before printing.
+   */
+  print() {
+    new Promise((resolve) => {
+      this.setState({ isPrinting: true }, () => console.log('state', this.state));
+      // or use the redux store and fire an action here
+      resolve();
+    })
+      .then(() => window.alert('There is no print specific styling applied to ' +
+      'this, but check dev tools and you\'ll see all lists rendered to the DOM. ' +
+      'Check now, while this alert is still up, before the preview opens, so you believe me'))
+      .then(() => window.print());
   }
 
   render() {
     return (
       <div className='KanbanWrapper'>
+        <button onClick={this.print}>
+          Click to print this component! (does not work with ctrl+p).
+        </button>
         <AutoSizer>
           {({ width, height }) => (
             <VirtualKanban
@@ -50,6 +72,7 @@ class App extends Component {
               onDragBeginList={(data) => console.log(data, 'onDragBeginList')}
               onDragEndList={(data) => console.log(data, 'onDragEndList')}
               dndDisabled={false}
+              isPrinting={this.state.isPrinting}
             />
           )}
         </AutoSizer>

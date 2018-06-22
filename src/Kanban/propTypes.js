@@ -20,3 +20,4 @@ export const initialRowIndex = PropTypes.number;
 export const dndDisabled = PropTypes.bool;
 export const listComponentProps = PropTypes.object;
 export const itemComponentProps = PropTypes.object;
+export const isPrinting = PropTypes.bool;
