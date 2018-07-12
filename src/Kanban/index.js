@@ -255,7 +255,7 @@ class Kanban extends React.PureComponent {
         overscanRowCount={this.props.overscanRowCount}
         findItemIndex={this.findItemIndex}
         dndDisabled={this.props.dndDisabled}
-        initialRowIndex={this.props.initialRowIndex}
+        initialRowIndex={columnIndex === this.props.initialColumnIndex ? this.props.initialRowIndex : undefined}
         listComponentProps={this.props.listComponentProps}
         itemComponentProps={this.props.itemComponentProps}
       />
