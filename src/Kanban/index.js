@@ -1,8 +1,8 @@
 import React from 'react';
 import HTML5Backend from 'react-dnd-html5-backend';
 import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
-import { Grid } from 'react-virtualized';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
+import { Grid } from 'react-virtualized';
 
 import {
   updateLists,
@@ -14,14 +14,15 @@ import {
 
 import * as propTypes from './propTypes';
 import * as decorators from '../decorators';
+import shallowCompare from 'react-addons-shallow-compare';
 import DragLayer from '../DragLayer';
 import SortableList from '../SortableList';
 
 const GridWithScrollZone = withScrolling(Grid);
-const horizontalStrength = createHorizontalStrength(200);
+const HORIZONTAL_SCROLL_SPEED = 50;
+const HORIZONTAL_SCROLL_STRENGTH = 200;
+const horizontalStrength = createHorizontalStrength(HORIZONTAL_SCROLL_STRENGTH);
 import { DragDropManager } from 'dnd-core';
-
-import PureComponent from '../PureComponent';
 
 /**
  * Grab dragDropManager from context
@@ -32,7 +33,7 @@ const getDndContext = ((dragDropManager = new DragDropManager(HTML5Backend)) => 
   context.dragDropManager || dragDropManager
 ))();
 
-class Kanban extends PureComponent {
+class Kanban extends React.PureComponent {
   static propTypes = propTypes;
 
   static defaultProps = {
@@ -51,7 +52,8 @@ class Kanban extends PureComponent {
     onDragEndRow: () => {},
     overscanListCount: 2,
     overscanRowCount: 2,
-    itemCacheKey: ({ id }) => `${id}`,
+    dndDisabled: false,
+    isPrinting: false,
   }
 
   static childContextTypes = {
@@ -66,7 +68,7 @@ class Kanban extends PureComponent {
     super(props);
 
     this.state = {
-      lists: props.lists
+      lists: props.lists,
     };
 
     this.onMoveList = this.onMoveList.bind(this);
@@ -81,8 +83,13 @@ class Kanban extends PureComponent {
     this.onDragEndList = this.onDragEndList.bind(this);
 
     this.renderList = this.renderList.bind(this);
+    this.findItemIndex = this.findItemIndex.bind(this);
     this.drawFrame = this.drawFrame.bind(this);
     this.findItemIndex = this.findItemIndex.bind(this);
+
+    this.overscanIndicesGetter = this.overscanIndicesGetter.bind(this);
+
+    this.refsByIndex = {};
   }
 
   getChildContext() {
@@ -201,6 +208,10 @@ class Kanban extends PureComponent {
     this.props.onDragEndList(this.listEndData({ listId }));
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
+  }
+
   componentDidUpdate(_prevProps, prevState) {
     if (prevState.lists !== this.state.lists) {
       this._grid.wrappedInstance.forceUpdate();
@@ -211,14 +222,25 @@ class Kanban extends PureComponent {
     return findItemIndex(this.state.lists, itemId);
   }
 
-  renderList({ columnIndex, key, style }) {
+  /**
+   * Allows us to render the entire virtualized component for printing.
+   */
+  overscanIndicesGetter({ cellCount }) {
+    return ({
+      overscanStartIndex: 0,
+      overscanStopIndex: cellCount - 1,
+    });
+  }
+
+  renderList({ columnIndex, rowIndex, key, style, parent }) {
     const list = this.state.lists[columnIndex];
 
     return (
       <SortableList
+        ref={(ref) => {this.refsByIndex[columnIndex] = ref;}}
         key={list.id}
         listId={list.id}
-        listStyle={style}
+        style={style}
         listComponent={this.props.listComponent}
         itemComponent={this.props.itemComponent}
         list={list}
@@ -231,8 +253,11 @@ class Kanban extends PureComponent {
         dragEndList={this.onDragEndList}
         dragBeginList={this.onDragBeginList}
         overscanRowCount={this.props.overscanRowCount}
-        itemCacheKey={this.props.itemCacheKey}
         findItemIndex={this.findItemIndex}
+        dndDisabled={this.props.dndDisabled}
+        initialRowIndex={columnIndex === this.props.initialColumnIndex ? this.props.initialRowIndex : undefined}
+        listComponentProps={this.props.listComponentProps}
+        itemComponentProps={this.props.itemComponentProps}
       />
     );
   }
@@ -246,9 +271,16 @@ class Kanban extends PureComponent {
       itemPreviewComponent,
       listPreviewComponent,
       overscanListCount,
-      scrollToList,
-      scrollToAlignment,
+      initialColumnIndex,
+      isPrinting,
     } = this.props;
+    // Conditionally override the default 'overscanIndicesGetter' function in
+    // react-virtual-grid, which normally tells us to render only enough items
+    // to fill the viewport. If we're not printing the component, then we pass
+    // in 'undefined' so react-virtual-grid uses its defaultOverscanIndicesGetter.
+    const overscanIndicesGetter = isPrinting
+      ? this.overscanIndicesGetter
+      : undefined;
 
     return (
       <div>
@@ -267,10 +299,10 @@ class Kanban extends PureComponent {
           cellRenderer={this.renderList}
           overscanColumnCount={overscanListCount}
           horizontalStrength={horizontalStrength}
-          scrollToColumn={scrollToList}
-          scrollToAlignment={scrollToAlignment}
+          scrollToColumn={initialColumnIndex}
           verticalStrength={() => {}}
-          speed={100}
+          speed={HORIZONTAL_SCROLL_SPEED}
+          overscanIndicesGetter={overscanIndicesGetter}
         />
         <DragLayer
           lists={lists}

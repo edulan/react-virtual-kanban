@@ -7,15 +7,23 @@ import * as dragSpec from './dragSpec';
 import * as dropSpec from './dropSpec';
 import * as propTypes from './propTypes';
 
-import PureComponent from '../PureComponent';
-
-class SortableItem extends PureComponent {
+class SortableItem extends React.PureComponent {
   static propTypes = propTypes;
+
+  constructor(props) {
+    super(props);
+    this.recalculateRowHeights = this.recalculateRowHeights.bind(this);
+  }
 
   componentDidMount() {
     this.props.connectDragPreview(getEmptyImage(), {
       captureDraggingState: true
     });
+  }
+
+  recalculateRowHeights() {
+    const { recalculateRowHeights, rowIndex} = this.props;
+    recalculateRowHeights(rowIndex);
   }
 
   render() {
@@ -27,18 +35,19 @@ class SortableItem extends PureComponent {
       isDragging,
       connectDragSource,
       connectDropTarget,
-      rowStyle,
+      itemComponentProps,
     } = this.props;
-
     return (
       <DecoratedItem
         row={row}
         rowId={rowId}
         listId={listId}
-        rowStyle={rowStyle}
+        rowStyle={this.props.style}
         isDragging={isDragging}
         connectDragSource={connectDragSource}
         connectDropTarget={connectDropTarget}
+        recalculateRowHeights={this.recalculateRowHeights}
+        { ...itemComponentProps }
       />
     );
   }
