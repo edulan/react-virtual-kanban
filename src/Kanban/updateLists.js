@@ -1,4 +1,4 @@
-import update from 'react-addons-update';
+import update from 'immutability-helper';
 
 function rotateRight(range, offset) {
   const length = range.length;
