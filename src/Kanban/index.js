@@ -1,4 +1,5 @@
 import React from 'react';
+import * as PropTypes from 'prop-types';
 import HTML5Backend from 'react-dnd-html5-backend';
 import withScrolling, { createHorizontalStrength } from 'react-dnd-scrollzone';
 import { Grid } from 'react-virtualized';
@@ -55,11 +56,11 @@ class Kanban extends PureComponent {
   }
 
   static childContextTypes = {
-    dragDropManager: React.PropTypes.object,
+    dragDropManager: PropTypes.object,
   }
 
   static contextTypes = {
-    dragDropManager: React.PropTypes.object,
+    dragDropManager: PropTypes.object,
   }
 
   constructor(props) {

@@ -1,4 +1,4 @@
-import { PropTypes } from 'react';
+import { PropTypes } from 'prop-types';
 import { PropTypes as CustomPropTypes, deprecate } from '../../propTypes';
 
 export const list = PropTypes.object.isRequired;

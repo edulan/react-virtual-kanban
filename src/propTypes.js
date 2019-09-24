@@ -1,13 +1,13 @@
-import React from 'react';
+import * as PT from 'prop-types';
 
 export const PropTypes = {
-  id: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.number,
-    React.PropTypes.symbol
+  id: PT.oneOfType([
+    PT.string,
+    PT.number,
+    PT.symbol
   ]),
 
-  decorator: React.PropTypes.func,
+  decorator: PT.func,
 };
 
 /**

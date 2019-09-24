@@ -1,4 +1,4 @@
-import { PropTypes } from 'react';
+import { PropTypes } from 'prop-types';
 
 export const lists = PropTypes.array;
 export const item = PropTypes.object;
