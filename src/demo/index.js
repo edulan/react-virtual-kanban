@@ -1,14 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Perf from 'react-addons-perf';
 
 import '../../lib/styles.css';
 
 import { generateLists } from './utils/generateLists';
 
 import App from './App';
-
-window.Perf = Perf;
 
 function getLists() {
   const lists = window.localStorage.getItem('lists');
